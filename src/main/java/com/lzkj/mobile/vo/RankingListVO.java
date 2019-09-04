@@ -19,6 +19,7 @@ public class RankingListVO {
 		private Integer gameId;
 		private String nickName;
 		private BigDecimal score;
+		private BigDecimal reward;
 		private int ranking;
 	}
 }

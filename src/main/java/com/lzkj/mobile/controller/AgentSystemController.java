@@ -489,6 +489,7 @@ public class AgentSystemController {
         	r.setNickName(l.getNickName());
         	r.setRanking(l.getRanking());
         	r.setScore(l.getScore());
+        	r.setReward(l.getRewardScore());
         	if(l.getUserId().equals(userId)) {
         		data.setMyRanking(l.getRanking());
         		data.setMyReward(l.getRewardScore());
