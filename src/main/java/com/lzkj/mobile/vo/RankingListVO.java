@@ -18,8 +18,8 @@ public class RankingListVO {
 	public static class Ranking {
 		private Integer gameId;
 		private String nickName;
-		private BigDecimal score;
-		private BigDecimal reward;
+		private BigDecimal score = BigDecimal.ZERO;
+		private BigDecimal reward = BigDecimal.ZERO;
 		private int ranking;
 	}
 }
