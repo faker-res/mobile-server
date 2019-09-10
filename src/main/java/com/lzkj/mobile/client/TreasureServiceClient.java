@@ -141,5 +141,8 @@ public interface TreasureServiceClient {
 	
 	@RequestMapping("/treasure/mobile/getTodayRankingList")
     public List<DayUserAbsScoreVO> getTodayRankingList(@RequestParam("parentId")Integer parentId);
+	
+	@RequestMapping("/treasure/mobile/getMyTodayRanking")
+    public DayUserAbsScoreVO getMyTodayRanking(@RequestParam("userId")Integer userId);
 }
 

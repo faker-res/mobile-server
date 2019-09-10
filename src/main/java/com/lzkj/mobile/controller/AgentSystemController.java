@@ -463,6 +463,12 @@ public class AgentSystemController {
         	}
         	rankingList.add(r);
         }
+        if(data.getScore() == BigDecimal.ZERO) {
+        	DayUserAbsScoreVO me = treasureServiceClient.getMyTodayRanking(userId);
+        	if(null != me) {
+        		data.setScore(me.getScore());
+        	}
+        }
         globeResponse.setData(data);
         return globeResponse;
     }
@@ -498,6 +504,12 @@ public class AgentSystemController {
         		data.setRewardStatus(l.getRewardStatus());
         	}
         	rankingList.add(r);
+        }
+        if(data.getScore() == BigDecimal.ZERO) {
+        	DayRankingRewardVO me = agenteClient.getMyTomorrowRanking(userId);
+        	if(null != me) {
+        		data.setScore(me.getScore());
+        	}
         }
         globeResponse.setData(data);
         return globeResponse;
