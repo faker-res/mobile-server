@@ -23,6 +23,7 @@ import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
 import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
 import com.lzkj.mobile.vo.DayRankingRewardVO;
 import com.lzkj.mobile.vo.DayUserAbsScoreVO;
 import com.lzkj.mobile.vo.GlobeResponse;
@@ -357,6 +358,10 @@ public class AgentSystemController {
         } else {
             data.put("yebiIsopen", true);
             data.put("description", yebConfigVO.getDescription());
+        }
+        List<CloudShieldConfigurationVO> vo = agenteClient.getCloudShieldConfigurationInfos(agentId);
+        if(vo != null) {
+        	data.put("CloudData", vo);
         }
         return data;
     }

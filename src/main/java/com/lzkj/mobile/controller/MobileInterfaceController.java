@@ -74,6 +74,7 @@ import com.lzkj.mobile.vo.GlobalSpreadInfo;
 import com.lzkj.mobile.vo.GlobeResponse;
 import com.lzkj.mobile.vo.GoldExchangeVO;
 import com.lzkj.mobile.vo.LotteryConfigVO;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.MobileAwardOrderVo;
 import com.lzkj.mobile.vo.MobileDayTask;
 import com.lzkj.mobile.vo.MobileKind;
@@ -120,8 +121,8 @@ public class MobileInterfaceController {
     @Value("${server.url}")
     private String serverUrl;
     
-    @Value("#{${pay.url}}")
-    private Map<String, String> payUrlList;
+//    @Value("#{${pay.url}}")
+//    private Map<String, String> payUrlList;
 
 
     @Autowired
@@ -1599,6 +1600,26 @@ public class MobileInterfaceController {
         List<BankCardTypeVO> customers = agentServiceClient.getBankCardTypeInfo(agentId);
         Map<String, Object> data = new HashMap<>();
         data.put("bankCards", customers);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
+    
+    
+    /**
+     * 查询幸运转盘
+     *
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/getLucky")
+    private GlobeResponse<Object> getLucky(Integer agentId) {
+    	if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	LuckyTurntableConfigurationVO Lucky = treasureServiceClient.getLucky(agentId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("Lucky", Lucky);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
