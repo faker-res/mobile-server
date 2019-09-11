@@ -112,6 +112,9 @@ public interface AgentServiceClient {
   	@RequestMapping("/agent/mobile/getTomorrowRankingList")
   	List<DayRankingRewardVO> getTomorrowRankingList(@RequestParam("parentId")Integer parentId);
   	
+  	@RequestMapping("/agent/mobile/getMyTomorrowRanking")
+  	DayRankingRewardVO getMyTomorrowRanking(@RequestParam("userId")Integer userId);
+  	
   	@RequestMapping("/agent/mobile/receiveReward")
     Map<String, Object> receiveReward(@RequestParam("id")Integer id);
   	
