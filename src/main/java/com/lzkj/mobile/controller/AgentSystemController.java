@@ -302,23 +302,31 @@ public class AgentSystemController {
         if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
             flag = true;
         }
-
-        //验证是否有机器码
-        if (!StringUtils.isBlank(registerMachine)) {
-            int num = platformServiceClient.getWhitelist(registerMachine);
-            if (num > 0) {
-                flag = false;
+        Map<String, Object> data = new HashMap<>();
+        //判断预更新热更开关開啓沒
+        if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
+            String[] update = agentAccVO.getUpdateAddress().split(",");
+            data.put("HOT_UPDATE_URL", update);
+        }else {
+            //验证是否有机器码
+            if (!StringUtils.isBlank(registerMachine)) {
+                int num = platformServiceClient.getWhitelist(registerMachine);
+                if (num > 0) {
+                    String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
+                    data.put("preUpdateAddress", preUpdateAddress);
+                    flag = false;
+                } else {
+                    String[] update = agentAccVO.getUpdateAddress().split(",");
+                    data.put("HOT_UPDATE_URL", update);
+                }
             }
         }
         //获取业主配置
         List<AgentSystemStatusInfoVO> agentSystemList = agenteClient.getBindMobileSendInfo(agentId);
-        Map<String, Object> data = new HashMap<>();
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("Maitance", flag);
         data.put("ClientUrl", agentAccVO.getClientUrl());
-        String[] update = agentAccVO.getUpdateAddress().split(",");
-        data.put("HOT_UPDATE_URL", update);
         data.put("prompt", agentAccVO.getPrompt());
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
