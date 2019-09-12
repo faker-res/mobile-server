@@ -119,6 +119,6 @@ public interface AgentServiceClient {
     Map<String, Object> receiveReward(@RequestParam("id")Integer id);
   	
   	//查询云盾配置
-    @RequestMapping("/agentControl/getCloudShieldConfigurationInfos")
+    @RequestMapping("/agent/mobile/getCloudShieldConfigurationInfos")
     List<CloudShieldConfigurationVO> getCloudShieldConfigurationInfos(@RequestParam("agentId")Integer agentId);
 }
