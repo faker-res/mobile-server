@@ -4,11 +4,12 @@ import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.MailsVO;
+import com.lzkj.mobile.vo.MailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class MailController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
         }
         //获取该用户可以看的邮件
-        List<MailsVO> lists = accountsServiceClient.getMailsInfo(gameId, agentId);
+        List<MailVO> lists = accountsServiceClient.getMailsInfo(gameId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(lists);
         return globeResponse;
@@ -46,10 +47,19 @@ public class MailController {
      */
     @RequestMapping("/openMail")
     public GlobeResponse openMail(Integer id) {
-        MailsVO mailsVO = accountsServiceClient.openMail(id);
+        MailVO mailsVO = accountsServiceClient.openMail(id);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(mailsVO);
         return globeResponse;
     }
-
+    /**
+     * 删除邮件
+     */
+    @RequestMapping("/deleteMail")
+    public GlobeResponse deleteMail(ArrayList<Integer> ids) {
+        Boolean flag= accountsServiceClient.deleteMail(ids);
+        GlobeResponse globeResponse = new GlobeResponse();
+        globeResponse.setData(flag);
+        return globeResponse;
+    }
 }
