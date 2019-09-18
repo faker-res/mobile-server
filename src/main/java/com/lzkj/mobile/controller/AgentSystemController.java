@@ -357,6 +357,14 @@ public class AgentSystemController {
                     data.put("vip", false);
                 }
             }
+            //邮件系统是否开启
+            if(vo.getStatusName().equals(AgentSystemEnum.MailOpen.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("mail", true);
+                } else {
+                    data.put("mail", false);
+                }
+            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
@@ -447,7 +455,7 @@ public class AgentSystemController {
         globeResponse.setData(lists);
         return globeResponse;
     }
-    
+
     /**
      * 今日代理排行
      */
@@ -455,7 +463,7 @@ public class AgentSystemController {
     public GlobeResponse<Object> getTodayRankingList(Integer userId, Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }        
+        }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         List<DayUserAbsScoreVO> list = treasureServiceClient.getTodayRankingList(parentId);
         if(list == null || list.size() == 0) {
@@ -485,7 +493,7 @@ public class AgentSystemController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 昨日代理排行
      */
@@ -493,7 +501,7 @@ public class AgentSystemController {
     public GlobeResponse<Object> getTomorrowRankingList(Integer userId, Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }        
+        }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         List<DayRankingRewardVO> list = agenteClient.getTomorrowRankingList(parentId);
         if(list == null || list.size() == 0) {
@@ -527,7 +535,7 @@ public class AgentSystemController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 领取奖励
      */
@@ -535,7 +543,7 @@ public class AgentSystemController {
     public GlobeResponse<Object> receiveReward(Integer id) {
         if (id == null || id == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }        
+        }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Map<String, Object> param = this.agenteClient.receiveReward(id);
         int ret = (Integer) param.get("ret");

@@ -83,4 +83,10 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/AgentAccControl/getPlayerLevel")
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/accounts/mobile/getMailsInfo")
+    List<MailsVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/accounts/mobile/openMail")
+    MailsVO openMail(@RequestParam("id") Integer id);
 }
