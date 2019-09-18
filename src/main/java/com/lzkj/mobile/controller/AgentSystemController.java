@@ -23,6 +23,7 @@ import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
 import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
 import com.lzkj.mobile.vo.DayRankingRewardVO;
 import com.lzkj.mobile.vo.DayUserAbsScoreVO;
 import com.lzkj.mobile.vo.GlobeResponse;
@@ -302,23 +303,31 @@ public class AgentSystemController {
         if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
             flag = true;
         }
-
-        //验证是否有机器码
-        if (!StringUtils.isBlank(registerMachine)) {
-            int num = platformServiceClient.getWhitelist(registerMachine);
-            if (num > 0) {
-                flag = false;
+        Map<String, Object> data = new HashMap<>();
+        //判断预更新热更开关開啓沒
+        if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
+            String[] update = agentAccVO.getUpdateAddress().split(",");
+            data.put("HOT_UPDATE_URL", update);
+        }else {
+            //验证是否有机器码
+            if (!StringUtils.isBlank(registerMachine)) {
+                int num = platformServiceClient.getWhitelist(registerMachine);
+                if (num > 0) {
+                    String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
+                    data.put("preUpdateAddress", preUpdateAddress);
+                    flag = false;
+                } else {
+                    String[] update = agentAccVO.getUpdateAddress().split(",");
+                    data.put("HOT_UPDATE_URL", update);
+                }
             }
         }
         //获取业主配置
         List<AgentSystemStatusInfoVO> agentSystemList = agenteClient.getBindMobileSendInfo(agentId);
-        Map<String, Object> data = new HashMap<>();
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("Maitance", flag);
         data.put("ClientUrl", agentAccVO.getClientUrl());
-        String[] update = agentAccVO.getUpdateAddress().split(",");
-        data.put("HOT_UPDATE_URL", update);
         data.put("prompt", agentAccVO.getPrompt());
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
@@ -357,6 +366,10 @@ public class AgentSystemController {
         } else {
             data.put("yebiIsopen", true);
             data.put("description", yebConfigVO.getDescription());
+        }
+        List<CloudShieldConfigurationVO> vo = agenteClient.getCloudShieldConfigurationInfos(agentId);
+        if(vo != null) {
+        	data.put("CloudData", vo);
         }
         return data;
     }
@@ -463,6 +476,12 @@ public class AgentSystemController {
         	}
         	rankingList.add(r);
         }
+        if(data.getScore() == BigDecimal.ZERO) {
+        	DayUserAbsScoreVO me = treasureServiceClient.getMyTodayRanking(userId);
+        	if(null != me) {
+        		data.setScore(me.getScore());
+        	}
+        }
         globeResponse.setData(data);
         return globeResponse;
     }
@@ -498,6 +517,12 @@ public class AgentSystemController {
         		data.setRewardStatus(l.getRewardStatus());
         	}
         	rankingList.add(r);
+        }
+        if(data.getScore() == BigDecimal.ZERO) {
+        	DayRankingRewardVO me = agenteClient.getMyTomorrowRanking(userId);
+        	if(null != me) {
+        		data.setScore(me.getScore());
+        	}
         }
         globeResponse.setData(data);
         return globeResponse;
