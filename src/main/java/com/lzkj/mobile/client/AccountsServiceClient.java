@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,4 +84,13 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/AgentAccControl/getPlayerLevel")
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/accounts/mobile/getMailsInfo")
+    List<MailVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/accounts/mobile/openMail")
+    MailVO openMail(@RequestParam("id") Integer id);
+
+    @RequestMapping("/accounts/mobile/deleteMail")
+    Boolean deleteMail(@RequestParam("ids") ArrayList<Integer> ids);
 }
