@@ -357,6 +357,14 @@ public class AgentSystemController {
                     data.put("vip", false);
                 }
             }
+            //邮件系统是否开启
+            if(vo.getStatusName().equals(AgentSystemEnum.MailOpen.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("mail", true);
+                } else {
+                    data.put("mail", false);
+                }
+            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
@@ -367,10 +375,10 @@ public class AgentSystemController {
             data.put("yebiIsopen", true);
             data.put("description", yebConfigVO.getDescription());
         }
-//        List<CloudShieldConfigurationVO> vo = agenteClient.getCloudShieldConfigurationInfos(agentId);
-//        if(vo != null) {
-//        	data.put("CloudData", vo);
-//        }
+        List<CloudShieldConfigurationVO> vo = agenteClient.getCloudShieldConfigurationInfos(agentId);
+        if(vo != null) {
+        	data.put("CloudData", vo);
+        }
         return data;
     }
 
