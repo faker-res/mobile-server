@@ -365,6 +365,14 @@ public class AgentSystemController {
                     data.put("mail", false);
                 }
             }
+            //签到
+//            if(vo.getStatusName().equals(AgentSystemEnum.SignOpen.getName())){
+//                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+//                    data.put("signUp", true);
+//                } else {
+//                    data.put("signUp", false);
+//                }
+//            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
