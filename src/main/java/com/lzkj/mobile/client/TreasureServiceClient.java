@@ -141,18 +141,17 @@ public interface TreasureServiceClient {
 	Map<String,BigDecimal> getUserGameScore(@RequestParam("userId")Integer userId);
 
 	@RequestMapping("/treasure/mobile/getTodayRankingList")
-
     List<DayUserAbsScoreVO> getTodayRankingList(@RequestParam("parentId")Integer parentId);
+
 
 	@RequestMapping("/treasure/mobile/getLucky")
     LuckyTurntableConfigurationVO getLucky(@RequestParam("agentId")Integer agentId);
 
 	@RequestMapping("/treasure/mobile/getMyTodayRanking")
     DayUserAbsScoreVO getMyTodayRanking(@RequestParam("userId")Integer userId);
-	
+
 	@RequestMapping("treasure/mobile/getLuckyIsOpen")
 	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
-
 
 }
 
