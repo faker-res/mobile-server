@@ -27,6 +27,7 @@ import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
 import com.lzkj.mobile.vo.DayRankingRewardVO;
 import com.lzkj.mobile.vo.DayUserAbsScoreVO;
 import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.MyPlayerVO;
 import com.lzkj.mobile.vo.MyPopularizeVO;
 import com.lzkj.mobile.vo.MyQmTxRecord;
@@ -365,6 +366,14 @@ public class AgentSystemController {
                     data.put("mail", false);
                 }
             }
+            //签到
+            if(vo.getStatusName().equals(AgentSystemEnum.SignOpen.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("signUp", true);
+                } else {
+                    data.put("signUp", false);
+                }
+            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
@@ -378,6 +387,10 @@ public class AgentSystemController {
         List<CloudShieldConfigurationVO> vo = agenteClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);
+        }
+        LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = treasureServiceClient.getLuckyIsOpen(agentId);
+        if(luckyTurntableConfigurationVO !=null) {
+        	data.put("luckyWheel", luckyTurntableConfigurationVO.getMainSwitch());
         }
         return data;
     }
