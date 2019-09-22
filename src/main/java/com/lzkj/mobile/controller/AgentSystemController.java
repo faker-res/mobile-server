@@ -2,10 +2,7 @@ package com.lzkj.mobile.controller;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -514,6 +511,7 @@ public class AgentSystemController {
         		data.setScore(me.getScore());
         	}
         }
+        data.getRankingList().sort(Comparator.comparing(Ranking::getScore).reversed());
         globeResponse.setData(data);
         return globeResponse;
     }
@@ -556,6 +554,7 @@ public class AgentSystemController {
         		data.setScore(me.getScore());
         	}
         }
+        data.getRankingList().sort(Comparator.comparing(Ranking::getScore).reversed());
         globeResponse.setData(data);
         return globeResponse;
     }
