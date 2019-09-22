@@ -377,6 +377,14 @@ public class AgentSystemController {
                     data.put("signUp", false);
                 }
             }
+            //代理排行榜
+            if(vo.getStatusName().equals(AgentSystemEnum.AgentRank.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("AgentRank", true);
+                } else {
+                    data.put("AgentRank", false);
+                }
+            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);

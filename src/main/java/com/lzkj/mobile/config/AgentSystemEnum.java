@@ -10,7 +10,8 @@ public enum AgentSystemEnum {
     EnjoinLogon("EnjoinLogon","系统维护"),
     VIPOpen("VIPOpen","vip功能是否开启"),
     MailOpen("MailOpen","邮件系统是否开启"),
-    SignOpen("SingUp","签到开关");
+    SignOpen("SingUp","签到开关"),
+    AgentRank("AgentRank","代理排行榜");
     private String name;
 
     private String describe;
