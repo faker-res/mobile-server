@@ -84,7 +84,7 @@ public interface AgentServiceClient {
     MyRewardVO getMyReward(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/agent/mobile/agentsystem/getZzSysRatio")
-    List<ZzSysRatioVO> getZzSysRatio();
+    List<ZzSysRatioVO> getZzSysRatio(@RequestParam("agentId") Integer agentId);
 
 
     @RequestMapping("/agent/mobile/agentsystem/getAgentMyTeam")
@@ -108,16 +108,16 @@ public interface AgentServiceClient {
     //查询银行卡类型
   	@RequestMapping("/agent/mobile/getBankCardTypeInfo")
   	List<BankCardTypeVO> getBankCardTypeInfo(@RequestParam("agentId") Integer agentId);
-  	
+
   	@RequestMapping("/agent/mobile/getTomorrowRankingList")
   	List<DayRankingRewardVO> getTomorrowRankingList(@RequestParam("parentId")Integer parentId);
-  	
+
   	@RequestMapping("/agent/mobile/getMyTomorrowRanking")
   	DayRankingRewardVO getMyTomorrowRanking(@RequestParam("userId")Integer userId);
-  	
+
   	@RequestMapping("/agent/mobile/receiveReward")
     Map<String, Object> receiveReward(@RequestParam("id")Integer id);
-  	
+
   	//查询云盾配置
     @RequestMapping("/agent/mobile/getCloudShieldConfigurationInfos")
     List<CloudShieldConfigurationVO> getCloudShieldConfigurationInfos(@RequestParam("agentId")Integer agentId);

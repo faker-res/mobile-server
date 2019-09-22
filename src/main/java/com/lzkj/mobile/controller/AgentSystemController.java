@@ -230,8 +230,11 @@ public class AgentSystemController {
      * 查询推广佣金
      */
     @RequestMapping("/zzSysRatio")
-    private GlobeResponse<Object> getZzSysRatio() {
-        List<ZzSysRatioVO> list = agenteClient.getZzSysRatio();
+    private GlobeResponse<Object> getZzSysRatio(Integer agentId,Integer userId) {
+        if (agentId==null||agentId ==0){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        List<ZzSysRatioVO> list = agenteClient.getZzSysRatio(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(list);
         return globeResponse;
