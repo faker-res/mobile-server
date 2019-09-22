@@ -47,5 +47,7 @@ public class AgentAccVO {
     private String clientUrl;
     private String updateAddress;
     private String prompt="";   //维护提示
+    private String PreUpdateAddress; //熱更地址
+    private short status = 0;
 
 }

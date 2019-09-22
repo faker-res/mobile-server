@@ -16,6 +16,7 @@ import com.lzkj.mobile.vo.DayUserAbsScoreVO;
 import com.lzkj.mobile.vo.GatewayInfo;
 import com.lzkj.mobile.vo.GlobalSpreadInfo;
 import com.lzkj.mobile.vo.LotteryConfigVO;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.OnLineOrderVO;
 import com.lzkj.mobile.vo.PayInfoVO;
 import com.lzkj.mobile.vo.RecordInsurePageVO;
@@ -138,8 +139,19 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/treasure/mobile/getUserGameScore")
 	Map<String,BigDecimal> getUserGameScore(@RequestParam("userId")Integer userId);
-	
+
 	@RequestMapping("/treasure/mobile/getTodayRankingList")
-    public List<DayUserAbsScoreVO> getTodayRankingList(@RequestParam("parentId")Integer parentId);
+    List<DayUserAbsScoreVO> getTodayRankingList(@RequestParam("parentId")Integer parentId);
+
+
+	@RequestMapping("/treasure/mobile/getLucky")
+    LuckyTurntableConfigurationVO getLucky(@RequestParam("agentId")Integer agentId);
+
+	@RequestMapping("/treasure/mobile/getMyTodayRanking")
+    DayUserAbsScoreVO getMyTodayRanking(@RequestParam("userId")Integer userId);
+	
+	@RequestMapping("treasure/mobile/getLuckyIsOpen")
+	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
+
 }
 
