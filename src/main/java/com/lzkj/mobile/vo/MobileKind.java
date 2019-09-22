@@ -10,8 +10,7 @@ public class MobileKind {
 	private String kindName;
 	private int sortId;
 	private int gameStatus;
-	private String typeName;
-	private Integer typeId;
+	private List<Integer> typeId;
 	private List<RoomOpenVO> roomList;
 
 }

@@ -230,8 +230,11 @@ public class AgentSystemController {
      * 查询推广佣金
      */
     @RequestMapping("/zzSysRatio")
-    private GlobeResponse<Object> getZzSysRatio() {
-        List<ZzSysRatioVO> list = agenteClient.getZzSysRatio();
+    private GlobeResponse<Object> getZzSysRatio(Integer agentId,Integer userId) {
+        if (agentId==null||agentId ==0){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        List<ZzSysRatioVO> list = agenteClient.getZzSysRatio(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(list);
         return globeResponse;
@@ -372,6 +375,14 @@ public class AgentSystemController {
                     data.put("signUp", true);
                 } else {
                     data.put("signUp", false);
+                }
+            }
+            //代理排行榜
+            if(vo.getStatusName().equals(AgentSystemEnum.AgentRank.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("AgentRank", true);
+                } else {
+                    data.put("AgentRank", false);
                 }
             }
         }
