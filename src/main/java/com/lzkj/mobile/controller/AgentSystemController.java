@@ -399,8 +399,8 @@ public class AgentSystemController {
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
+            data.put("Maitance", flag);
         }
-        data.put("Maitance", flag);
         return data;
     }
 
