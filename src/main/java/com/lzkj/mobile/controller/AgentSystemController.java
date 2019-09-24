@@ -394,12 +394,12 @@ public class AgentSystemController {
                     String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
                     data.put("preUpdateAddress", preUpdateAddress);
                     flag = false;
+                    data.put("Maitance", flag);
                 } else {
                     String[] update = agentAccVO.getUpdateAddress().split(",");
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
-            data.put("Maitance", flag);
         }
         return data;
     }
