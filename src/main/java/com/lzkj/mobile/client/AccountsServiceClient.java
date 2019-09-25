@@ -92,5 +92,5 @@ public interface AccountsServiceClient {
     MailVO openMail(@RequestParam("id") Integer id);
 
     @RequestMapping("/accounts/mobile/deleteMail")
-    Boolean deleteMail(@RequestParam("ids") ArrayList<Integer> ids);
+    Boolean deleteMail(@RequestParam("ids") List<Integer> ids);
 }

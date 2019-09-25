@@ -56,7 +56,11 @@ public class MailController {
      * 删除邮件
      */
     @RequestMapping("/deleteMail")
-    public GlobeResponse deleteMail(ArrayList<Integer> ids) {
+    public GlobeResponse deleteMail(int [] id) {
+    	List<Integer> ids = new ArrayList<Integer>();
+    	for (int i = 0; i < id.length; i++) {
+    		ids.add(id[i]);
+		}
         Boolean flag= accountsServiceClient.deleteMail(ids);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(flag);
