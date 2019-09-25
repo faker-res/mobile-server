@@ -1613,7 +1613,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getLucky")
-    private GlobeResponse<Object> getLucky(Integer agentId) {
+    public GlobeResponse<Object> getLucky(Integer agentId) {
     	if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
