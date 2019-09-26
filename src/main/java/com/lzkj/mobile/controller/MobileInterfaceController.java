@@ -1062,7 +1062,7 @@ public class MobileInterfaceController {
         	gr.setGameName(serverName);
         	gr.setScore(dJson.getBigDecimal("score"));
         	gr.setRevenue(dJson.getBigDecimal("revenue"));
-        	gr.setBetAmount(dJson.getBigDecimal("betCount"));
+        	gr.setBetAmount(gr.getScore().add(gr.getRevenue()));
         	AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
         	if(StringUtils.isBlank(accountsInfo.getH5Account())){
         	    gr.setAccount(accountsInfo.getAccount());
