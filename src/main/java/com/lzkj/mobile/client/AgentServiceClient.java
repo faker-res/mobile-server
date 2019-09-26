@@ -93,13 +93,16 @@ public interface AgentServiceClient {
   	@RequestMapping("/agent/mobile/getLastRankingList")
   	List<WeekRankingListVO> getLastRankingList(@RequestParam("parentId")Integer parentId);
 
-  	@RequestMapping("/agent/mobile/getMyTomorrowRanking")
-  	DayRankingRewardVO getMyTomorrowRanking(@RequestParam("userId")Integer userId);
-
   	@RequestMapping("/agent/mobile/receiveReward")
     Map<String, Object> receiveReward(@RequestParam("id")Integer id);
 
   	//查询云盾配置
     @RequestMapping("/agent/mobile/getCloudShieldConfigurationInfos")
     List<CloudShieldConfigurationVO> getCloudShieldConfigurationInfos(@RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/agent/mobile/getPlayerRankInfo")
+    List<WeekRankingListVO> getPlayerRankInfo(@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/agent/mobile/getAgentRankList")
+    List<AgencyEqualReward> getAgentRankList(@RequestParam("agentId")Integer agentId);
 }

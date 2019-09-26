@@ -148,9 +148,6 @@ public interface TreasureServiceClient {
     LuckyTurntableConfigurationVO getLucky(@RequestParam("agentId")Integer agentId);
 
 
-	@RequestMapping("/treasure/mobile/getMyTodayRanking")
-    DayUserAbsScoreVO getMyTodayRanking(@RequestParam("userId")Integer userId);
-
 	@RequestMapping("treasure/mobile/getLuckyIsOpen")
 	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
 }

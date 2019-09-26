@@ -470,7 +470,7 @@ public class AgentSystemController {
      * 本周代理排行
      */
     @RequestMapping("/getTodayRankingList")
-    public GlobeResponse<Object> getTodayRankingList(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getTodayRankingList(Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -487,7 +487,7 @@ public class AgentSystemController {
      * 上周代理排行
      */
     @RequestMapping("/getTomorrowRankingList")
-    public GlobeResponse<Object> getLastRankList(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getLastRankList(Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -501,6 +501,32 @@ public class AgentSystemController {
         return globeResponse;
     }
 
+    @RequestMapping("/getPlayerRankInfo")
+    public GlobeResponse<Object> getPlayerRankInfo(Integer userId) {
+        if (userId == null || userId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<WeekRankingListVO> list = agentClient.getPlayerRankInfo(userId);
+        if(list == null || list.size() == 0) {
+            return globeResponse;
+        }
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+    /**
+     * 代理排行榜奖励说明
+     */
+    @RequestMapping("/getAgentRankConfig")
+    public GlobeResponse<Object> getAgentRankConfig(Integer parentId) {
+        if (parentId == null || parentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<AgencyEqualReward> agentConfig = agentClient.getAgentRankList(parentId);
+        globeResponse.setData(agentConfig);
+        return globeResponse;
+    }
     /**
      * 领取奖励
      */
