@@ -24,6 +24,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +51,7 @@ import com.lzkj.mobile.config.SystemConfigKey;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.exception.YunpianException;
+import com.lzkj.mobile.mongo.GameRecord;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.service.CheckUserSignatureService;
@@ -143,6 +147,8 @@ public class MobileInterfaceController {
     @Autowired
     private RedisDao redisDao;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     @Lazy
@@ -1025,6 +1031,52 @@ public class MobileInterfaceController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(this.treasureServiceClient.getGameRecord(pageIndex, pageSize, userId, kindId));
+        return globeResponse;
+    }
+    
+    @PostMapping("/addGameRecord")
+    private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {        
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        JSONArray detailList = record.getJSONArray("detail");
+        long startTime = record.getLongValue("startTime") * 1000;
+        long endTime = record.getLongValue("endTime") * 1000;
+        String shortGameCode = record.getString("gameCode");
+        Integer kindId = record.getInteger("kindId");
+        Integer serverId = record.getInteger("serverId");
+        String serverName = platformServiceClient.getServerName(serverId);
+        
+        for(Object d : detailList) {        	
+        	JSONObject dJson = JSONObject.parseObject(d.toString());
+        	boolean isRobot = dJson.getBoolean("isRobot");
+        	if(isRobot) {
+        		continue;
+        	}
+        	GameRecord gr = new GameRecord();
+        	Integer gameId = dJson.getInteger("gameId");
+        	gr.setPlayerId(gameId);
+        	gr.setServerId(serverId);
+        	gr.setGameId(kindId);
+        	gr.setGameCode(shortGameCode + "-" + dJson.getString("chairId"));
+        	gr.setStartTime(startTime);
+        	gr.setEndTime(endTime);
+        	gr.setGameName(serverName);
+        	gr.setScore(dJson.getBigDecimal("score"));
+        	gr.setRevenue(dJson.getBigDecimal("revenue"));
+        	gr.setBetAmount(dJson.getBigDecimal("betCount"));
+        	AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
+        	gr.setAccount(accountsInfo.getH5Account());
+        	gr.setSiteCode(accountsInfo.getH5siteCode());
+        	JSONObject detail = new JSONObject();
+        	for(String k : dJson.keySet()) {
+        		if(k.equals("isRobot")) {
+        			continue;
+        		}
+        		detail.put(k, dJson.get(k));
+        	}
+        	gr.setDetail(detail);
+        	mongoTemplate.save(gr);
+        }
+       
         return globeResponse;
     }
 
