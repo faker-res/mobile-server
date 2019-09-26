@@ -124,7 +124,7 @@ public class MobileInterfaceController {
 
     @Value("${server.url}")
     private String serverUrl;
-    
+
 //    @Value("#{${pay.url}}")
 //    private Map<String, String> payUrlList;
 
@@ -1033,9 +1033,9 @@ public class MobileInterfaceController {
         globeResponse.setData(this.treasureServiceClient.getGameRecord(pageIndex, pageSize, userId, kindId));
         return globeResponse;
     }
-    
+
     @PostMapping("/addGameRecord")
-    private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {        
+    private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
         long startTime = record.getLongValue("startTime") * 1000;
@@ -1044,8 +1044,8 @@ public class MobileInterfaceController {
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         String serverName = platformServiceClient.getServerName(serverId);
-        
-        for(Object d : detailList) {        	
+
+        for(Object d : detailList) {
         	JSONObject dJson = JSONObject.parseObject(d.toString());
         	boolean isRobot = dJson.getBoolean("isRobot");
         	if(isRobot) {
@@ -1064,8 +1064,12 @@ public class MobileInterfaceController {
         	gr.setRevenue(dJson.getBigDecimal("revenue"));
         	gr.setBetAmount(dJson.getBigDecimal("betCount"));
         	AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
-        	gr.setAccount(accountsInfo.getH5Account());
-        	gr.setSiteCode(accountsInfo.getH5siteCode());
+        	if(StringUtils.isBlank(accountsInfo.getH5Account())){
+        	    gr.setAccount(accountsInfo.getAccount());
+            }else{
+                gr.setAccount(accountsInfo.getH5Account());
+                gr.setSiteCode(accountsInfo.getH5siteCode());
+            }
         	JSONObject detail = new JSONObject();
         	for(String k : dJson.keySet()) {
         		if(k.equals("isRobot")) {
@@ -1076,7 +1080,7 @@ public class MobileInterfaceController {
         	gr.setDetail(detail);
         	mongoTemplate.save(gr);
         }
-       
+
         return globeResponse;
     }
 
@@ -1618,7 +1622,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 查询代理客服
      *
@@ -1637,7 +1641,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 查询银行卡类型
      *
@@ -1656,8 +1660,8 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
-    
+
+
     /**
      * 查询幸运转盘
      *

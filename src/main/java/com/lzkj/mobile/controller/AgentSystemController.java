@@ -1,14 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.client.PlatformServiceClient;
@@ -16,29 +7,20 @@ import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.vo.AccReportVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
-import com.lzkj.mobile.vo.DayRankingRewardVO;
-import com.lzkj.mobile.vo.DayUserAbsScoreVO;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.MyPlayerVO;
-import com.lzkj.mobile.vo.MyPopularizeVO;
-import com.lzkj.mobile.vo.MyQmTxRecord;
-import com.lzkj.mobile.vo.MyRewardRecordVO;
-import com.lzkj.mobile.vo.MyRewardVO;
-import com.lzkj.mobile.vo.QmAchievementVO;
-import com.lzkj.mobile.vo.RankingListVO;
-import com.lzkj.mobile.vo.RankingListVO.Ranking;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.YebConfigVO;
-import com.lzkj.mobile.vo.ZzSysRatioVO;
-import com.lzkj.mobile.vo.yebProfitDetailsVO;
-
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -56,6 +38,10 @@ public class AgentSystemController {
 
     @Autowired
     private PlatformServiceClient platformServiceClient;
+
+
+    @Value("${channelGameUrl}")
+    private String channelGameUrl;
 
     /**
      * 代理系统-我的推广
@@ -312,6 +298,7 @@ public class AgentSystemController {
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
+        data.put("channelGameUrl",channelGameUrl);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
@@ -480,7 +467,7 @@ public class AgentSystemController {
     }
 
     /**
-     * 今日代理排行
+     * 本周代理排行
      */
     @RequestMapping("/getTodayRankingList")
     public GlobeResponse<Object> getTodayRankingList(Integer userId, Integer parentId) {
@@ -488,76 +475,29 @@ public class AgentSystemController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<DayUserAbsScoreVO> list = treasureServiceClient.getTodayRankingList(parentId);
+        List<DayUserAbsScoreVO> list = treasureServiceClient.getWeekRankList(parentId);
         if(list == null || list.size() == 0) {
         	return globeResponse;
         }
-        RankingListVO data = new RankingListVO();
-        List<Ranking> rankingList = new ArrayList<>();
-        data.setRankingList(rankingList);
-        for(DayUserAbsScoreVO l : list) {
-        	Ranking r = new Ranking();
-        	r.setGameId(l.getGameId());
-        	r.setNickName(l.getNickName());
-        	r.setRanking(l.getRanking());
-        	r.setScore(l.getScore());
-        	if(l.getUserId().equals(userId)) {
-        		data.setMyRanking(l.getRanking());
-        		data.setScore(l.getScore());
-        	}
-        	rankingList.add(r);
-        }
-        if(data.getScore() == BigDecimal.ZERO) {
-        	DayUserAbsScoreVO me = treasureServiceClient.getMyTodayRanking(userId);
-        	if(null != me) {
-        		data.setScore(me.getScore());
-        	}
-        }
-        data.getRankingList().sort(Comparator.comparing(Ranking::getScore).reversed());
-        globeResponse.setData(data);
+        globeResponse.setData(list);
         return globeResponse;
     }
 
     /**
-     * 昨日代理排行
+     * 上周代理排行
      */
     @RequestMapping("/getTomorrowRankingList")
-    public GlobeResponse<Object> getTomorrowRankingList(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getLastRankList(Integer userId, Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<DayRankingRewardVO> list = agenteClient.getTomorrowRankingList(parentId);
+
+       List<WeekRankingListVO> list = agenteClient.getLastRankingList(parentId);
         if(list == null || list.size() == 0) {
         	return globeResponse;
         }
-        RankingListVO data = new RankingListVO();
-        List<Ranking> rankingList = new ArrayList<>();
-        data.setRankingList(rankingList);
-        for(DayRankingRewardVO l : list) {
-        	Ranking r = new Ranking();
-        	r.setGameId(l.getGameId());
-        	r.setNickName(l.getNickName());
-        	r.setRanking(l.getRanking());
-        	r.setScore(l.getScore());
-        	r.setReward(l.getRewardScore());
-        	if(l.getUserId().equals(userId)) {
-        		data.setMyRanking(l.getRanking());
-        		data.setMyReward(l.getRewardScore());
-        		data.setId(l.getId());
-        		data.setScore(l.getScore());
-        		data.setRewardStatus(l.getRewardStatus());
-        	}
-        	rankingList.add(r);
-        }
-        if(data.getScore() == BigDecimal.ZERO) {
-        	DayRankingRewardVO me = agenteClient.getMyTomorrowRanking(userId);
-        	if(null != me) {
-        		data.setScore(me.getScore());
-        	}
-        }
-        data.getRankingList().sort(Comparator.comparing(Ranking::getScore).reversed());
-        globeResponse.setData(data);
+        globeResponse.setData(list);
         return globeResponse;
     }
 
