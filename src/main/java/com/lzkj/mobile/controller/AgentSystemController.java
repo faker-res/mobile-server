@@ -317,7 +317,6 @@ public class AgentSystemController {
                 if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
                     if (vo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
                     	flag = true;
-                        data.put("Maitance", true);
                     }
                 }
             }
@@ -381,13 +380,14 @@ public class AgentSystemController {
                 if (num > 0) {
                     String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
                     data.put("preUpdateAddress", preUpdateAddress);
-                    data.put("Maitance", false);
+                    flag = false;
                 } else {
                     String[] update = agentAccVO.getUpdateAddress().split(",");
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
         }
+        data.put("Maitance", flag);
         log.info("登录返回:"+data);
         return data;
     }
