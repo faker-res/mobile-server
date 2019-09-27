@@ -13,5 +13,6 @@ public class WeekRankingListVO {
     private BigDecimal weekRewardScore;
     private String insertTime;
     private BigDecimal weekScore;
+    private String nickName;
 
 }
