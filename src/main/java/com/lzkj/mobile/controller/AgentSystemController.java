@@ -1,14 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.client.PlatformServiceClient;
@@ -16,29 +7,20 @@ import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.vo.AccReportVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
-import com.lzkj.mobile.vo.DayRankingRewardVO;
-import com.lzkj.mobile.vo.DayUserAbsScoreVO;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.MyPlayerVO;
-import com.lzkj.mobile.vo.MyPopularizeVO;
-import com.lzkj.mobile.vo.MyQmTxRecord;
-import com.lzkj.mobile.vo.MyRewardRecordVO;
-import com.lzkj.mobile.vo.MyRewardVO;
-import com.lzkj.mobile.vo.QmAchievementVO;
-import com.lzkj.mobile.vo.RankingListVO;
-import com.lzkj.mobile.vo.RankingListVO.Ranking;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.YebConfigVO;
-import com.lzkj.mobile.vo.ZzSysRatioVO;
-import com.lzkj.mobile.vo.yebProfitDetailsVO;
-
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -46,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AgentSystemController {
 
     @Autowired
-    private AgentServiceClient agenteClient;
+    private AgentServiceClient agentClient;
 
     @Autowired
     private AccountsServiceClient accountsClient;
@@ -57,6 +39,10 @@ public class AgentSystemController {
     @Autowired
     private PlatformServiceClient platformServiceClient;
 
+
+    @Value("${channelGameUrl}")
+    private String channelGameUrl;
+
     /**
      * 代理系统-我的推广
      *
@@ -65,7 +51,7 @@ public class AgentSystemController {
      */
     @RequestMapping("/getAgentMyPopularize")
     private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
-        MyPopularizeVO agentSystemVO = agenteClient.getAgentMyPopularize(userId);
+        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(agentSystemVO);
         return globeResponse;
@@ -81,7 +67,7 @@ public class AgentSystemController {
     @RequestMapping("/getAgentMyPlayer")
     private GlobeResponse getAgentMyPlayer(Integer userId, Integer memberId, Integer pageIndex) {
         if (memberId == null) memberId = 0;
-        List<MyPlayerVO> list = agenteClient.getAgentMyPlayer(userId, memberId, pageIndex);
+        List<MyPlayerVO> list = agentClient.getAgentMyPlayer(userId, memberId, pageIndex);
         Integer count = accountsClient.getMyDirectlyPlayer(userId);
         if (count == null) {
             count = 0;
@@ -111,7 +97,7 @@ public class AgentSystemController {
     @RequestMapping("/getAgentMyTeam")
     private GlobeResponse<List<MyPlayerVO>> getAgentMyPlayer(Integer userId, Integer agentId, Integer pageSize, Integer pageIndex) {
 
-        List<MyPlayerVO> list = agenteClient.getAgentMyTeam(userId, agentId, pageSize, pageIndex);
+        List<MyPlayerVO> list = agentClient.getAgentMyTeam(userId, agentId, pageSize, pageIndex);
         log.info("全民代理数据{}", list);
         List<MyPlayerVO> lists = new ArrayList<MyPlayerVO>();
         if (list.size() > 0) {
@@ -131,7 +117,7 @@ public class AgentSystemController {
      */
     @RequestMapping("/getAchievement")
     private GlobeResponse<Object> getAchievement(Integer userId) {
-        List<QmAchievementVO> list = agenteClient.getAchievement(userId);
+        List<QmAchievementVO> list = agentClient.getAchievement(userId);
         BigDecimal weekTotalAchievement = BigDecimal.ZERO;
         BigDecimal weekTeamAchievement = BigDecimal.ZERO;
         BigDecimal weekPersonalAchievement = BigDecimal.ZERO;
@@ -162,7 +148,7 @@ public class AgentSystemController {
      */
     @RequestMapping("/getMyRewardRecord")
     private GlobeResponse<Object> getMyRewardRecord(Integer userId) {
-        List<MyRewardRecordVO> list = agenteClient.getMyRewardRecord(userId);
+        List<MyRewardRecordVO> list = agentClient.getMyRewardRecord(userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(list);
         return globeResponse;
@@ -175,8 +161,8 @@ public class AgentSystemController {
     private GlobeResponse<Object> getMyTxRecord(Integer userId, Integer pageSize, Integer pageIndex) {
         if (pageSize == null || pageSize > 20) pageSize = 50;
         if (pageIndex == null || pageSize < 1) pageIndex = 1;
-        List<MyQmTxRecord> list = agenteClient.getMyQmTxRecord(userId, pageSize, pageIndex);
-        MyRewardVO data = agenteClient.getMyReward(userId);
+        List<MyQmTxRecord> list = agentClient.getMyQmTxRecord(userId, pageSize, pageIndex);
+        MyRewardVO data = agentClient.getMyReward(userId);
         if (list.size() > 0) {
             data.setList(list);
         }
@@ -231,7 +217,7 @@ public class AgentSystemController {
         if (agentId==null||agentId ==0){
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-        List<ZzSysRatioVO> list = agenteClient.getZzSysRatio(agentId);
+        List<ZzSysRatioVO> list = agentClient.getZzSysRatio(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(list);
         return globeResponse;
@@ -263,7 +249,7 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "代理ID不能为空!");
         }
-        AgentAccVO agentAccVO = agenteClient.getQrCode(agentId);
+        AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
         Map<String, Object> data = new HashMap<>();
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
@@ -296,7 +282,7 @@ public class AgentSystemController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
 
-        AgentAccVO agentAccVO = agenteClient.getQrCode(agentId);
+        AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
         String key = "EnjoinLogon";
         //总控的维护
         SystemStatusInfoVO systemStatusInfo = accountsClient.getSystemStatusInfo(key);
@@ -307,11 +293,12 @@ public class AgentSystemController {
         Map<String, Object> data = new HashMap<>();
 
         //获取业主配置
-        List<AgentSystemStatusInfoVO> agentSystemList = agenteClient.getBindMobileSendInfo(agentId);
+        List<AgentSystemStatusInfoVO> agentSystemList = agentClient.getBindMobileSendInfo(agentId);
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
+        data.put("channelGameUrl",channelGameUrl);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
@@ -375,7 +362,7 @@ public class AgentSystemController {
             data.put("yebiIsopen", true);
             data.put("description", yebConfigVO.getDescription());
         }
-        List<CloudShieldConfigurationVO> vo = agenteClient.getCloudShieldConfigurationInfos(agentId);
+        List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);
         }
@@ -438,7 +425,7 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-        String hotVersion = agenteClient.getAgentHotVersion(agentId);
+        String hotVersion = agentClient.getAgentHotVersion(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(hotVersion);
         return globeResponse;
@@ -480,87 +467,66 @@ public class AgentSystemController {
     }
 
     /**
-     * 今日代理排行
+     * 本周代理排行
      */
     @RequestMapping("/getTodayRankingList")
-    public GlobeResponse<Object> getTodayRankingList(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getTodayRankingList(Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<DayUserAbsScoreVO> list = treasureServiceClient.getTodayRankingList(parentId);
+        List<DayUserAbsScoreVO> list = treasureServiceClient.getWeekRankList(parentId);
         if(list == null || list.size() == 0) {
         	return globeResponse;
         }
-        RankingListVO data = new RankingListVO();
-        List<Ranking> rankingList = new ArrayList<>();
-        data.setRankingList(rankingList);
-        for(DayUserAbsScoreVO l : list) {
-        	Ranking r = new Ranking();
-        	r.setGameId(l.getGameId());
-        	r.setNickName(l.getNickName());
-        	r.setRanking(l.getRanking());
-        	r.setScore(l.getScore());
-        	if(l.getUserId().equals(userId)) {
-        		data.setMyRanking(l.getRanking());
-        		data.setScore(l.getScore());
-        	}
-        	rankingList.add(r);
-        }
-        if(data.getScore() == BigDecimal.ZERO) {
-        	DayUserAbsScoreVO me = treasureServiceClient.getMyTodayRanking(userId);
-        	if(null != me) {
-        		data.setScore(me.getScore());
-        	}
-        }
-        data.getRankingList().sort(Comparator.comparing(Ranking::getScore).reversed());
-        globeResponse.setData(data);
+        globeResponse.setData(list);
         return globeResponse;
     }
 
     /**
-     * 昨日代理排行
+     * 上周代理排行
      */
     @RequestMapping("/getTomorrowRankingList")
-    public GlobeResponse<Object> getTomorrowRankingList(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getLastRankList(Integer parentId) {
         if (parentId == null || parentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<DayRankingRewardVO> list = agenteClient.getTomorrowRankingList(parentId);
+
+       List<WeekRankingListVO> list = agentClient.getLastRankingList(parentId);
         if(list == null || list.size() == 0) {
         	return globeResponse;
         }
-        RankingListVO data = new RankingListVO();
-        List<Ranking> rankingList = new ArrayList<>();
-        data.setRankingList(rankingList);
-        for(DayRankingRewardVO l : list) {
-        	Ranking r = new Ranking();
-        	r.setGameId(l.getGameId());
-        	r.setNickName(l.getNickName());
-        	r.setRanking(l.getRanking());
-        	r.setScore(l.getScore());
-        	r.setReward(l.getRewardScore());
-        	if(l.getUserId().equals(userId)) {
-        		data.setMyRanking(l.getRanking());
-        		data.setMyReward(l.getRewardScore());
-        		data.setId(l.getId());
-        		data.setScore(l.getScore());
-        		data.setRewardStatus(l.getRewardStatus());
-        	}
-        	rankingList.add(r);
-        }
-        if(data.getScore() == BigDecimal.ZERO) {
-        	DayRankingRewardVO me = agenteClient.getMyTomorrowRanking(userId);
-        	if(null != me) {
-        		data.setScore(me.getScore());
-        	}
-        }
-        data.getRankingList().sort(Comparator.comparing(Ranking::getScore).reversed());
-        globeResponse.setData(data);
+        globeResponse.setData(list);
         return globeResponse;
     }
 
+    @RequestMapping("/getPlayerRankInfo")
+    public GlobeResponse<Object> getPlayerRankInfo(Integer userId) {
+        if (userId == null || userId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<WeekRankingListVO> list = agentClient.getPlayerRankInfo(userId);
+        if(list == null || list.size() == 0) {
+            return globeResponse;
+        }
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+    /**
+     * 代理排行榜奖励说明
+     */
+    @RequestMapping("/getAgentRankConfig")
+    public GlobeResponse<Object> getAgentRankConfig(Integer parentId) {
+        if (parentId == null || parentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<AgencyEqualReward> agentConfig = agentClient.getAgentRankList(parentId);
+        globeResponse.setData(agentConfig);
+        return globeResponse;
+    }
     /**
      * 领取奖励
      */
@@ -570,7 +536,7 @@ public class AgentSystemController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Map<String, Object> param = this.agenteClient.receiveReward(id);
+        Map<String, Object> param = this.agentClient.receiveReward(id);
         int ret = (Integer) param.get("ret");
         if(ret == 0)
         	return globeResponse;
