@@ -15,6 +15,8 @@ public class AccountsInfoVO {
 	private String underWrite;
 	private int userMedal;
 	private int agentId;
+    private String h5Account;
+    private String h5siteCode;
 //	public int getUserId() {
 //		return userId;
 //	}

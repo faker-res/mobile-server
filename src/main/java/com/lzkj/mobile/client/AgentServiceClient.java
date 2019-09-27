@@ -3,29 +3,10 @@ package com.lzkj.mobile.client;
 import java.util.List;
 import java.util.Map;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
-import com.lzkj.mobile.vo.DayRankingRewardVO;
-import com.lzkj.mobile.vo.MyPlayerVO;
-import com.lzkj.mobile.vo.MyPopularizeVO;
-import com.lzkj.mobile.vo.MyQmTxRecord;
-import com.lzkj.mobile.vo.MyRewardRecordVO;
-import com.lzkj.mobile.vo.MyRewardVO;
-import com.lzkj.mobile.vo.QmAchievementVO;
-import com.lzkj.mobile.vo.QmDayPromotionDetailVO;
-import com.lzkj.mobile.vo.QmLiquidationPageVo;
-import com.lzkj.mobile.vo.QmPromotionListVO;
-import com.lzkj.mobile.vo.QmUserRewardVO;
-import com.lzkj.mobile.vo.QmWeekTopListVO;
-import com.lzkj.mobile.vo.ZzSysRatioVO;
 
 @FeignClient(name = "agent-service")
 public interface AgentServiceClient {
@@ -109,11 +90,8 @@ public interface AgentServiceClient {
   	@RequestMapping("/agent/mobile/getBankCardTypeInfo")
   	List<BankCardTypeVO> getBankCardTypeInfo(@RequestParam("agentId") Integer agentId);
 
-  	@RequestMapping("/agent/mobile/getTomorrowRankingList")
-  	List<DayRankingRewardVO> getTomorrowRankingList(@RequestParam("parentId")Integer parentId);
-
-  	@RequestMapping("/agent/mobile/getMyTomorrowRanking")
-  	DayRankingRewardVO getMyTomorrowRanking(@RequestParam("userId")Integer userId);
+  	@RequestMapping("/agent/mobile/getLastRankingList")
+  	List<WeekRankingListVO> getLastRankingList(@RequestParam("parentId")Integer parentId);
 
   	@RequestMapping("/agent/mobile/receiveReward")
     Map<String, Object> receiveReward(@RequestParam("id")Integer id);
@@ -121,4 +99,10 @@ public interface AgentServiceClient {
   	//查询云盾配置
     @RequestMapping("/agent/mobile/getCloudShieldConfigurationInfos")
     List<CloudShieldConfigurationVO> getCloudShieldConfigurationInfos(@RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/agent/mobile/getPlayerRankInfo")
+    List<WeekRankingListVO> getPlayerRankInfo(@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/agent/mobile/getAgentRankList")
+    List<AgencyEqualReward> getAgentRankList(@RequestParam("agentId")Integer agentId);
 }

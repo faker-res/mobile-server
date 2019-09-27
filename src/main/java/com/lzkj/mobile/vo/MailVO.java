@@ -10,4 +10,5 @@ public class MailVO {
     private String insertDateTime;
     private Boolean isAutoCreated;
     private Boolean isOpen;
+    private String sendDate;
 }
