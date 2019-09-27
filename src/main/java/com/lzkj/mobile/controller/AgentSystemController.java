@@ -381,14 +381,13 @@ public class AgentSystemController {
                 if (num > 0) {
                     String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
                     data.put("preUpdateAddress", preUpdateAddress);
-                    flag = false;
+                    data.put("Maitance", false);
                 } else {
                     String[] update = agentAccVO.getUpdateAddress().split(",");
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
         }
-        data.put("Maitance", flag);
         log.info("登录返回:"+data);
         return data;
     }
