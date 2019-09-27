@@ -281,7 +281,7 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-
+        log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
         AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
         String key = "EnjoinLogon";
         //总控的维护
@@ -389,6 +389,7 @@ public class AgentSystemController {
             }
         }
         data.put("Maitance", flag);
+        log.info("登录返回:"+data);
         return data;
     }
 
