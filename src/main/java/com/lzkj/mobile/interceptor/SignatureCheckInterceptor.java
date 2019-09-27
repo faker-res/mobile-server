@@ -31,6 +31,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
         		|| path.indexOf("/mobileInterface/payPageLoad/submit") > -1
         		|| path.indexOf("/mobileInterface/updateMerchantOrderId") > -1
         		|| path.indexOf("/mobileInterface/updatePassagewayResponse") > -1
+        		|| path.indexOf("/mobileInterface/addGameRecord") > -1
         		) {
         	return true;
         }
