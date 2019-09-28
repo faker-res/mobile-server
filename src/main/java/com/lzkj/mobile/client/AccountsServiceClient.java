@@ -106,4 +106,7 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/deleteMail")
     Boolean deleteMail(@RequestParam("ids") List<Integer> ids);
+
+    @RequestMapping("/accounts/mobile/getCollectionName")
+    String getGameItem(@RequestParam("kindId") Integer kindId);
 }
