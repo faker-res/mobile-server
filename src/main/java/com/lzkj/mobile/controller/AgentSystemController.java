@@ -373,7 +373,8 @@ public class AgentSystemController {
         if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
             String[] update = agentAccVO.getUpdateAddress().split(",");
             data.put("HOT_UPDATE_URL", update);
-        }else {
+        }
+//        else {
             //验证是否有机器码
             if (!StringUtils.isBlank(registerMachine)) {
                 int num = platformServiceClient.getWhitelist(registerMachine);
@@ -386,7 +387,7 @@ public class AgentSystemController {
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
-        }
+//        }
         data.put("Maitance", flag);
         log.info("登录返回:"+data);
         return data;
