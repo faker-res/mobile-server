@@ -1065,16 +1065,14 @@ public class MobileInterfaceController {
             }
             gr.setBetAmount(gr.getScore().add(gr.getRevenue()));
             AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
-            if(StringUtils.isBlank(accountsInfo.getH5Account())){
-                gr.setAccount(accountsInfo.getAccount());
-            }else{
-                gr.setAccount(accountsInfo.getH5Account());
-                gr.setSiteCode(accountsInfo.getH5siteCode());
-            }
+            gr.setAccount(accountsInfo.getAccount());            
+            gr.setH5Account(accountsInfo.getH5Account());
+            gr.setH5SiteCode(accountsInfo.getH5siteCode());
             gr.setDetail(String.valueOf(dJson));
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
             mongoTemplate.save(gr,"gameRecord_"+tableName);
+            mongoTemplate.save(gr);
         }
         return globeResponse;
     }

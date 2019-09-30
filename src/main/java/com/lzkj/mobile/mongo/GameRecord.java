@@ -11,6 +11,7 @@ public class GameRecord {
 	private Integer playerId;
 	private Integer serverId;
 	private String gameName;
+	private String account;
 	private Long startTime;
 	private Long endTime;
 	private String serverName;
@@ -19,8 +20,8 @@ public class GameRecord {
 	private Integer kindId;
     private String gameHandCode;
 	private String gameCode;
-	private String siteCode;
-	private String account;
+	private String h5Account;
+	private String h5SiteCode;	
 	private BigDecimal betAmount;
 	private String detail;
 	
