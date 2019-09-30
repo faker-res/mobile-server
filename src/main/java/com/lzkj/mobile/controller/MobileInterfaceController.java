@@ -1034,7 +1034,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @PostMapping("/addGameRecord")
+    @PostMapping("/addGameRecords")
     private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
@@ -1058,6 +1058,11 @@ public class MobileInterfaceController {
             gr.setGameName(serverName);
             gr.setScore(dJson.getBigDecimal("score"));
             gr.setRevenue(dJson.getBigDecimal("revenue"));
+            if (gr.getScore() == null) {
+                gr.setScore(BigDecimal.valueOf(0.00));
+            } else if (gr.getRevenue() == null) {
+                gr.setRevenue(BigDecimal.valueOf(0.00));
+            }
             gr.setBetAmount(gr.getScore().add(gr.getRevenue()));
             AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
             if(StringUtils.isBlank(accountsInfo.getH5Account())){
