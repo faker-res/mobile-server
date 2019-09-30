@@ -317,7 +317,6 @@ public class AgentSystemController {
                 if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
                     if (vo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
                     	flag = true;
-                        data.put("Maitance", true);
                     }
                 }
             }
@@ -374,20 +373,22 @@ public class AgentSystemController {
         if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
             String[] update = agentAccVO.getUpdateAddress().split(",");
             data.put("HOT_UPDATE_URL", update);
-        }else {
+        }
+//        else {
             //验证是否有机器码
             if (!StringUtils.isBlank(registerMachine)) {
                 int num = platformServiceClient.getWhitelist(registerMachine);
                 if (num > 0) {
                     String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
                     data.put("preUpdateAddress", preUpdateAddress);
-                    data.put("Maitance", false);
+                    flag = false;
                 } else {
                     String[] update = agentAccVO.getUpdateAddress().split(",");
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
-        }
+//        }
+        data.put("Maitance", flag);
         log.info("登录返回:"+data);
         return data;
     }
@@ -494,8 +495,11 @@ public class AgentSystemController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
 
        List<WeekRankingListVO> list = agentClient.getLastRankingList(parentId);
+        //上周没有赠送的情况下，获取旧打码量数据
         if(list == null || list.size() == 0) {
-        	return globeResponse;
+            List<DayUserAbsScoreVO> lastWeekList = treasureServiceClient.getLastWeekRank(parentId);
+            globeResponse.setData(lastWeekList);
+            return globeResponse;
         }
         globeResponse.setData(list);
         return globeResponse;
