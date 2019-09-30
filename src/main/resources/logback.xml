@@ -74,5 +74,5 @@
             <appender-ref ref="ERROR_FILE"/>
             <appender-ref ref="LOGSTASH"/>
         </root>
-
+    <logger name="org.springframework.data.mongodb.core" level="DEBUG"/>
 </configuration>
