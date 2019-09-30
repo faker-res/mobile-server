@@ -5,28 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.lzkj.mobile.vo.AgentCompanyRecordVO;
-import com.lzkj.mobile.vo.CompanyPayVO;
-import com.lzkj.mobile.vo.DayUserAbsScoreVO;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.ScoreRankPageVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.YebConfigVO;
-import com.lzkj.mobile.vo.yebProfitDetailsVO;
 
 @FeignClient(name = "treasure-service")
 public interface TreasureServiceClient {
@@ -143,6 +126,8 @@ public interface TreasureServiceClient {
 	@RequestMapping("/treasure/mobile/getWeekRankList")
     List<DayUserAbsScoreVO> getWeekRankList(@RequestParam("parentId")Integer parentId);
 
+	@RequestMapping("/treasure/mobile/getLastWeekRank")
+	List<DayUserAbsScoreVO> getLastWeekRank(@RequestParam("parentId")Integer parentId);
 
 	@RequestMapping("/treasure/mobile/getLucky")
     LuckyTurntableConfigurationVO getLucky(@RequestParam("agentId")Integer agentId);
@@ -150,5 +135,6 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("treasure/mobile/getLuckyIsOpen")
 	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
+
 }
 
