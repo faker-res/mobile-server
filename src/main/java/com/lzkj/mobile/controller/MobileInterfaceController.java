@@ -1069,15 +1069,20 @@ public class MobileInterfaceController {
             if (gr.getRevenue() == null) {
                 gr.setRevenue(BigDecimal.ZERO);
             }
+            String key = RedisKeyPrefix.getKey(gameId.toString());
             gr.setBetAmount(gr.getScore().add(gr.getRevenue()));
-            AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
-           /* String key = RedisKeyPrefix.getKey(phone + ":" + type);
-            VerificationCodeVO verificationCode = new VerificationCodeVO();
-            verificationCode.setCode(vCode);*/
-            //redisDao.set(key, verificationCode);
-            gr.setAccount(accountsInfo.getAccount());            
-            gr.setH5Account(accountsInfo.getH5Account());
-            gr.setH5SiteCode(accountsInfo.getH5siteCode());
+            AccountsInfoVO accountsInfo = null;
+            accountsInfo = redisDao.get(key, AccountsInfoVO.class);
+            if (accountsInfo != null) {
+                //设置账户信息
+                accountsInfos(gr, accountsInfo);
+            } else {
+                //设置账户信息
+                accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
+                redisDao.set(key, accountsInfo);
+                redisDao.expire(key, 60, TimeUnit.MINUTES);
+                accountsInfos(gr, accountsInfo);
+            }
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
@@ -1085,6 +1090,12 @@ public class MobileInterfaceController {
             mongoTemplate.save(gr);
         }
         return globeResponse;
+    }
+    //设置账户信息
+    private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
+        gr.setAccount(accountsInfo.getAccount());
+        gr.setH5Account(accountsInfo.getH5Account());
+        gr.setH5SiteCode(accountsInfo.getH5siteCode());
     }
 
 //TODO 导数据专用
