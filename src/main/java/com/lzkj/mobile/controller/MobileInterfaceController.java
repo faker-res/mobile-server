@@ -1038,14 +1038,19 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
+        String detailString = detailList.toJSONString();
         long startTime = record.getLongValue("startTime") * 1000;
         long endTime = record.getLongValue("endTime") * 1000;
         String shortGameCode = record.getString("gameCode");
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         String serverName = platformServiceClient.getServerName(serverId);
-        for(Object d : detailList) {
+        for(Object d : detailList) {       
             JSONObject dJson = JSONObject.parseObject(d.toString());
+            boolean isRobot = dJson.getBooleanValue("isRobot");
+            if(isRobot) {
+            	continue;
+            }
             GameRecord gr = new GameRecord();
             Integer gameId = dJson.getInteger("gameId");
             gr.setPlayerId(gameId);
@@ -1068,7 +1073,7 @@ public class MobileInterfaceController {
             gr.setAccount(accountsInfo.getAccount());            
             gr.setH5Account(accountsInfo.getH5Account());
             gr.setH5SiteCode(accountsInfo.getH5siteCode());
-            gr.setDetail(String.valueOf(dJson));
+            gr.setDetail(detailString);
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
             mongoTemplate.save(gr,"gameRecord_"+tableName);
