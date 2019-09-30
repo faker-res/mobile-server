@@ -1034,7 +1034,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @PostMapping("/addGameRecords")
+    @PostMapping("/addGameRecord")
     private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
