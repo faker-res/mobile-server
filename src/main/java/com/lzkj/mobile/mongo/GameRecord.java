@@ -18,7 +18,6 @@ public class GameRecord {
 	private BigDecimal score;
 	private BigDecimal revenue;
 	private Integer kindId;
-    private String gameHandCode;
 	private String gameCode;
 	private String h5Account;
 	private String h5SiteCode;	

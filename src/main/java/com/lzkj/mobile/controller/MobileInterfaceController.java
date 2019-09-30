@@ -1053,10 +1053,10 @@ public class MobileInterfaceController {
             }
             GameRecord gr = new GameRecord();
             Integer gameId = dJson.getInteger("gameId");
+
             gr.setPlayerId(gameId);
             gr.setServerId(serverId);
             gr.setKindId(kindId);
-            gr.setGameHandCode(shortGameCode);
             gr.setGameCode(shortGameCode + "-" + dJson.getString("chairId"));
             gr.setStartTime(startTime);
             gr.setEndTime(endTime);
@@ -1064,12 +1064,17 @@ public class MobileInterfaceController {
             gr.setScore(dJson.getBigDecimal("score"));
             gr.setRevenue(dJson.getBigDecimal("revenue"));
             if (gr.getScore() == null) {
-                gr.setScore(BigDecimal.valueOf(0.00));
-            } else if (gr.getRevenue() == null) {
-                gr.setRevenue(BigDecimal.valueOf(0.00));
+                gr.setScore(BigDecimal.ZERO);
+            }
+            if (gr.getRevenue() == null) {
+                gr.setRevenue(BigDecimal.ZERO);
             }
             gr.setBetAmount(gr.getScore().add(gr.getRevenue()));
             AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
+           /* String key = RedisKeyPrefix.getKey(phone + ":" + type);
+            VerificationCodeVO verificationCode = new VerificationCodeVO();
+            verificationCode.setCode(vCode);*/
+            //redisDao.set(key, verificationCode);
             gr.setAccount(accountsInfo.getAccount());            
             gr.setH5Account(accountsInfo.getH5Account());
             gr.setH5SiteCode(accountsInfo.getH5siteCode());
