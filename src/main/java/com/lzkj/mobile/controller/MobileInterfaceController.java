@@ -1053,7 +1053,6 @@ public class MobileInterfaceController {
             }
             GameRecord gr = new GameRecord();
             Integer gameId = dJson.getInteger("gameId");
-
             gr.setPlayerId(gameId);
             gr.setServerId(serverId);
             gr.setKindId(kindId);
@@ -1083,6 +1082,7 @@ public class MobileInterfaceController {
                 redisDao.expire(key, 60, TimeUnit.MINUTES);
                 accountsInfos(gr, accountsInfo);
             }
+            gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
