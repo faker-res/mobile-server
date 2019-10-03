@@ -22,6 +22,7 @@ public class GameRecord {
 	private String h5Account;
 	private String h5SiteCode;	
 	private BigDecimal betAmount;
+	private String personalDetails;
 	private String detail;
 	
 	

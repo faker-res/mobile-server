@@ -351,6 +351,14 @@ public class AgentSystemController {
                     data.put("AgentRank", false);
                 }
             }
+            //修改密码开关
+            if(vo.getStatusName().equals(AgentSystemEnum.ResetPwd.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("canResetdhmm", true);
+                } else {
+                    data.put("canResetdhmm", false);
+                }
+            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
@@ -389,7 +397,6 @@ public class AgentSystemController {
             }
 //        }
         data.put("Maitance", flag);
-        log.info("登录返回:"+data);
         return data;
     }
 
