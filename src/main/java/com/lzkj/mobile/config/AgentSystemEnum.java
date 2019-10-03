@@ -11,7 +11,8 @@ public enum AgentSystemEnum {
     VIPOpen("VIPOpen","vip功能是否开启"),
     MailOpen("MailOpen","邮件系统是否开启"),
     SignOpen("SingUp","签到开关"),
-    AgentRank("AgentRank","代理排行榜");
+    AgentRank("AgentRank","代理排行榜"),
+    ResetPwd("ResetPwd","修改兑换密码");
     private String name;
 
     private String describe;
