@@ -397,7 +397,6 @@ public class AgentSystemController {
             }
 //        }
         data.put("Maitance", flag);
-        log.info("登录返回:"+data);
         return data;
     }
 
