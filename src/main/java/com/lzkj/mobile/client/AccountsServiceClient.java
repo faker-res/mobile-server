@@ -26,7 +26,7 @@ public interface AccountsServiceClient {
 
 	@RequestMapping("accounts/mobile/getAccountsInfo")
     AccountsInfoVO getAccountsInfo(@RequestParam("userId") Integer userId);
-	
+
 	@RequestMapping("accounts/mobile/getUserInfoByGameId")
 	AccountsInfoVO getUserInfoByGameId(@RequestParam("gameId") Integer gameId);
 
@@ -106,4 +106,11 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/deleteMail")
     Boolean deleteMail(@RequestParam("ids") List<Integer> ids);
+
+    @RequestMapping("/accounts/mobile/getCollectionName")
+    String getGameItem(@RequestParam("kindId") Integer kindId);
+
+    @RequestMapping("/accounts/mobile/resetInsurePwd")
+    Map<String, Object> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
+                                       @RequestParam("newPwd") String newPwd);
 }

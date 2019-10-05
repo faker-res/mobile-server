@@ -2,26 +2,28 @@ package com.lzkj.mobile.mongo;
 
 import java.math.BigDecimal;
 
-import com.alibaba.fastjson.JSONObject;
-
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@Document
 public class GameRecord {
 	private Integer playerId;
 	private Integer serverId;
 	private String gameName;
+	private String account;
 	private Long startTime;
 	private Long endTime;
 	private String serverName;
 	private BigDecimal score;
 	private BigDecimal revenue;
-	private Integer gameId;
+	private Integer kindId;
 	private String gameCode;
-	private String siteCode;
-	private String account;
+	private String h5Account;
+	private String h5SiteCode;	
 	private BigDecimal betAmount;
-	private JSONObject detail;
+	private String personalDetails;
+	private String detail;
 	
 	
 }
