@@ -503,11 +503,11 @@ public class AgentSystemController {
 
        List<WeekRankingListVO> list = agentClient.getLastRankingList(parentId);
         //上周没有赠送的情况下，获取旧打码量数据
-        if(list == null || list.size() == 0) {
-            List<DayUserAbsScoreVO> lastWeekList = treasureServiceClient.getLastWeekRank(parentId);
-            globeResponse.setData(lastWeekList);
-            return globeResponse;
-        }
+//        if(list == null || list.size() == 0) {
+//            List<DayUserAbsScoreVO> lastWeekList = treasureServiceClient.getLastWeekRank(parentId);
+//            globeResponse.setData(lastWeekList);
+//            return globeResponse;
+//        }
         globeResponse.setData(list);
         return globeResponse;
     }
