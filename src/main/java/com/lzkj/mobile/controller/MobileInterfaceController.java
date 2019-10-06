@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -148,6 +149,7 @@ public class MobileInterfaceController {
     private RedisDao redisDao;
 
     @Autowired
+    @Qualifier(value = "gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
     @Autowired
@@ -916,7 +918,36 @@ public class MobileInterfaceController {
         redisDao.delete(key);
         return globeResponse;
     }
-
+    /**
+     * 修改绑定密码
+     */
+    @RequestMapping("/resetInsurePwd")
+    public GlobeResponse<Object> resetInsurePwd(Integer userId,String phone,String oldPwd,String newPwd,String verifyCode){
+        String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
+        VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
+        if (verificationCode == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
+        }
+        if (!verificationCode.getCode().equals(verifyCode)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码错误");
+        }
+        if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
+        }
+        if(oldPwd.equals(newPwd)){
+            throw new GlobeException(SystemConstants.FAIL_CODE,"新密码与旧密码一致");
+        }
+        String n = MD5Utils.MD5Encode(newPwd,"UTF-8").toUpperCase();
+        String o = MD5Utils.MD5Encode(oldPwd,"UTF-8").toUpperCase();
+        Map<String, Object> resultMap = this.accountsServiceClient.resetInsurePwd(userId, o, n);
+        if (((Integer) resultMap.get("ret")).intValue() != 0) {
+            redisDao.delete(key);
+            throw new GlobeException(SystemConstants.FAIL_CODE, resultMap.get("msg").toString());
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        redisDao.delete(key);
+        return globeResponse;
+    }
 
     /**
      * 绑定或修改银行与支付宝信息
@@ -1045,7 +1076,7 @@ public class MobileInterfaceController {
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         String serverName = platformServiceClient.getServerName(serverId);
-        for(Object d : detailList) {       
+        for(Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
             if(isRobot) {
@@ -1053,7 +1084,6 @@ public class MobileInterfaceController {
             }
             GameRecord gr = new GameRecord();
             Integer gameId = dJson.getInteger("gameId");
-
             gr.setPlayerId(gameId);
             gr.setServerId(serverId);
             gr.setKindId(kindId);
@@ -1069,15 +1099,21 @@ public class MobileInterfaceController {
             if (gr.getRevenue() == null) {
                 gr.setRevenue(BigDecimal.ZERO);
             }
+            String key = RedisKeyPrefix.getKey(gameId.toString());
             gr.setBetAmount(gr.getScore().add(gr.getRevenue()));
-            AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
-           /* String key = RedisKeyPrefix.getKey(phone + ":" + type);
-            VerificationCodeVO verificationCode = new VerificationCodeVO();
-            verificationCode.setCode(vCode);*/
-            //redisDao.set(key, verificationCode);
-            gr.setAccount(accountsInfo.getAccount());            
-            gr.setH5Account(accountsInfo.getH5Account());
-            gr.setH5SiteCode(accountsInfo.getH5siteCode());
+            AccountsInfoVO accountsInfo = null;
+            accountsInfo = redisDao.get(key, AccountsInfoVO.class);
+            if (accountsInfo != null) {
+                //设置账户信息
+                accountsInfos(gr, accountsInfo);
+            } else {
+                //设置账户信息
+                accountsInfo = this.accountsServiceClient.getUserInfoByGameId(gameId);
+                redisDao.set(key, accountsInfo);
+                redisDao.expire(key, 60, TimeUnit.MINUTES);
+                accountsInfos(gr, accountsInfo);
+            }
+            gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
@@ -1085,6 +1121,12 @@ public class MobileInterfaceController {
             mongoTemplate.save(gr);
         }
         return globeResponse;
+    }
+    //设置账户信息
+    private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
+        gr.setAccount(accountsInfo.getAccount());
+        gr.setH5Account(accountsInfo.getH5Account());
+        gr.setH5SiteCode(accountsInfo.getH5siteCode());
     }
 
 //TODO 导数据专用
@@ -1672,7 +1714,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getLucky")
-    private GlobeResponse<Object> getLucky(Integer agentId) {
+    public GlobeResponse<Object> getLucky(Integer agentId) {
     	if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
