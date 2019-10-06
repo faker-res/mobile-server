@@ -792,7 +792,7 @@ public class MobileInterfaceController {
         if (sendMode == 10) {
             account = "b05r34";
             password = MD5Utils.MD5Encode("12345678", "UTF-8");
-            content = "【广发手戏】您的验证码是{" + vCode + "}，如非本人操作，请忽略此条短信。";
+            content = "【广发手游】您的验证码是{" + vCode + "}，如非本人操作，请忽略此条短信。";
             data = "{\"smstype\":\"4\",\"clientid\":\"" + account + "\",\"password\":\"" + password + "\",\"mobile\":\"" + phone + "\",\"content\":\"" + content + "\"}";
         }
         if (sendMode == 11) {
