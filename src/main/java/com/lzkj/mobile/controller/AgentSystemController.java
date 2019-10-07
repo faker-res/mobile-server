@@ -1,9 +1,6 @@
 package com.lzkj.mobile.controller;
 
-import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -38,6 +35,9 @@ public class AgentSystemController {
 
     @Autowired
     private PlatformServiceClient platformServiceClient;
+
+    @Autowired
+    private NativeWebServiceClient nativeWebServiceClient;
 
 
     @Value("${channelGameUrl}")
@@ -294,11 +294,16 @@ public class AgentSystemController {
 
         //获取业主配置
         List<AgentSystemStatusInfoVO> agentSystemList = agentClient.getBindMobileSendInfo(agentId);
+
+        //获取首页弹窗链接
+
+        String imgUrl = nativeWebServiceClient.getShowImgUrl(agentId);
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
+        data.put("showbanner",imgUrl);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
