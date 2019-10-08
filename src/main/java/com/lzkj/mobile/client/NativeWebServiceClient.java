@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @FeignClient(name = "nativeweb-service")
-public interface NativeWebServiceClient {    
-	
+public interface NativeWebServiceClient {
+
 	@RequestMapping("/nativeWeb/mobile/configInfo")
 	ConfigInfo getConfigInfo(@RequestParam("configKey") String configKey);
-	
+
 	@RequestMapping("nativeWeb/mobile/getGameNotice")
 	List<NewsVO> getGameNotice(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);
 
@@ -26,4 +26,7 @@ public interface NativeWebServiceClient {
 
 	@RequestMapping("nativeWeb/mobile/getActivityList")
 	Object getActivityList(@RequestParam("agentId") Integer agentId);
+
+	@RequestMapping("/nativeWeb/mobile/getShowImgUrl")
+    String getShowImgUrl(@RequestParam("agentId") Integer agentId);
 }
