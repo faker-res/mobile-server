@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,48 +61,6 @@ import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.GoldExchangeVO;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PayTypeList;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -874,8 +833,8 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/bindPhone")
     public GlobeResponse<Object> verificationCode(Integer userId, String password, String phone, String verifyCode,
-   String realName,String bankNo,String bankName ) {
-        BindPhoneVO bindPhoneVO =new BindPhoneVO();
+                                                  String realName, String bankNo, String bankName) {
+        BindPhoneVO bindPhoneVO = new BindPhoneVO();
         bindPhoneVO.setUserId(userId);
         bindPhoneVO.setPassword(password);
         bindPhoneVO.setPhone(phone);
@@ -900,8 +859,8 @@ public class MobileInterfaceController {
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
         }
-        if(!StringUtils.isBlank(bindPhoneVO.getBankNo())){
-            if (bindPhoneVO.getBankNo().length()<16||bindPhoneVO.getBankNo().length()>19){
+        if (!StringUtils.isBlank(bindPhoneVO.getBankNo())) {
+            if (bindPhoneVO.getBankNo().length() < 16 || bindPhoneVO.getBankNo().length() > 19) {
                 throw new GlobeException(SystemConstants.FAIL_CODE, "银行卡位数不对!,请重新输入!");
             }
         }
@@ -918,11 +877,12 @@ public class MobileInterfaceController {
         redisDao.delete(key);
         return globeResponse;
     }
+
     /**
      * 修改绑定密码
      */
     @RequestMapping("/resetInsurePwd")
-    public GlobeResponse<Object> resetInsurePwd(Integer userId,String phone,String oldPwd,String newPwd,String verifyCode){
+    public GlobeResponse<Object> resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
         String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
         if (verificationCode == null) {
@@ -934,11 +894,11 @@ public class MobileInterfaceController {
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
         }
-        if(oldPwd.equals(newPwd)){
-            throw new GlobeException(SystemConstants.FAIL_CODE,"新密码与旧密码一致");
+        if (oldPwd.equals(newPwd)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "新密码与旧密码一致");
         }
-        String n = MD5Utils.MD5Encode(newPwd,"UTF-8").toUpperCase();
-        String o = MD5Utils.MD5Encode(oldPwd,"UTF-8").toUpperCase();
+        String n = MD5Utils.MD5Encode(newPwd, "UTF-8").toUpperCase();
+        String o = MD5Utils.MD5Encode(oldPwd, "UTF-8").toUpperCase();
         Map<String, Object> resultMap = this.accountsServiceClient.resetInsurePwd(userId, o, n);
         if (((Integer) resultMap.get("ret")).intValue() != 0) {
             redisDao.delete(key);
@@ -1076,11 +1036,20 @@ public class MobileInterfaceController {
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         String serverName = platformServiceClient.getServerName(serverId);
-        for(Object d : detailList) {
+        for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
-            if(isRobot) {
-            	continue;
+            if (isRobot) {
+                //水浒传将机器人数据存入幸运玩家表中
+                if(kindId.equals(235)){
+                    LuckyVO luckyVO =new LuckyVO();
+                    luckyVO.setScore(dJson.getBigDecimal("score"));
+                    luckyVO.setEndTime(endTime);
+                    luckyVO.setGameId(dJson.getInteger("gameId"));
+                    luckyVO.setServerId(serverId);
+                    mongoTemplate.save(luckyVO,"Lucky");
+                }
+                continue;
             }
             GameRecord gr = new GameRecord();
             Integer gameId = dJson.getInteger("gameId");
@@ -1117,63 +1086,29 @@ public class MobileInterfaceController {
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
-            mongoTemplate.save(gr,"gameRecord_"+tableName);
+            mongoTemplate.save(gr, "gameRecord_" + tableName);
             mongoTemplate.save(gr);
+            if(kindId.equals(235)){
+                if(dJson.getBooleanValue("lucky")){
+                    //将玩家数据存入幸运玩家表中
+                    LuckyVO luckyVO =new LuckyVO();
+                    luckyVO.setScore(dJson.getBigDecimal("score"));
+                    luckyVO.setEndTime(endTime);
+                    luckyVO.setGameId(gameId);
+                    luckyVO.setServerId(serverId);
+                    mongoTemplate.save(luckyVO,"Lucky");
+                }
+            }
         }
         return globeResponse;
     }
+
     //设置账户信息
     private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
         gr.setAccount(accountsInfo.getAccount());
         gr.setH5Account(accountsInfo.getH5Account());
         gr.setH5SiteCode(accountsInfo.getH5siteCode());
     }
-
-//TODO 导数据专用
-//    @RequestMapping("/initIp")
-//    private GlobeResponse<Object>initIp(){
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        String lineTxt = null;
-//        try {
-//    	    File file = new File("C:\\Users\\Owner\\Desktop\\45464.txt");
-//    	    if(file.isFile() && file.exists()) {
-//    	      InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "utf-8");
-//    	      BufferedReader br = new BufferedReader(isr);
-//    	      while ((lineTxt = br.readLine()) != null) {
-//    	        String[] lineSplit = lineTxt.split(" ");
-//    	        String[] lineCells = new String[4];
-//    	        int i = 0;
-//    	        for(String s : lineSplit) {
-//    	        	if(!s.equals("")) {
-//    	        		lineCells[i++] = s;
-//    	        		if(i == 4)
-//    	        			break;
-//    	        	}
-//    	        }
-//    	        lineCells[0] = StringUtil.delBom(lineCells[0]);
-//    	        lineCells[1] = StringUtil.delBom(lineCells[1]);
-//    	        long ip1Number = StringUtil.ip2Number(lineCells[0]);
-//    	        long ip2Number = StringUtil.ip2Number(lineCells[1]);
-//	        	IpDetailVO ipDetail = new IpDetailVO();
-//	        	ipDetail.setIp(lineCells[0]);
-//	        	ipDetail.setIp2(lineCells[1]);
-//	        	ipDetail.setIpNumber(ip1Number);
-//	        	ipDetail.setIpNumber2(ip2Number);
-//	        	ipDetail.setRemark1(lineCells[2]);
-//	        	ipDetail.setRemark2(lineCells[3]);
-//	        	mongoTemplate.save(ipDetail);
-//    	      }
-//    	      br.close();
-//    	    } else {
-//    	      System.out.println("文件不存在!");
-//    	    }
-//
-//    	  } catch (Exception e) {
-//    		  System.err.println(lineTxt);
-//    	    e.printStackTrace();
-//    	  }
-//  	    return globeResponse;
-//    }
 
     @RequestMapping("/getIp")
     private GlobeResponse<Object> getIp(String ip) {
@@ -1379,10 +1314,10 @@ public class MobileInterfaceController {
         Map<String, Object> data = treasureServiceClient.filliedOnline(shareDetailInfoVO);
         Object userId = data.get("userId");
         Object score = data.get("score");
-        Object insureScore =data.get("insureScore");
-        Object level =data.get("vipLevel");
-        String msg =  "{\"msgid\":7,\"userId\":" +userId + ", \"score\":" + score + ",\"insuranceScore\":"+insureScore +
-                ", \"VipLevel\":"+level+ ", \"type\":"+1+ ", \"Charge\":"+amount+"}";
+        Object insureScore = data.get("insureScore");
+        Object level = data.get("vipLevel");
+        String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
+                ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
         return "success";
     }
@@ -1676,7 +1611,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getAgentCustomerServiceInfo")
     private GlobeResponse<Object> getAgentCustomerServiceInfo(Integer agentId) {
-    	if (agentId == null) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         List<CustomerServiceConfigVO> customers = platformServiceClient.getAgentCustomerServiceInfo(agentId);
@@ -1695,7 +1630,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getBankCardTypeInfo")
     private GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
-    	if (agentId == null) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         List<BankCardTypeVO> customers = agentServiceClient.getBankCardTypeInfo(agentId);
@@ -1715,10 +1650,10 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getLucky")
     private GlobeResponse<Object> getLucky(Integer agentId) {
-    	if (agentId == null) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-    	LuckyTurntableConfigurationVO Lucky = treasureServiceClient.getLucky(agentId);
+        LuckyTurntableConfigurationVO Lucky = treasureServiceClient.getLucky(agentId);
         Map<String, Object> data = new HashMap<>();
         data.put("Lucky", Lucky);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
