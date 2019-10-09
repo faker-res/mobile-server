@@ -1,5 +1,6 @@
 package com.lzkj.mobile.controller;
 
+
 import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
 import static com.lzkj.mobile.util.HttpUtil.post;
 import static com.lzkj.mobile.util.IpAddress.getIpAddress;
@@ -42,11 +43,7 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.client.NativeWebServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
 import com.lzkj.mobile.config.SystemConfigKey;
@@ -56,13 +53,20 @@ import com.lzkj.mobile.exception.YunpianException;
 import com.lzkj.mobile.mongo.GameRecord;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.service.CheckUserSignatureService;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
 
+
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+
+import java.util.*;
+
 
 
 @Slf4j
@@ -108,12 +112,9 @@ public class MobileInterfaceController {
     private RedisDao redisDao;
 
     @Autowired
-    @Qualifier(value = "gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    @Lazy
-    private CheckUserSignatureService checkUserSignatureService;
+
 
     @RequestMapping("/getScoreRank")
     private GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
@@ -282,7 +283,6 @@ public class MobileInterfaceController {
         Integer pageIndex = pageIndexParam == null ? 1 : Integer.parseInt(pageIndexParam);
         Integer pageSize = pageSizeParam == null ? 20 : Integer.parseInt(pageSizeParam);
         Integer userId = userIdParam == null ? 0 : Integer.parseInt(userIdParam);
-        checkUserSignatureService.checkUserSignature(userId);
         RecordInsurePageVO pageVo = treasureServiceClient.getInsureTradeRecord(pageIndex, pageSize, userId);
         Map<String, Object> data = new HashMap<>(8);
         if (pageVo != null && pageVo.getRecordCount() > 0) {
@@ -426,7 +426,7 @@ public class MobileInterfaceController {
         Integer pageIndex = pageIndexParam == null ? 1 : Integer.parseInt(pageIndexParam);
         Integer pageSize = pageSizeParam == null ? 20 : Integer.parseInt(pageSizeParam);
         Integer userId = userIdParam == null ? 0 : Integer.parseInt(userIdParam);
-        checkUserSignatureService.checkUserSignature(userId);
+
         AwardOrderPageVo pageVo = nativeWebServiceClient.getAwardOrder(pageIndex, pageSize, userId);
         Map<String, Object> data = new HashMap<>();
         data.put("total", 0);
@@ -751,7 +751,7 @@ public class MobileInterfaceController {
         if (sendMode == 10) {
             account = "b05r34";
             password = MD5Utils.MD5Encode("12345678", "UTF-8");
-            content = "【广发手戏】您的验证码是{" + vCode + "}，如非本人操作，请忽略此条短信。";
+            content = "【广发手游】您的验证码是{" + vCode + "}，如非本人操作，请忽略此条短信。";
             data = "{\"smstype\":\"4\",\"clientid\":\"" + account + "\",\"password\":\"" + password + "\",\"mobile\":\"" + phone + "\",\"content\":\"" + content + "\"}";
         }
         if (sendMode == 11) {
@@ -1026,7 +1026,7 @@ public class MobileInterfaceController {
     }
 
     @PostMapping("/addGameRecord")
-    private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
+    public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
         String detailString = detailList.toJSONString();
@@ -1649,6 +1649,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getLucky")
+
     private GlobeResponse<Object> getLucky(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
