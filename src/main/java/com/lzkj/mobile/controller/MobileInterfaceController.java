@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
@@ -1003,7 +1004,7 @@ public class MobileInterfaceController {
     }
 
     @PostMapping("/addGameRecord")
-    private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
+    public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
         String detailString = detailList.toJSONString();
