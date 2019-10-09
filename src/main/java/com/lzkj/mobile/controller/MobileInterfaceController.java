@@ -1719,7 +1719,6 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	LuckyTurntableConfigurationVO Lucky = treasureServiceClient.getLucky(agentId);
-    	log.info("======================={}", JSONObject.toJSONString(Lucky));
         Map<String, Object> data = new HashMap<>();
         data.put("Lucky", Lucky);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
