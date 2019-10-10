@@ -24,6 +24,6 @@ public class GameRecord {
 	private BigDecimal betAmount;
 	private String personalDetails;
 	private String detail;
-	
+	private String gamePersonal;
 	
 }

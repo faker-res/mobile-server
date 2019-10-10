@@ -1028,6 +1028,7 @@ public class MobileInterfaceController {
     @PostMapping("/addGameRecord")
     public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        String gamePersonal = record.getJSONObject("game_personal").toJSONString();
         JSONArray detailList = record.getJSONArray("detail");
         String detailString = detailList.toJSONString();
         long startTime = record.getLongValue("startTime") * 1000;
@@ -1052,6 +1053,9 @@ public class MobileInterfaceController {
                 continue;
             }
             GameRecord gr = new GameRecord();
+            if (!StringUtil.isEmpty(gamePersonal)) {
+                gr.setGamePersonal(gamePersonal);
+            }
             Integer gameId = dJson.getInteger("gameId");
             gr.setPlayerId(gameId);
             gr.setServerId(serverId);
