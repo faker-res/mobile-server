@@ -78,6 +78,6 @@ public interface PlatformServiceClient {
 	List<CustomerServiceConfigVO> getAgentCustomerServiceInfo(@RequestParam("agentId") Integer agentId);
 	
 	@RequestMapping("/platform/mobile/getServerName")
-	String getServerName(@RequestParam("serverId") Integer serverId);
+	Map<String,Object> getServerName(@RequestParam("serverId") Integer serverId);
 	
 }

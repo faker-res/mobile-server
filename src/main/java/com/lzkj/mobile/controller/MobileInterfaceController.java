@@ -1028,7 +1028,6 @@ public class MobileInterfaceController {
     @PostMapping("/addGameRecord")
     public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        String gamePersonal = record.getJSONObject("game_personal").toJSONString();
         JSONArray detailList = record.getJSONArray("detail");
         String detailString = detailList.toJSONString();
         long startTime = record.getLongValue("startTime") * 1000;
@@ -1036,7 +1035,7 @@ public class MobileInterfaceController {
         String shortGameCode = record.getString("gameCode");
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
-        String serverName = platformServiceClient.getServerName(serverId);
+        Map<String,Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
@@ -1053,8 +1052,8 @@ public class MobileInterfaceController {
                 continue;
             }
             GameRecord gr = new GameRecord();
-            if (!StringUtil.isEmpty(gamePersonal)) {
-                gr.setGamePersonal(gamePersonal);
+            if (Integer.parseInt(gameRoomInfo.get("ServerType").toString()) == 16){
+                gr.setGamePersonal(record.getJSONObject("game_personal").toJSONString());
             }
             Integer gameId = dJson.getInteger("gameId");
             gr.setPlayerId(gameId);
@@ -1063,7 +1062,7 @@ public class MobileInterfaceController {
             gr.setGameCode(shortGameCode + "-" + dJson.getString("chairId"));
             gr.setStartTime(startTime);
             gr.setEndTime(endTime);
-            gr.setGameName(serverName);
+            gr.setGameName(gameRoomInfo.get("ServerName").toString());
             gr.setScore(dJson.getBigDecimal("score"));
             gr.setRevenue(dJson.getBigDecimal("revenue"));
             if (gr.getScore() == null) {
