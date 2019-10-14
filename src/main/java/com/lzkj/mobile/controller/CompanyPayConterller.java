@@ -36,7 +36,7 @@ public class CompanyPayConterller {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         List<Object> list = treasureServiceClient.getCompanyPay(agentId);
- 
+
         List<PayTypeList> lists= new ArrayList<>();
         if(list != null){
             list.forEach(type->{
@@ -55,6 +55,10 @@ public class CompanyPayConterller {
                 }
                 if("CloudPay".equals(type)){
                     typeList.setId(3);
+                    typeList.setPayType((String) type);
+                }
+                if("redPwd".equals(type)){
+                    typeList.setId(4);
                     typeList.setPayType((String) type);
                 }
                 lists.add(typeList);
@@ -108,7 +112,8 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/insertRecord")
-    private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount, String remarks, String account, String paymentAccount, String paymentName){
+    private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
+                                       String remarks, String account, String paymentAccount, String paymentName){
         if(agentId == null || userId == null || gameId == null  || payId == null || orderAmount==BigDecimal.ZERO){
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }

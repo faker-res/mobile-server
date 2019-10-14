@@ -20,10 +20,10 @@ public class GameRecord {
 	private Integer kindId;
 	private String gameCode;
 	private String h5Account;
-	private String h5SiteCode;	
+	private String h5SiteCode;
 	private BigDecimal betAmount;
 	private String personalDetails;
 	private String detail;
-	
-	
+	private String gamePersonal;
+
 }

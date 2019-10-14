@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -106,6 +107,9 @@ import com.lzkj.mobile.vo.VisitorBindResultVO;
 import lombok.extern.slf4j.Slf4j;
 
 
+
+
+
 @Slf4j
 @RestController
 @RequestMapping("/mobileInterface")
@@ -152,9 +156,7 @@ public class MobileInterfaceController {
     @Qualifier(value = "gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    @Lazy
-    private CheckUserSignatureService checkUserSignatureService;
+
 
     @RequestMapping("/getScoreRank")
     private GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
@@ -323,7 +325,6 @@ public class MobileInterfaceController {
         Integer pageIndex = pageIndexParam == null ? 1 : Integer.parseInt(pageIndexParam);
         Integer pageSize = pageSizeParam == null ? 20 : Integer.parseInt(pageSizeParam);
         Integer userId = userIdParam == null ? 0 : Integer.parseInt(userIdParam);
-        checkUserSignatureService.checkUserSignature(userId);
         RecordInsurePageVO pageVo = treasureServiceClient.getInsureTradeRecord(pageIndex, pageSize, userId);
         Map<String, Object> data = new HashMap<>(8);
         if (pageVo != null && pageVo.getRecordCount() > 0) {
@@ -467,7 +468,7 @@ public class MobileInterfaceController {
         Integer pageIndex = pageIndexParam == null ? 1 : Integer.parseInt(pageIndexParam);
         Integer pageSize = pageSizeParam == null ? 20 : Integer.parseInt(pageSizeParam);
         Integer userId = userIdParam == null ? 0 : Integer.parseInt(userIdParam);
-        checkUserSignatureService.checkUserSignature(userId);
+
         AwardOrderPageVo pageVo = nativeWebServiceClient.getAwardOrder(pageIndex, pageSize, userId);
         Map<String, Object> data = new HashMap<>();
         data.put("total", 0);
@@ -1033,6 +1034,10 @@ public class MobileInterfaceController {
                     typeList.setId(5);
                     typeList.setPayType((String) type);
                 }
+                if("redPwd".equals(type)){
+                    typeList.setId(6);
+                    typeList.setPayType((String) type);
+                }
                 lists.add(typeList);
             });
         }
@@ -1075,14 +1080,26 @@ public class MobileInterfaceController {
         String shortGameCode = record.getString("gameCode");
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
-        String serverName = platformServiceClient.getServerName(serverId);
-        for(Object d : detailList) {
+        Map<String,Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
+        for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
-            if(isRobot) {
-            	continue;
+            if (isRobot) {
+                //水浒传将机器人数据存入幸运玩家表中
+//                if(kindId.equals(235)){
+//                    LuckyVO luckyVO =new LuckyVO();
+//                    luckyVO.setScore(dJson.getBigDecimal("score"));
+//                    luckyVO.setEndTime(endTime);
+//                    luckyVO.setGameId(dJson.getInteger("gameId"));
+//                    luckyVO.setServerId(serverId);
+//                    mongoTemplate.save(luckyVO,"Lucky");
+//                }
+                continue;
             }
             GameRecord gr = new GameRecord();
+            if (Integer.parseInt(gameRoomInfo.get("ServerType").toString()) == 16){
+                gr.setGamePersonal(record.getJSONObject("game_personal").toJSONString());
+            }
             Integer gameId = dJson.getInteger("gameId");
             gr.setPlayerId(gameId);
             gr.setServerId(serverId);
@@ -1090,7 +1107,7 @@ public class MobileInterfaceController {
             gr.setGameCode(shortGameCode + "-" + dJson.getString("chairId"));
             gr.setStartTime(startTime);
             gr.setEndTime(endTime);
-            gr.setGameName(serverName);
+            gr.setGameName(gameRoomInfo.get("ServerName").toString());
             gr.setScore(dJson.getBigDecimal("score"));
             gr.setRevenue(dJson.getBigDecimal("revenue"));
             if (gr.getScore() == null) {
@@ -1117,11 +1134,23 @@ public class MobileInterfaceController {
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
-            mongoTemplate.save(gr,"gameRecord_"+tableName);
+            mongoTemplate.save(gr, "gameRecord_" + tableName);
             mongoTemplate.save(gr);
+//            if(kindId.equals(235)){
+//                if(dJson.getBooleanValue("lucky")){
+//                    //将玩家数据存入幸运玩家表中
+//                    LuckyVO luckyVO =new LuckyVO();
+//                    luckyVO.setScore(dJson.getBigDecimal("score"));
+//                    luckyVO.setEndTime(endTime);
+//                    luckyVO.setGameId(gameId);
+//                    luckyVO.setServerId(serverId);
+//                    mongoTemplate.save(luckyVO,"Lucky");
+//                }
+//            }
         }
         return globeResponse;
     }
+
     //设置账户信息
     private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
         gr.setAccount(accountsInfo.getAccount());
@@ -1379,10 +1408,10 @@ public class MobileInterfaceController {
         Map<String, Object> data = treasureServiceClient.filliedOnline(shareDetailInfoVO);
         Object userId = data.get("userId");
         Object score = data.get("score");
-        Object insureScore =data.get("insureScore");
-        Object level =data.get("vipLevel");
-        String msg =  "{\"msgid\":7,\"userId\":" +userId + ", \"score\":" + score + ",\"insuranceScore\":"+insureScore +
-                ", \"VipLevel\":"+level+ ", \"type\":"+1+ ", \"Charge\":"+amount+"}";
+        Object insureScore = data.get("insureScore");
+        Object level = data.get("vipLevel");
+        String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
+                ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
         return "success";
     }
