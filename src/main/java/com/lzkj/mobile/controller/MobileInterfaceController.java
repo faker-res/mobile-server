@@ -993,6 +993,10 @@ public class MobileInterfaceController {
                     typeList.setId(5);
                     typeList.setPayType((String) type);
                 }
+                if("redPwd".equals(type)){
+                    typeList.setId(6);
+                    typeList.setPayType((String) type);
+                }
                 lists.add(typeList);
             });
         }
