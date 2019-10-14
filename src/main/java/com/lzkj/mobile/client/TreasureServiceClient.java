@@ -99,6 +99,7 @@ public interface TreasureServiceClient {
                      @RequestParam("payId") Integer payId, @RequestParam("orderAmount") BigDecimal orderAmount, @RequestParam("remarks") String remarks, @RequestParam("account") String account,
                      @RequestParam("paymentAccount") String paymentAccount, @RequestParam("paymentName") String paymentName);
 
+
 	@RequestMapping("treasure/mobile/getUpdateAddress")
 	GatewayInfo getUpdateAddress(@RequestParam("agentId") Integer agentId);
 
