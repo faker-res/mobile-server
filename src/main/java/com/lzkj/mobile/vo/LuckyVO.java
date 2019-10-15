@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Document
 public class LuckyVO {
     private Integer serverId;
-    private Integer gameId;
     private BigDecimal score;
     private Long endTime;
+    private String nickName;
 }
