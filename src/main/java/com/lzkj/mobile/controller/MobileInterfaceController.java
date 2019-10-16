@@ -1031,7 +1031,7 @@ public class MobileInterfaceController {
                     luckyVO.setScore(dJson.getBigDecimal("score").setScale(2,BigDecimal.ROUND_HALF_DOWN));
                     luckyVO.setEndTime(endTime);
                     luckyVO.setServerId(serverId);
-                    luckyVO.setNickName(accountsInfo.getNickname());
+                    luckyVO.setNickName(accountsInfo.getAccount());
                     mongoTemplate.save(luckyVO,"Lucky");
                 }
                 continue;
@@ -1083,7 +1083,7 @@ public class MobileInterfaceController {
                     luckyVO.setScore(dJson.getBigDecimal("score").setScale(2,BigDecimal.ROUND_HALF_DOWN));
                     luckyVO.setEndTime(endTime);
                     luckyVO.setServerId(serverId);
-                    luckyVO.setNickName(accountsInfo.getNickname());
+                    luckyVO.setNickName(accountsInfo.getAccount());
                     mongoTemplate.save(luckyVO,"Lucky");
                 }
             }
