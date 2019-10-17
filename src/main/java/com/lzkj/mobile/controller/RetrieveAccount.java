@@ -71,7 +71,7 @@ public class RetrieveAccount {
      @RequestMapping("/getTopHistory")
     public GlobeResponse<Object> getTopHistory(Integer serverId){
          Query query = new Query(Criteria.where("serverId").is(serverId));
-         query.with(new Sort("score").descending()).skip(0).limit(100);
+         query.with(new Sort(Sort.Direction.DESC,"score")).skip(0).limit(100);
          List<LuckyVO> list = mongoTemplate.find(query,LuckyVO.class,"Lucky");
          GlobeResponse<Object> globeResponse =new GlobeResponse<>();
          globeResponse.setData(list);
@@ -86,7 +86,7 @@ public class RetrieveAccount {
     public GlobeResponse<Object> getTopToday(Integer serverId){
         Long today =GetNowDate();
         Query query = new Query(Criteria.where("endTime").gt(today).and("serverId").is(serverId));
-        query.with(new Sort("score").descending()).skip(0).limit(100);
+        query.with(new Sort(Sort.Direction.DESC,"score")).skip(0).limit(100);
         List<LuckyVO> list = mongoTemplate.find(query,LuckyVO.class,"Lucky");
         GlobeResponse<Object> globeResponse =new GlobeResponse<>();
         globeResponse.setData(list);
