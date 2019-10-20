@@ -1,6 +1,4 @@
 package com.lzkj.mobile.controller;
-
-<<<<<<< HEAD
 import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
 import static com.lzkj.mobile.util.HttpUtil.post;
 import static com.lzkj.mobile.util.IpAddress.getIpAddress;
@@ -33,9 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-=======
->>>>>>> prod02
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.DefaultAcsClient;
@@ -59,33 +54,8 @@ import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.*;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
-import static com.lzkj.mobile.util.HttpUtil.post;
-import static com.lzkj.mobile.util.IpAddress.getIpAddress;
-import static com.lzkj.mobile.util.MD5Utils.MD5Encode;
-import static com.lzkj.mobile.util.MD5Utils.getAllFields;
-import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
-
-
-
-
-
 
 @Slf4j
 @RestController
@@ -1067,7 +1037,6 @@ public class MobileInterfaceController {
             boolean isRobot = dJson.getBooleanValue("isRobot");
             if (isRobot) {
                 //水浒传将机器人数据存入幸运玩家表中
-<<<<<<< HEAD
 //                if(kindId.equals(235)){
 //                    LuckyVO luckyVO =new LuckyVO();
 //                    luckyVO.setScore(dJson.getBigDecimal("score"));
@@ -1076,7 +1045,7 @@ public class MobileInterfaceController {
 //                    luckyVO.setServerId(serverId);
 //                    mongoTemplate.save(luckyVO,"Lucky");
 //                }
-=======
+
                 if(kindId.equals(235)){
                     AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(dJson.getInteger("gameId"));
                     LuckyVO luckyVO =new LuckyVO();
@@ -1086,7 +1055,6 @@ public class MobileInterfaceController {
                     luckyVO.setNickName(accountsInfo.getAccount());
                     mongoTemplate.save(luckyVO,"Lucky");
                 }
->>>>>>> prod02
                 continue;
             }
             GameRecord gr = new GameRecord();
@@ -1129,7 +1097,6 @@ public class MobileInterfaceController {
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
             mongoTemplate.save(gr, "gameRecord_" + tableName);
             mongoTemplate.save(gr);
-<<<<<<< HEAD
 //            if(kindId.equals(235)){
 //                if(dJson.getBooleanValue("lucky")){
 //                    //将玩家数据存入幸运玩家表中
@@ -1141,7 +1108,6 @@ public class MobileInterfaceController {
 //                    mongoTemplate.save(luckyVO,"Lucky");
 //                }
 //            }
-=======
             if(kindId.equals(235)){
                 if(dJson.getBooleanValue("lucky")){
                     //将玩家数据存入幸运玩家表中
@@ -1153,7 +1119,6 @@ public class MobileInterfaceController {
                     mongoTemplate.save(luckyVO,"Lucky");
                 }
             }
->>>>>>> prod02
         }
         return globeResponse;
     }
