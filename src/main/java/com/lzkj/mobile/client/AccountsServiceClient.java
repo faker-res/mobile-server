@@ -113,4 +113,7 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/resetInsurePwd")
     Map<String, Object> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
                                        @RequestParam("newPwd") String newPwd);
+
+    @RequestMapping("/accounts/mobile/userBankInformation")
+    int getUserBankInformation(@RequestParam("bankNo") String bankNo);
 }
