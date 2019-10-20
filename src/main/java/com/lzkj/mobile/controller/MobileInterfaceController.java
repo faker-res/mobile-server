@@ -1,5 +1,6 @@
 package com.lzkj.mobile.controller;
 
+<<<<<<< HEAD
 import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
 import static com.lzkj.mobile.util.HttpUtil.post;
 import static com.lzkj.mobile.util.IpAddress.getIpAddress;
@@ -32,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+=======
+>>>>>>> prod02
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -42,11 +45,7 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.client.NativeWebServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
 import com.lzkj.mobile.config.SystemConfigKey;
@@ -56,55 +55,33 @@ import com.lzkj.mobile.exception.YunpianException;
 import com.lzkj.mobile.mongo.GameRecord;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.service.CheckUserSignatureService;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.GoldExchangeVO;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PayTypeList;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
-
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
+import static com.lzkj.mobile.util.HttpUtil.post;
+import static com.lzkj.mobile.util.IpAddress.getIpAddress;
+import static com.lzkj.mobile.util.MD5Utils.MD5Encode;
+import static com.lzkj.mobile.util.MD5Utils.getAllFields;
+import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
+
 
 
 
@@ -153,7 +130,6 @@ public class MobileInterfaceController {
     private RedisDao redisDao;
 
     @Autowired
-    @Qualifier(value = "gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
 
@@ -875,8 +851,8 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/bindPhone")
     public GlobeResponse<Object> verificationCode(Integer userId, String password, String phone, String verifyCode,
-   String realName,String bankNo,String bankName ) {
-        BindPhoneVO bindPhoneVO =new BindPhoneVO();
+                                                  String realName, String bankNo, String bankName) {
+        BindPhoneVO bindPhoneVO = new BindPhoneVO();
         bindPhoneVO.setUserId(userId);
         bindPhoneVO.setPassword(password);
         bindPhoneVO.setPhone(phone);
@@ -901,10 +877,14 @@ public class MobileInterfaceController {
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
         }
-        if(!StringUtils.isBlank(bindPhoneVO.getBankNo())){
-            if (bindPhoneVO.getBankNo().length()<16||bindPhoneVO.getBankNo().length()>19){
+        if (!StringUtils.isBlank(bindPhoneVO.getBankNo())) {
+            if (bindPhoneVO.getBankNo().length() < 16 || bindPhoneVO.getBankNo().length() > 19) {
                 throw new GlobeException(SystemConstants.FAIL_CODE, "银行卡位数不对!,请重新输入!");
             }
+        }
+        Integer count = accountsServiceClient.getUserBankInformation(bindPhoneVO.getBankNo());
+        if (count >= 1 ) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "此银行卡已被绑定!,请重新输入!");
         }
         String pwd = MD5Encode(bindPhoneVO.getPassword(), "utf-8");
         bindPhoneVO.setPassword(pwd);
@@ -919,11 +899,12 @@ public class MobileInterfaceController {
         redisDao.delete(key);
         return globeResponse;
     }
+
     /**
      * 修改绑定密码
      */
     @RequestMapping("/resetInsurePwd")
-    public GlobeResponse<Object> resetInsurePwd(Integer userId,String phone,String oldPwd,String newPwd,String verifyCode){
+    public GlobeResponse<Object> resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
         String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
         if (verificationCode == null) {
@@ -935,11 +916,11 @@ public class MobileInterfaceController {
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
         }
-        if(oldPwd.equals(newPwd)){
-            throw new GlobeException(SystemConstants.FAIL_CODE,"新密码与旧密码一致");
+        if (oldPwd.equals(newPwd)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "新密码与旧密码一致");
         }
-        String n = MD5Utils.MD5Encode(newPwd,"UTF-8").toUpperCase();
-        String o = MD5Utils.MD5Encode(oldPwd,"UTF-8").toUpperCase();
+        String n = MD5Utils.MD5Encode(newPwd, "UTF-8").toUpperCase();
+        String o = MD5Utils.MD5Encode(oldPwd, "UTF-8").toUpperCase();
         Map<String, Object> resultMap = this.accountsServiceClient.resetInsurePwd(userId, o, n);
         if (((Integer) resultMap.get("ret")).intValue() != 0) {
             redisDao.delete(key);
@@ -1071,7 +1052,7 @@ public class MobileInterfaceController {
     }
 
     @PostMapping("/addGameRecord")
-    private GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
+    public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         JSONArray detailList = record.getJSONArray("detail");
         String detailString = detailList.toJSONString();
@@ -1086,6 +1067,7 @@ public class MobileInterfaceController {
             boolean isRobot = dJson.getBooleanValue("isRobot");
             if (isRobot) {
                 //水浒传将机器人数据存入幸运玩家表中
+<<<<<<< HEAD
 //                if(kindId.equals(235)){
 //                    LuckyVO luckyVO =new LuckyVO();
 //                    luckyVO.setScore(dJson.getBigDecimal("score"));
@@ -1094,6 +1076,17 @@ public class MobileInterfaceController {
 //                    luckyVO.setServerId(serverId);
 //                    mongoTemplate.save(luckyVO,"Lucky");
 //                }
+=======
+                if(kindId.equals(235)){
+                    AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(dJson.getInteger("gameId"));
+                    LuckyVO luckyVO =new LuckyVO();
+                    luckyVO.setScore(dJson.getBigDecimal("score").setScale(2,BigDecimal.ROUND_HALF_DOWN));
+                    luckyVO.setEndTime(endTime);
+                    luckyVO.setServerId(serverId);
+                    luckyVO.setNickName(accountsInfo.getAccount());
+                    mongoTemplate.save(luckyVO,"Lucky");
+                }
+>>>>>>> prod02
                 continue;
             }
             GameRecord gr = new GameRecord();
@@ -1136,6 +1129,7 @@ public class MobileInterfaceController {
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
             mongoTemplate.save(gr, "gameRecord_" + tableName);
             mongoTemplate.save(gr);
+<<<<<<< HEAD
 //            if(kindId.equals(235)){
 //                if(dJson.getBooleanValue("lucky")){
 //                    //将玩家数据存入幸运玩家表中
@@ -1147,6 +1141,19 @@ public class MobileInterfaceController {
 //                    mongoTemplate.save(luckyVO,"Lucky");
 //                }
 //            }
+=======
+            if(kindId.equals(235)){
+                if(dJson.getBooleanValue("lucky")){
+                    //将玩家数据存入幸运玩家表中
+                    LuckyVO luckyVO =new LuckyVO();
+                    luckyVO.setScore(dJson.getBigDecimal("score").setScale(2,BigDecimal.ROUND_HALF_DOWN));
+                    luckyVO.setEndTime(endTime);
+                    luckyVO.setServerId(serverId);
+                    luckyVO.setNickName(accountsInfo.getAccount());
+                    mongoTemplate.save(luckyVO,"Lucky");
+                }
+            }
+>>>>>>> prod02
         }
         return globeResponse;
     }
@@ -1157,52 +1164,6 @@ public class MobileInterfaceController {
         gr.setH5Account(accountsInfo.getH5Account());
         gr.setH5SiteCode(accountsInfo.getH5siteCode());
     }
-
-//TODO 导数据专用
-//    @RequestMapping("/initIp")
-//    private GlobeResponse<Object>initIp(){
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        String lineTxt = null;
-//        try {
-//    	    File file = new File("C:\\Users\\Owner\\Desktop\\45464.txt");
-//    	    if(file.isFile() && file.exists()) {
-//    	      InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "utf-8");
-//    	      BufferedReader br = new BufferedReader(isr);
-//    	      while ((lineTxt = br.readLine()) != null) {
-//    	        String[] lineSplit = lineTxt.split(" ");
-//    	        String[] lineCells = new String[4];
-//    	        int i = 0;
-//    	        for(String s : lineSplit) {
-//    	        	if(!s.equals("")) {
-//    	        		lineCells[i++] = s;
-//    	        		if(i == 4)
-//    	        			break;
-//    	        	}
-//    	        }
-//    	        lineCells[0] = StringUtil.delBom(lineCells[0]);
-//    	        lineCells[1] = StringUtil.delBom(lineCells[1]);
-//    	        long ip1Number = StringUtil.ip2Number(lineCells[0]);
-//    	        long ip2Number = StringUtil.ip2Number(lineCells[1]);
-//	        	IpDetailVO ipDetail = new IpDetailVO();
-//	        	ipDetail.setIp(lineCells[0]);
-//	        	ipDetail.setIp2(lineCells[1]);
-//	        	ipDetail.setIpNumber(ip1Number);
-//	        	ipDetail.setIpNumber2(ip2Number);
-//	        	ipDetail.setRemark1(lineCells[2]);
-//	        	ipDetail.setRemark2(lineCells[3]);
-//	        	mongoTemplate.save(ipDetail);
-//    	      }
-//    	      br.close();
-//    	    } else {
-//    	      System.out.println("文件不存在!");
-//    	    }
-//
-//    	  } catch (Exception e) {
-//    		  System.err.println(lineTxt);
-//    	    e.printStackTrace();
-//    	  }
-//  	    return globeResponse;
-//    }
 
     @RequestMapping("/getIp")
     private GlobeResponse<Object> getIp(String ip) {
@@ -1705,7 +1666,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getAgentCustomerServiceInfo")
     private GlobeResponse<Object> getAgentCustomerServiceInfo(Integer agentId) {
-    	if (agentId == null) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         List<CustomerServiceConfigVO> customers = platformServiceClient.getAgentCustomerServiceInfo(agentId);
@@ -1724,7 +1685,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getBankCardTypeInfo")
     private GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
-    	if (agentId == null) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         List<BankCardTypeVO> customers = agentServiceClient.getBankCardTypeInfo(agentId);
@@ -1743,11 +1704,12 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getLucky")
-    public GlobeResponse<Object> getLucky(Integer agentId) {
-    	if (agentId == null) {
+
+    private GlobeResponse<Object> getLucky(Integer agentId) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-    	LuckyTurntableConfigurationVO Lucky = treasureServiceClient.getLucky(agentId);
+        LuckyTurntableConfigurationVO Lucky = treasureServiceClient.getLucky(agentId);
         Map<String, Object> data = new HashMap<>();
         data.put("Lucky", Lucky);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
