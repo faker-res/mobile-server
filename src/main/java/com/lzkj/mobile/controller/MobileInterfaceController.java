@@ -851,10 +851,11 @@ public class MobileInterfaceController {
             if (bindPhoneVO.getBankNo().length() < 16 || bindPhoneVO.getBankNo().length() > 19) {
                 throw new GlobeException(SystemConstants.FAIL_CODE, "银行卡位数不对!,请重新输入!");
             }
-        }
-        Integer count = accountsServiceClient.getUserBankInformation(bindPhoneVO.getBankNo());
-        if (count >= 1 ) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "此银行卡已被绑定!,请重新输入!");
+
+            Integer count = accountsServiceClient.getUserBankInformation(bindPhoneVO.getBankNo());
+            if (count >= 1 ) {
+                throw new GlobeException(SystemConstants.FAIL_CODE, "此银行卡已被绑定!,请重新输入!");
+            }
         }
         String pwd = MD5Encode(bindPhoneVO.getPassword(), "utf-8");
         bindPhoneVO.setPassword(pwd);
