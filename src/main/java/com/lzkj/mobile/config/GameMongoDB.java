@@ -1,3 +1,4 @@
+/*
 package com.lzkj.mobile.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,3 +23,4 @@ public class GameMongoDB {
     }
 }
 
+*/

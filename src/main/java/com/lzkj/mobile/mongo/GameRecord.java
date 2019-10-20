@@ -25,5 +25,4 @@ public class GameRecord {
 	private String personalDetails;
 	private String detail;
 	private String gamePersonal;
-
 }

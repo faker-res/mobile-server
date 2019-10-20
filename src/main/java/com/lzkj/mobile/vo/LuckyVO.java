@@ -1,6 +1,4 @@
 package com.lzkj.mobile.vo;
-
-
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,4 +11,6 @@ public class LuckyVO {
     private Integer gameId;
     private BigDecimal score;
     private Long endTime;
+    private String nickName;
+
 }
