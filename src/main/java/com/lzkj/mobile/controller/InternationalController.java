@@ -45,7 +45,7 @@ public class InternationalController {
     @RequestMapping("/switchLanguage")
     public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, BigDecimal amount,Integer gameId) {
         //true 是切英文版
-        String siteCode ="A01";
+        String siteCode ="a01";
         AccountsInfoVO accountsInfoVO = accountsServiceClient.getUserInfoByGameId(gameId);
         String account =accountsInfoVO.getH5Account();
         String agentKey = RedisKeyPrefix.getAgentKey(agentId);
@@ -87,7 +87,7 @@ public class InternationalController {
         log.info("return data {}", msg);
         JSONObject json= (JSONObject) JSONObject.parse(msg);
         GlobeResponse globeResponse =new GlobeResponse();
-        globeResponse.setData(json.get("url"));
+        globeResponse.setData(json.get("data"));
         return globeResponse;
     }
 
@@ -96,7 +96,7 @@ public class InternationalController {
         String timestamp = String.valueOf(System.currentTimeMillis());
         String orderId = 106 + "a01" + timestamp + "fsdf34234";
         String url="";
-        if (false) {
+        if (true) {
             url = "https://PT002h242a2.mu622.com/channel";
             data.put("op", "50");
         } else {
