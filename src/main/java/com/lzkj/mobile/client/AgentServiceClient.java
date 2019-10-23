@@ -105,4 +105,7 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/getAgentRankList")
     List<AgencyEqualReward> getAgentRankList(@RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("agent/access2game/getAccessAgent")
+    AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
 }
