@@ -72,12 +72,12 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/pointReward")
 	String pointReward(@RequestParam("userId")Integer userId, @RequestParam("type")Integer type);
-	
+
 	//查询代理客服信息
 	@RequestMapping("/platform/mobile/getAgentCustomerServiceInfo")
 	List<CustomerServiceConfigVO> getAgentCustomerServiceInfo(@RequestParam("agentId") Integer agentId);
-	
+
 	@RequestMapping("/platform/mobile/getServerName")
 	Map<String,Object> getServerName(@RequestParam("serverId") Integer serverId);
-	
+
 }
