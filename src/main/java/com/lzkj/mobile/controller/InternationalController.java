@@ -50,9 +50,7 @@ public class InternationalController {
             redisDao.set(agentKey, accessAgent);
             redisDao.expire(agentKey, 5, TimeUnit.MINUTES);
         }
-        if (accessAgent.getAgentStatus() == 1) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
+
         String md5Signature = MD5Utils.MD5Encode(agent + timestamp + accessAgent.getMd5Key(), "");
 
         Map<String, String> data = new LinkedHashMap<>();
