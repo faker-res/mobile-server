@@ -67,10 +67,10 @@ public class InternationalController {
         Map<String, Object> data = new LinkedHashMap<>();
         String url="";
         if (status) {
-             url = "https://wt002bnqqi3.mu622.com/channel";
+             url = "https://PT002h242a2.mu622.com/channel";
             data.put("op", "50");
         } else {
-            url= "https://wt002bnqqi3.mu622.com/channel";
+            url= "https://PT002h242a2.mu622.com/channel";
             data.put("op", "10");
         }
         data.put("orderId", orderId);
@@ -94,25 +94,25 @@ public class InternationalController {
     public static void main(String[] args) {
         Map<String, Object> data = new LinkedHashMap<>();
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String orderId = 12 + "A01" + timestamp + "fsdf34234";
+        String orderId = 106 + "a01" + timestamp + "fsdf34234";
         String url="";
         if (false) {
-            url = "http://10.10.100.69:8888/channel";
+            url = "https://PT002h242a2.mu622.com/channel";
             data.put("op", "50");
         } else {
-            url= "http://10.10.100.69:8888/channel";
+            url= "https://PT002h242a2.mu622.com/channel";
             data.put("op", "10");
         }
         data.put("op", "50");
         data.put("orderId", orderId);
         data.put("account", "fsdf34234");
-        data.put("siteCode", "A01");
-        data.put("money", new Random().nextInt(4000) + 1000);
-        data.put("gameId",0 );
-        String md5Signature = MD5Utils.MD5Encode(12 + timestamp + "DyQxsj73","");
-        String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), "NrzkgmMl");
+        data.put("siteCode", "a01");
+        data.put("money", 3075);
+        data.put("gameId",701884);
+        String md5Signature = MD5Utils.MD5Encode(106 + timestamp + "95888888","");
+        String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), "95888888");
 
-        String param = "agent=" + "12" + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
+        String param = "agent=" + "106" + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
 
         log.info("send to api center：" + url + "?" + param);
         String msg = HttpRequest.sendPost(url, param);
