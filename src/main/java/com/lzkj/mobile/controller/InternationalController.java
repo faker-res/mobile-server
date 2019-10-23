@@ -16,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -36,11 +38,12 @@ public class InternationalController {
      */
 
     @RequestMapping("/switchLanguage")
-    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, String account) {
+    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, String siteCode, BigDecimal amount,Integer gameId, String account) {
         //true 是切英文版
         String agentKey = RedisKeyPrefix.getAgentKey(agentId);
         String timestamp = String.valueOf(System.currentTimeMillis());
         String agent = String.valueOf(agentId);
+        String orderId =agent+siteCode+timestamp+account;
         AgentAccVO accessAgent = this.redisDao.get(agentKey, AgentAccVO.class);
         if (accessAgent == null) {
             accessAgent = agentServiceClient.getAccessAgent(agentId);
@@ -53,7 +56,7 @@ public class InternationalController {
         log.info("agentInfo{}",accessAgent);
         String md5Signature = MD5Utils.MD5Encode(agent + timestamp + accessAgent.getMd5Key(), "");
 
-        Map<String, String> data = new LinkedHashMap<>();
+        Map<String, Object> data = new LinkedHashMap<>();
         String url="";
         if (status) {
              url = "https://wt002bnqqi3.mu622.com/channel";
@@ -62,11 +65,12 @@ public class InternationalController {
             url= "https://wt002bnqqi3.mu622.com/channel";
             data.put("op", "10");
         }
-        data.put("op", "50");
+        data.put("orderId", orderId);
         data.put("account", account);
         data.put("siteCode", agent);
-
-        String dParam = DESUtil.encrypt(data.toString(), accessAgent.getDesKey());
+        data.put("money",amount);
+        data.put("gameId",gameId);
+        String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), accessAgent.getDesKey());
 
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
 
@@ -79,4 +83,31 @@ public class InternationalController {
         return globeResponse;
     }
 
+    public static void main(String[] args) {
+        Map<String, Object> data = new LinkedHashMap<>();
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String orderId = 12 + "A01" + timestamp + "fsdf34234";
+        String url="";
+        if (false) {
+            url = "http://10.10.100.69:8888/channel";
+            data.put("op", "50");
+        } else {
+            url= "http://10.10.100.69:8888/channel";
+            data.put("op", "10");
+        }
+        data.put("op", "50");
+        data.put("orderId", orderId);
+        data.put("account", "fsdf34234");
+        data.put("siteCode", "A01");
+        data.put("money", new Random().nextInt(4000) + 1000);
+        data.put("gameId",0 );
+        String md5Signature = MD5Utils.MD5Encode(12 + timestamp + "DyQxsj73","");
+        String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), "NrzkgmMl");
+
+        String param = "agent=" + "12" + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
+
+        log.info("send to api center：" + url + "?" + param);
+        String msg = HttpRequest.sendPost(url, param);
+        log.info("return data {}", msg);
+    }
 }
