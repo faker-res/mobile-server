@@ -50,11 +50,11 @@ public class InternationalController {
             redisDao.set(agentKey, accessAgent);
             redisDao.expire(agentKey, 5, TimeUnit.MINUTES);
         }
-
+        log.info("agentInfo{}",accessAgent);
         String md5Signature = MD5Utils.MD5Encode(agent + timestamp + accessAgent.getMd5Key(), "");
 
         Map<String, String> data = new LinkedHashMap<>();
-        String url;
+        String url="";
         if (status) {
              url = "https://wt002bnqqi3.mu622.com/channel";
             data.put("op", "50");
@@ -70,9 +70,9 @@ public class InternationalController {
 
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
 
-        log.info("发送到api中转中心：" + url + "?" + data);
+        log.info("send to api center：" + url + "?" + data);
         String msg = HttpRequest.sendPost(url, param);
-        log.info("返回数据{}", msg);
+        log.info("return data {}", msg);
         JSONObject json= (JSONObject) JSONObject.parse(msg);
         GlobeResponse globeResponse =new GlobeResponse();
         globeResponse.setData(json.get("url"));
