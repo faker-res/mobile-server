@@ -73,7 +73,7 @@ public class InternationalController {
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
 
         log.info("发送到api中转中心：" + url + "?" + data);
-        String msg = HttpRequest.sendPost("", param);
+        String msg = HttpRequest.sendPost(url, param);
         log.info("返回数据{}", msg);
         JSONObject json= (JSONObject) JSONObject.parse(msg);
         GlobeResponse globeResponse =new GlobeResponse();
