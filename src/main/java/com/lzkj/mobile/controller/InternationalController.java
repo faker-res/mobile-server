@@ -1,6 +1,7 @@
 package com.lzkj.mobile.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -9,6 +10,7 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.util.DESUtil;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
+import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.GlobeResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +35,19 @@ public class InternationalController {
     @Autowired
     private AgentServiceClient agentServiceClient;
 
+    @Autowired
+    private AccountsServiceClient accountsServiceClient;
+
     /**
      * API语言切换
      */
 
     @RequestMapping("/switchLanguage")
-    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, BigDecimal amount,Integer gameId, String account) {
+    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, BigDecimal amount,Integer gameId) {
         //true 是切英文版
         String siteCode ="A01";
+        AccountsInfoVO accountsInfoVO = accountsServiceClient.getUserInfoByGameId(gameId);
+        String account =accountsInfoVO.getH5Account();
         String agentKey = RedisKeyPrefix.getAgentKey(agentId);
         String timestamp = String.valueOf(System.currentTimeMillis());
         String agent = String.valueOf(agentId);
