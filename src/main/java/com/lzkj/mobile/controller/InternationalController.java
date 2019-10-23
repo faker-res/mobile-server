@@ -38,8 +38,9 @@ public class InternationalController {
      */
 
     @RequestMapping("/switchLanguage")
-    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, String siteCode, BigDecimal amount,Integer gameId, String account) {
+    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, BigDecimal amount,Integer gameId, String account) {
         //true 是切英文版
+        String siteCode ="A01";
         String agentKey = RedisKeyPrefix.getAgentKey(agentId);
         String timestamp = String.valueOf(System.currentTimeMillis());
         String agent = String.valueOf(agentId);
@@ -67,7 +68,7 @@ public class InternationalController {
         }
         data.put("orderId", orderId);
         data.put("account", account);
-        data.put("siteCode", agent);
+        data.put("siteCode", siteCode);
         data.put("money",amount);
         data.put("gameId",gameId);
         String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), accessAgent.getDesKey());
