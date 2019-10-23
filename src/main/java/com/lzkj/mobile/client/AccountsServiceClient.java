@@ -116,4 +116,7 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/userBankInformation")
     int getUserBankInformation(@RequestParam("bankNo") String bankNo);
+    
+    @RequestMapping("/accounts/mobile/totalMail")
+    int totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 }
