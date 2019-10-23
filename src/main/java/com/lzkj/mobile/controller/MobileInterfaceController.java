@@ -1656,7 +1656,13 @@ public class MobileInterfaceController {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        List<BankCardTypeVO> customers = agentServiceClient.getBankCardTypeInfo(agentId);
+        List<BankInfoVO> bankInfos = platformServiceClient.getBankList(agentId);
+        List<BankCardTypeVO>customers =new ArrayList<>();
+        for (BankInfoVO b:bankInfos) {
+            BankCardTypeVO bankCardTypeVO = new BankCardTypeVO();
+            bankCardTypeVO.setBankCardType(b.getBankName());
+            customers.add(bankCardTypeVO);
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("bankCards", customers);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
