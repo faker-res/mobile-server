@@ -1038,15 +1038,6 @@ public class MobileInterfaceController {
             boolean isRobot = dJson.getBooleanValue("isRobot");
             if (isRobot) {
                 //水浒传将机器人数据存入幸运玩家表中
-//                if(kindId.equals(235)){
-//                    LuckyVO luckyVO =new LuckyVO();
-//                    luckyVO.setScore(dJson.getBigDecimal("score"));
-//                    luckyVO.setEndTime(endTime);
-//                    luckyVO.setGameId(dJson.getInteger("gameId"));
-//                    luckyVO.setServerId(serverId);
-//                    mongoTemplate.save(luckyVO,"Lucky");
-//                }
-
                 if(kindId.equals(235)){
                     AccountsInfoVO accountsInfo = this.accountsServiceClient.getUserInfoByGameId(dJson.getInteger("gameId"));
                     LuckyVO luckyVO =new LuckyVO();
@@ -1098,17 +1089,6 @@ public class MobileInterfaceController {
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
             mongoTemplate.save(gr, "gameRecord_" + tableName);
             mongoTemplate.save(gr);
-            if(kindId.equals(235)){
-                if(dJson.getBooleanValue("lucky")){
-                    //将玩家数据存入幸运玩家表中
-                    LuckyVO luckyVO =new LuckyVO();
-                    luckyVO.setScore(dJson.getBigDecimal("score"));
-                    luckyVO.setEndTime(endTime);
-                    luckyVO.setGameId(gameId);
-                    luckyVO.setServerId(serverId);
-                    mongoTemplate.save(luckyVO,"Lucky");
-                }
-            }
             if(kindId.equals(235)){
                 if(dJson.getBooleanValue("lucky")){
                     //将玩家数据存入幸运玩家表中
