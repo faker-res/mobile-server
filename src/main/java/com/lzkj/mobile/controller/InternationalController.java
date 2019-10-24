@@ -87,7 +87,7 @@ public class InternationalController {
 
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
 
-        log.info("send to api center：" + url + "?" + data);
+        log.info("send to api center：" + url + "?" + param);
         String msg = HttpRequest.sendPost(url, param);
         log.info("return data {}", msg);
         JSONObject json= (JSONObject) JSONObject.parse(msg);
