@@ -15,6 +15,7 @@ import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.GlobeResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,9 @@ public class InternationalController {
 
     @Autowired
     private AccountsServiceClient accountsServiceClient;
+
+    @Value("${access.game}")
+    private String accessGame;
 
     /**
      * API语言切换
@@ -64,12 +68,13 @@ public class InternationalController {
         String md5Signature = MD5Utils.MD5Encode(agent + timestamp + accessAgent.getMd5Key(), "");
 
         Map<String, Object> data = new LinkedHashMap<>();
-        String url="";
+        //获取游戏地址
+        Random random = new Random();
+        String[] gameUrl = this.accessGame.split(",");
+        String url= gameUrl[random.nextInt(gameUrl.length)];
         if (status) {
-             url = "https://PT002h242a2.mu622.com/channel";
             data.put("op", "50");
         } else {
-            url= "https://PT002h242a2.mu622.com/channel";
             data.put("op", "10");
         }
         data.put("orderId", orderId);

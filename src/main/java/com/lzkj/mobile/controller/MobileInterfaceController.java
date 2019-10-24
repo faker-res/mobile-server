@@ -856,8 +856,6 @@ public class MobileInterfaceController {
             if (count >= 1 ) {
                 throw new GlobeException(SystemConstants.FAIL_CODE, "此银行卡已被绑定!,请重新输入!");
             }
-        } else {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "银行卡号不能为空，请重新输入");
         }
         String pwd = MD5Encode(bindPhoneVO.getPassword(), "utf-8");
         bindPhoneVO.setPassword(pwd);
