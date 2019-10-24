@@ -1098,17 +1098,17 @@ public class MobileInterfaceController {
             String tableName = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(accountsServiceClient.getGameItem(gr.getKindId()), "Server"), "_");
             mongoTemplate.save(gr, "gameRecord_" + tableName);
             mongoTemplate.save(gr);
-//            if(kindId.equals(235)){
-//                if(dJson.getBooleanValue("lucky")){
-//                    //将玩家数据存入幸运玩家表中
-//                    LuckyVO luckyVO =new LuckyVO();
-//                    luckyVO.setScore(dJson.getBigDecimal("score"));
-//                    luckyVO.setEndTime(endTime);
-//                    luckyVO.setGameId(gameId);
-//                    luckyVO.setServerId(serverId);
-//                    mongoTemplate.save(luckyVO,"Lucky");
-//                }
-//            }
+            if(kindId.equals(235)){
+                if(dJson.getBooleanValue("lucky")){
+                    //将玩家数据存入幸运玩家表中
+                    LuckyVO luckyVO =new LuckyVO();
+                    luckyVO.setScore(dJson.getBigDecimal("score"));
+                    luckyVO.setEndTime(endTime);
+                    luckyVO.setGameId(gameId);
+                    luckyVO.setServerId(serverId);
+                    mongoTemplate.save(luckyVO,"Lucky");
+                }
+            }
             if(kindId.equals(235)){
                 if(dJson.getBooleanValue("lucky")){
                     //将玩家数据存入幸运玩家表中
