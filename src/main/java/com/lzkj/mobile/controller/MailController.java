@@ -66,4 +66,21 @@ public class MailController {
         globeResponse.setData(flag);
         return globeResponse;
     }
+    
+    /**
+     * 统计用户未读邮件数
+     */
+    @RequestMapping("/totalMail")
+    public GlobeResponse totalMail(Integer gameId, Integer agentId) {
+    	if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "业主ID参数错误");
+        }
+        if (gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
+        }
+        int count= accountsServiceClient.totalMail(gameId, agentId);
+        GlobeResponse globeResponse = new GlobeResponse();
+        globeResponse.setData(count);
+        return globeResponse;
+    }
 }
