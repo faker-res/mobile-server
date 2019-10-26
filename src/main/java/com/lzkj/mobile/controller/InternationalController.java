@@ -85,7 +85,7 @@ public class InternationalController {
         }
         data.put("orderId", orderId);
         data.put("siteCode", siteCode);
-        data.put("money",amount);
+        data.put("money",0);
         data.put("ip",ip);
         data.put("account", account);
         String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), accessAgent.getDesKey());
