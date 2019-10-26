@@ -19,11 +19,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static com.lzkj.mobile.util.IpAddress.getIpAddress;
 
 @RestController
 @RequestMapping("/inter")
@@ -47,7 +50,9 @@ public class InternationalController {
      */
 
     @RequestMapping("/switchLanguage")
-    public GlobeResponse<Object> switchLanguage(Boolean status, Integer agentId, BigDecimal amount,Integer gameId) {
+    public GlobeResponse<Object> switchLanguage(HttpServletRequest request,Boolean status, Integer agentId, BigDecimal amount, Integer gameId) {
+
+        String ip =getIpAddress(request);
         //true 是切英文版
         String siteCode ="a01";
         AccountsInfoVO accountsInfoVO = accountsServiceClient.getUserInfoByGameId(gameId);
@@ -79,9 +84,10 @@ public class InternationalController {
             data.put("op", "10");
         }
         data.put("orderId", orderId);
-        data.put("account", account);
         data.put("siteCode", siteCode);
         data.put("money",amount);
+        data.put("ip",ip);
+        data.put("account", account);
         String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), accessAgent.getDesKey());
 
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
