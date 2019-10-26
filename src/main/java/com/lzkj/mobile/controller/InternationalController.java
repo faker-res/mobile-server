@@ -82,7 +82,6 @@ public class InternationalController {
         data.put("account", account);
         data.put("siteCode", siteCode);
         data.put("money",amount);
-        data.put("gameId",gameId);
         String dParam = DESUtil.encrypt(JSONObject.toJSONString(data), accessAgent.getDesKey());
 
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
