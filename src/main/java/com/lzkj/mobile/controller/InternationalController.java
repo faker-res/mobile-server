@@ -42,8 +42,8 @@ public class InternationalController {
     @Autowired
     private AccountsServiceClient accountsServiceClient;
 
-//    @Value("${access.game}")
-//    private String accessGame;
+    @Value("${access.game}")
+    private String accessGame;
 
     /**
      * API语言切换
@@ -76,8 +76,8 @@ public class InternationalController {
         Map<String, Object> data = new LinkedHashMap<>();
         //获取游戏地址
         Random random = new Random();
-      //  String[] gameUrl = this.accessGame.split(",");
-      //  String url= gameUrl[random.nextInt(gameUrl.length)];
+        String[] gameUrl = this.accessGame.split(",");
+        String url= gameUrl[random.nextInt(gameUrl.length)];
         if (status) {
             data.put("op", "50");
         } else {
@@ -93,12 +93,12 @@ public class InternationalController {
 
         String param = "agent=" + agent + "&timestamp=" + timestamp + "&param=" + dParam + "&s=" + md5Signature;
 
-       // log.info("send to api center：" + url + "?" + param);
-        //String msg = HttpRequest.sendPost(url, param);
-    //    log.info("return data {}", msg);
-    //    JSONObject json= (JSONObject) JSONObject.parse(msg);
+        log.info("send to api center：" + url + "?" + param);
+        String msg = HttpRequest.sendPost(url, param);
+        log.info("return data {}", msg);
+        JSONObject json= (JSONObject) JSONObject.parse(msg);
         GlobeResponse globeResponse =new GlobeResponse();
-    //    globeResponse.setData(json.get("data"));
+        globeResponse.setData(json.get("data"));
         return globeResponse;
     }
 
