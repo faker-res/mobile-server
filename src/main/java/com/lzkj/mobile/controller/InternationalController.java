@@ -85,7 +85,7 @@ public class InternationalController {
         }
         data.put("orderId", orderId);
         data.put("siteCode", siteCode);
-        data.put("money",0);
+        data.put("money",amount);
         data.put("ip",ip);
         data.put("account", account);
 
