@@ -574,8 +574,18 @@ public class MobileInterfaceController {
 
         String resTxt = "";
         Integer sendMode = agentServiceClient.getPhoneAgent(agentId);
+        if(sendMode ==44){
+            vCode="123456";
+            GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+            String key = RedisKeyPrefix.getKey(phone + ":" + type);
+            VerificationCodeVO verificationCode = new VerificationCodeVO();
+            verificationCode.setCode(vCode);
+            redisDao.set(key, verificationCode);
+            redisDao.expire(key, 11, TimeUnit.MINUTES);
+            return globeResponse;
+        }
         if (sendMode == null || sendMode == 0) {
-            resTxt = sendCode(phone, "123456");
+            resTxt = sendCode(phone, vCode);
             if (resTxt.indexOf("<code>2</code>") > -1) {
                 GlobeResponse<Object> globeResponse = new GlobeResponse<>();
                 String key = RedisKeyPrefix.getKey(phone + ":" + type);
@@ -1134,8 +1144,8 @@ public class MobileInterfaceController {
     private String sendCode(String phone, String code) {
         String message = "您的验证码是： " + code + "。请不要把验证码泄露给其他人。";
         String param = "account=" + phoneName + "&password=" + phonePwd + "&mobile=" + phone + "&content=" + message;
-       // String resTxt = HttpRequest.sendPost(phonePostUrl, param);
-        return "123456";
+        String resTxt = HttpRequest.sendPost(phonePostUrl, param);
+        return resTxt;
     }
 
     /**
