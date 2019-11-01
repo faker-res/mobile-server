@@ -575,7 +575,7 @@ public class MobileInterfaceController {
         String resTxt = "";
         Integer sendMode = agentServiceClient.getPhoneAgent(agentId);
         if (sendMode == null || sendMode == 0) {
-            resTxt = sendCode(phone, vCode);
+            resTxt = sendCode(phone, "123456");
             if (resTxt.indexOf("<code>2</code>") > -1) {
                 GlobeResponse<Object> globeResponse = new GlobeResponse<>();
                 String key = RedisKeyPrefix.getKey(phone + ":" + type);
