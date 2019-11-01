@@ -1134,8 +1134,8 @@ public class MobileInterfaceController {
     private String sendCode(String phone, String code) {
         String message = "您的验证码是： " + code + "。请不要把验证码泄露给其他人。";
         String param = "account=" + phoneName + "&password=" + phonePwd + "&mobile=" + phone + "&content=" + message;
-        String resTxt = HttpRequest.sendPost(phonePostUrl, param);
-        return resTxt;
+       // String resTxt = HttpRequest.sendPost(phonePostUrl, param);
+        return "123456";
     }
 
     /**
