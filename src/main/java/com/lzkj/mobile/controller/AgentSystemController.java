@@ -364,6 +364,22 @@ public class AgentSystemController {
                     data.put("canResetdhmm", false);
                 }
             }
+            //活动展示
+            if(vo.getStatusName().equals(AgentSystemEnum.ActivityOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		 data.put("ActivityOpen", true);
+                } else {
+                    data.put("ActivityOpen", false);
+                }
+            }
+           //提现展示
+            if(vo.getStatusName().equals(AgentSystemEnum.ApplyOrderOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		 data.put("ApplyOrderOpen", true);
+                } else {
+                    data.put("ApplyOrderOpen", false);
+                }
+            }
         }
         //余额宝是否开启
         YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
