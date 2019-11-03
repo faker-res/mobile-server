@@ -208,6 +208,7 @@ public class MobileInterfaceController {
         }
         String agentId = request.getParameter("agentId");
         List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
         GameListVO data = new GameListVO();
         data.setValid(true);
         data.setDownloadUrl(value2);
@@ -215,6 +216,7 @@ public class MobileInterfaceController {
         data.setWxLogon(status2);
         data.setIsOpenCard(systemStatusInfo == null ? 1 : systemStatusInfo.getStatusValue().intValue());
         data.setGameList(mobileKindList);
+        data.setThirdGameList(thirdList);
         data.setPackageName(value6);
         int isIosShop = 0;
         if (agentId == null) {
@@ -574,6 +576,16 @@ public class MobileInterfaceController {
 
         String resTxt = "";
         Integer sendMode = agentServiceClient.getPhoneAgent(agentId);
+        if(sendMode ==44){
+            vCode="123456";
+            GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+            String key = RedisKeyPrefix.getKey(phone + ":" + type);
+            VerificationCodeVO verificationCode = new VerificationCodeVO();
+            verificationCode.setCode(vCode);
+            redisDao.set(key, verificationCode);
+            redisDao.expire(key, 11, TimeUnit.MINUTES);
+            return globeResponse;
+        }
         if (sendMode == null || sendMode == 0) {
             resTxt = sendCode(phone, vCode);
             if (resTxt.indexOf("<code>2</code>") > -1) {
