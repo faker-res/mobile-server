@@ -31,4 +31,6 @@ public class GameListVO {
 	private int appStore;
 	
 	private String iosVersion;
+	
+	private List<ThirdKindConfigVO> thirdGameList;
 }

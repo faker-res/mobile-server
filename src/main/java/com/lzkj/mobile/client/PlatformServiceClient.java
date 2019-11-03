@@ -79,5 +79,7 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/getServerName")
 	Map<String,Object> getServerName(@RequestParam("serverId") Integer serverId);
-
+	
+	@RequestMapping("/platform/mobile/getMobileThirdKindList")
+	List<ThirdKindConfigVO> getMobileThirdKindList(@RequestParam("agentId")Integer agentId);
 }
