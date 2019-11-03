@@ -14,4 +14,5 @@ public class ThirdKindConfigVO {
     private short isPlatform;//是否是平台
     private int gameKindId;
     private int typeId;
+    private short maintain;
 }
