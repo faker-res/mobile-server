@@ -1,10 +1,8 @@
 package com.lzkj.mobile.controller;
 
 import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.service.CheckUserSignatureService;
 import com.lzkj.mobile.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +21,6 @@ public class QmPromotionController {
     @Autowired
     private AgentServiceClient qmPromotionServiceClient;
 
-    @Autowired
-    @Lazy
-    private CheckUserSignatureService checkUserSignatureService;
 
     /**
      * 查询全民推广奖励
