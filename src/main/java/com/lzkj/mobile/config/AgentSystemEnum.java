@@ -14,7 +14,9 @@ public enum AgentSystemEnum {
     AgentRank("AgentRank","代理排行榜"),
     ResetPwd("ResetPwd","修改兑换密码"),
 	ActivityOpen("ActivityOpen","活动展示"),
-	ApplyOrderOpen("ApplyOrderOpen","提现展示");
+	ApplyOrderOpen("ApplyOrderOpen","提现展示"),
+	YebOpen("YebOpen","余额宝是否开启");
+	
     private String name;
 
     private String describe;
