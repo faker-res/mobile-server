@@ -380,15 +380,14 @@ public class AgentSystemController {
                     data.put("ApplyOrderOpen", false);
                 }
             }
-        }
-        //余额宝是否开启
-        YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
-        if (yebConfigVO.getIsOpen() == 0) {
-            data.put("yebiIsopen", false);
-            data.put("description", yebConfigVO.getDescription());
-        } else {
-            data.put("yebiIsopen", true);
-            data.put("description", yebConfigVO.getDescription());
+            //余额宝是否开启
+            if(vo.getStatusName().equals(AgentSystemEnum.YebOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		data.put("yebiIsopen", true);
+            	}else {
+            		data.put("yebiIsopen", false);
+            	}
+            }
         }
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
