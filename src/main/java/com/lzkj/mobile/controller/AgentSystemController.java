@@ -44,7 +44,7 @@ public class AgentSystemController {
     private String channelGameUrl;
 
     /**
-     * 代理系统-我的推广
+     * 全民代理 -我的推广(首页信息)
      *
      * @param userId
      * @return
