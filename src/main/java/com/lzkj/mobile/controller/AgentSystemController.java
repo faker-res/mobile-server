@@ -389,6 +389,11 @@ public class AgentSystemController {
             	}
             }
         }
+        Integer typeId = 1;
+        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
+        data.put("GameList",mobileKindList);
+        data.put("ThirdGameList",thirdList);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);
