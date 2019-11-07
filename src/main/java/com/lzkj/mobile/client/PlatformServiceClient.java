@@ -79,7 +79,15 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/getServerName")
 	Map<String,Object> getServerName(@RequestParam("serverId") Integer serverId);
-	
+
 	@RequestMapping("/platform/mobile/getMobileThirdKindList")
 	List<ThirdKindConfigVO> getMobileThirdKindList(@RequestParam("agentId")Integer agentId);
+
+	/***************************************洗码相关***********************************************************/
+
+	@RequestMapping("/mobile/clean/getCleanChips")
+	Map<Integer, List<CleanChipsVO>>  getCleanChips(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
+
+	@RequestMapping("/mobile/clean/getCleanChipsConfig")
+	List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId")Integer agentId);
 }
