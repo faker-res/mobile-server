@@ -109,6 +109,7 @@ public class VipLevelController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏标识错误");
         }
         Map<String, Object> param = platformServiceClient.getVipConfig(agentId, userId);
+        param.put("WashCode", "0.6");
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(param);
         return globeResponse;
