@@ -1866,13 +1866,27 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getDate")
     private GlobeResponse<Object> getDate() {
-        Map<String, Object> data = new HashMap<>();
-        data.put("0", "全部时间");
-        data.put("1", "今天");
-        data.put("2", "昨天");
-        data.put("3", "一个月内");
+    	List<Map<String, String>> data =new ArrayList<>();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("code", "0");
+        map.put("name", "全部时间");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "1");
+        map.put("name", "今天");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "2");
+        map.put("name", "昨天");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "3");
+        map.put("name", "一个月内");
+        data.add(map);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("list",data);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
+        globeResponse.setData(maps);
         return globeResponse;
     }
     
