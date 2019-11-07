@@ -1919,15 +1919,16 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getAccountDetails")
-    private GlobeResponse<Object> getAccountDetails(Integer userId,Integer typeId,Integer date) {
+    private GlobeResponse<Object> getAccountDetails(Integer userId,Integer typeId,Integer date,Integer pageSize,Integer pageIndex) {
     	if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<MemberRechargeVO> list = treasureServiceClient.getAccountDetails(userId, typeId,date);
-    	data.put("list", list);
-    	globeResponse.setData(list);
+    	CommonPageVO page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
+    	data.put("list", page.getLists());
+    	data.put("total", page.getPageCount());
+    	globeResponse.setData(data);
         return globeResponse;
     }
     
