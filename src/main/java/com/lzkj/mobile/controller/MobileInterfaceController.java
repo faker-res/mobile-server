@@ -1933,7 +1933,7 @@ public class MobileInterfaceController {
     
     
     /**
-     * 获取账户明细
+     * 获取个人报表
      *
      * @param userId
      * @return
