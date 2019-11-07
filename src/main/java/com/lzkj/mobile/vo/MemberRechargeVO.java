@@ -8,7 +8,8 @@ import lombok.Data;
 public class MemberRechargeVO {
 
 	private BigDecimal Balance;
-	private BigDecimal presentScore;
+	private BigDecimal presentScore = BigDecimal.ZERO;
+	private BigDecimal expenditureScore = BigDecimal.ZERO;
 	private String collectDate;
 	private String typeName;
 }

@@ -165,7 +165,7 @@ public interface TreasureServiceClient {
 //	List<MemberRechargeVO> getVipReward(@RequestParam("userId")Integer userId);
 	
 	@RequestMapping("treasure/mobile/getAccountDetails")
-	CommonPageVO getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
+	CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 
 	@RequestMapping("treasure/mobile/accountChangeStatistics")
 	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId);
