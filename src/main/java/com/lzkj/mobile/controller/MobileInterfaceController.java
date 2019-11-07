@@ -1984,5 +1984,28 @@ public class MobileInterfaceController {
     	return globeResponse;
     }
 
+    /**
+     * 验证密码
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping("/verifyPassword")
+    public GlobeResponse<Object> verifyPassword(Integer userId,String password) {
+        if (userId == null || password == null ) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        Map<String, Object> data = new HashMap<>();
+        String mdPassword = MD5Encode(password, "utf-8").toUpperCase();
+        if (mdPassword.trim().equals(treasureServiceClient.verifyPassword(userId))) {
+            data.put("status",1);
+            globeResponse.setData(data);
+            return globeResponse;
+        }
+        data.put("status",-1);
+        globeResponse.setData(data);
+        return globeResponse;
+    }
 
 }

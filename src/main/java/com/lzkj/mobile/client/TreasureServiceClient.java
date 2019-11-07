@@ -169,5 +169,8 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("treasure/mobile/accountChangeStatistics")
 	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId);
+
+	@RequestMapping("/accounts/mobile/verifyPassword")
+	String verifyPassword(@RequestParam("userId") Integer userId);
 }
 
