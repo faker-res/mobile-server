@@ -168,6 +168,6 @@ public interface TreasureServiceClient {
 	CommonPageVO getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 
 	@RequestMapping("treasure/mobile/accountChangeStatistics")
-	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId, @RequestParam("agentId")Integer agentId);
+	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId);
 }
 

@@ -1964,7 +1964,7 @@ public class MobileInterfaceController {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,agentId);
+        AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
         Map<String, Object> data = new HashMap<>();
         data.put("list", list);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
