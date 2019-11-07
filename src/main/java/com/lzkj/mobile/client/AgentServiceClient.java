@@ -35,8 +35,6 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/promotion/getUserReward")
     QmUserRewardVO getUserReward(@RequestParam("userId") Integer userId);
 
-    @RequestMapping("/agent/mobile/promotion/getPromotionDetails")
-    List<QmPromotionListVO> getPromotionDetails(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/agent/mobile/promotion/getAppLiquidation")
     QmLiquidationPageVo getAppLiquidation(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageNumber);
@@ -52,7 +50,7 @@ public interface AgentServiceClient {
             @RequestParam("gameId") Integer gameId,@RequestParam("date") String date);
 
 
-    @RequestMapping("/agent/mobile/promotion/getDirectQuery")
+    @RequestMapping("/agent/mobile/promotion/getAchieveDetail")
     List<QmPromotionDetailVO> getAchieveDetail(@RequestParam("userId")Integer userId, @RequestParam("kindType")Integer kindType);
 
     /******************************代理系统**************************************/

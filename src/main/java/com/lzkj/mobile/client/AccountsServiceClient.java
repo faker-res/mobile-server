@@ -15,10 +15,16 @@ import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
 import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
+import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
+import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GoldExchangeVO;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.MailVO;
+import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
 import com.lzkj.mobile.vo.UserInfoVO;
+import com.lzkj.mobile.vo.UserInformationVO;
+import com.lzkj.mobile.vo.VipLevelRewardVO;
 import com.lzkj.mobile.vo.VisitorBindResultVO;
 
 @FeignClient(name = "accounts-service")
@@ -119,4 +125,22 @@ public interface AccountsServiceClient {
     
     @RequestMapping("/accounts/mobile/totalMail")
     int totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/accounts/mobile/getUserVipLevel")
+    VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getUsersInfo")
+    UserInformationVO getUsersInfo(@RequestParam("userId")Integer userId);
+    
+    @RequestMapping("/accounts/mobile/updateUserBasicInfo")
+    int updateUserBasicInfo(@RequestParam("nickName") String nickName,@RequestParam("gender") Integer gender,@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/updateUserContactInfo")
+    int updateUserContactInfo(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("qq") String qq,@RequestParam("eMail") String eMail,@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getChannelGameUserBetAndScore")
+    CommonPageVO<ChannelGameUserBetAndScoreVO> getChannelGameUserBetAndScore(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("kindId") Integer kindId,@RequestParam("userId") Integer userId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+    
+    @RequestMapping("/accounts/mobile/getPersonalReport")
+    List<PersonalReportVO> getPersonalReport(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("userId") Integer userId);
 }
