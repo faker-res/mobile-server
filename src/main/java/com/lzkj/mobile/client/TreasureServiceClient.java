@@ -167,5 +167,7 @@ public interface TreasureServiceClient {
 	@RequestMapping("treasure/mobile/getAccountDetails")
 	List<MemberRechargeVO> getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date);
 
+	@RequestMapping("treasure/mobile/accountChangeStatistics")
+	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId, @RequestParam("agentId")Integer agentId);
 }
 
