@@ -1680,4 +1680,23 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
+
+    /**
+     * 查询帐变
+     *
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/accountChangeStatistics")
+    private GlobeResponse<Object> accountChangeStatistics(Integer userId,Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,agentId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", list);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
 }

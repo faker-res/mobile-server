@@ -137,5 +137,7 @@ public interface TreasureServiceClient {
 	@RequestMapping("treasure/mobile/getLuckyIsOpen")
 	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
 
+	@RequestMapping("treasure/mobile/accountChangeStatistics")
+	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId, @RequestParam("agentId")Integer agentId);
 }
 
