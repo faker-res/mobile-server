@@ -1928,6 +1928,7 @@ public class MobileInterfaceController {
     	List<MemberRechargeVO> list = treasureServiceClient.getAccountDetails(userId, typeId,date);
     	AccountChangeStatisticsVO count = treasureServiceClient.accountChangeStatistics(userId);
     	data.put("list", list);
+    	data.put("count", count);
     	globeResponse.setData(list);
         return globeResponse;
     }
