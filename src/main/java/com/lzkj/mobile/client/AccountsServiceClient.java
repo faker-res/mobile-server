@@ -143,4 +143,7 @@ public interface AccountsServiceClient {
     
     @RequestMapping("/accounts/mobile/getPersonalReport")
     List<PersonalReportVO> getPersonalReport(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getUserVipZeroLevel")
+    VipLevelRewardVO getUserVipZeroLevel(@RequestParam("userId") Integer userId);
 }
