@@ -1716,14 +1716,7 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
-//        for(int i = 0;i<list.size();i++) {
-//        	
-//        	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
-//        		s = list.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral());
-//        	}
-//        	
-//    		
-//        }
+
         s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
         vipLevel.setVipIntegral(s);
         for(int i = 0 ;i<list.size();i++) {
@@ -1891,7 +1884,7 @@ public class MobileInterfaceController {
     }
     
     /**
-     * 获取所有平台
+     * 获取投注记录
      *
      * @param userId
      * @return
@@ -1939,7 +1932,24 @@ public class MobileInterfaceController {
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	CommonPageVO page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
+    	CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
+    	List<MemberRechargeVO> l = page.getLists();
+    	List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
+    	if(typeId.equals(10)) {
+    		for(int i = 0;i<l.size();i++) {
+    			MemberRechargeVO vo = new MemberRechargeVO();
+    			vo.setTypeName("平台资金切换");
+    			vo.setBalance(l.get(i).getBalance());
+    			vo.setCollectDate(l.get(i).getCollectDate());
+    			if(l.get(i).getPresentScore().signum() == -1) {
+    				vo.setExpenditureScore(l.get(i).getPresentScore().abs());
+    			}else {
+    				vo.setPresentScore(l.get(i).getPresentScore());
+    			}
+    			temp.add(vo);
+    			page.setLists(temp);
+    		}
+    	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
@@ -1966,26 +1976,6 @@ public class MobileInterfaceController {
     	data.put("list", list);
     	globeResponse.setData(list);
     	return globeResponse;
-    }
-
-
-    /**
-     * 查询帐变
-     *
-     * @param agentId
-     * @return
-     */
-    @RequestMapping("/accountChangeStatistics")
-    private GlobeResponse<Object> accountChangeStatistics(Integer userId,Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
-        Map<String, Object> data = new HashMap<>();
-        data.put("list", list);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        return globeResponse;
     }
 
     /**
