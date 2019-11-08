@@ -1694,7 +1694,35 @@ public class MobileInterfaceController {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
+        List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
+        List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
+        List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
+        Map<String, Object> data = new HashMap<>();
+        if(vipLevel == null) {
+        	VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
+        	zeroLevel.setVipIntegral(zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral()));
+        	VipLevelRewardVO vo = new VipLevelRewardVO();
+        	vo.setVipLevel(0);
+    		vo.setWeekReward(BigDecimal.ZERO);
+    		vo.setStatus(1);
+    		w1.add(vo);
+    		vo.setVipLevel(0);
+    		vo.setMonthReward(BigDecimal.ZERO);
+    		vo.setStatus(1);
+    		w2.add(vo);
+    		vo.setVipLevel(0);
+    		vo.setVipRankReward(BigDecimal.ZERO);
+    		vo.setStatus(1);
+    		w3.add(vo);
+    		data.put("VipLevels", zeroLevel);
+            data.put("weekList", w1);
+            data.put("monthList", w2);
+            data.put("vipLevelList", w3);
+            globeResponse.setData(data);
+            return globeResponse;
+        }
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
@@ -1709,14 +1737,11 @@ public class MobileInterfaceController {
                 vo.setRankMoney(BigDecimal.ZERO);
                 vo.setReceiveDate(TimeUtil.getNow());
                 lists.add(vo);
+                
             }
         	platformServiceClient.insertVipRankReceive(lists);
         }
         BigDecimal s = new BigDecimal("0");
-        List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
-
         s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
         vipLevel.setVipIntegral(s);
         for(int i = 0 ;i<list.size();i++) {
@@ -1770,13 +1795,12 @@ public class MobileInterfaceController {
     		w3.add(vo);
         }
         //UserInformationVO userInfo = accountsServiceClient.getUserInfo(userId);
-        Map<String, Object> data = new HashMap<>();
+        
         data.put("VipLevels", vipLevel);
         data.put("weekList", w1);
         data.put("monthList", w2);
         data.put("vipLevelList", w3);
         //data.put("UserInfo", userInfo);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
     }
