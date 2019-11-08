@@ -24,4 +24,11 @@ public class TimeUtil {
         long zero = current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
         return zero;
     }
+    
+    public static String getNow() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return s.format(date);
+    }
 }
