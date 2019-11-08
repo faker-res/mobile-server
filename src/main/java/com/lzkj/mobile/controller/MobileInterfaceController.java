@@ -1941,9 +1941,10 @@ public class MobileInterfaceController {
     			vo.setTypeName("平台资金切换");
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
-    			vo.setPresentScore(l.get(i).getPresentScore());
     			if(l.get(i).getPresentScore().signum() == -1) {
     				vo.setExpenditureScore(l.get(i).getPresentScore().abs());
+    			}else {
+    				vo.setPresentScore(l.get(i).getPresentScore());
     			}
     			temp.add(vo);
     			page.setLists(temp);
