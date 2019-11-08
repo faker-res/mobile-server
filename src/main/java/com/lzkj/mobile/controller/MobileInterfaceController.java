@@ -1716,14 +1716,7 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
-//        for(int i = 0;i<list.size();i++) {
-//        	
-//        	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
-//        		s = list.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral());
-//        	}
-//        	
-//    		
-//        }
+
         s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
         vipLevel.setVipIntegral(s);
         for(int i = 0 ;i<list.size();i++) {
