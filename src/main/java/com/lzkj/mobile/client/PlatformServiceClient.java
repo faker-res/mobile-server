@@ -86,8 +86,14 @@ public interface PlatformServiceClient {
 	/***************************************洗码相关***********************************************************/
 
 	@RequestMapping("/mobile/clean/getCleanChips")
-	Map<Integer, List<CleanChipsVO>>  getCleanChips(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
+	CleanChipsTotalVO getCleanChips(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
 
-	@RequestMapping("/mobile/clean/getCleanChipsConfig")
-	List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId")Integer agentId);
+
+	@RequestMapping("/mobile/clean/washBet")
+	Boolean washBet(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,@RequestParam("vipLevel") Integer vipLevel);
+
+	@RequestMapping("/mobile/clean/getWashRecord")
+	List<CleanChipsRecordVO> getWashRecord(@RequestParam("userId") Integer userId);
+	@RequestMapping("/mobile/clean/getCleanChipsRecord")
+	List<CleanChipsRecordVO> getCleanChipsRecord(@RequestParam("userId") Integer userId,@RequestParam("recordTime") String recordTime);
 }
