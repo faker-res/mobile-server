@@ -2000,8 +2000,8 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse globeResponse = new GlobeResponse();
-       // String mdPassword = MD5Encode(password, "utf-8").toUpperCase();
-        if (password.trim().equals(treasureServiceClient.verifyPassword(userId))) {
+        String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
+        if (mdPassword.trim().equals(treasureServiceClient.verifyPassword(userId))) {
             return globeResponse;
         }
         globeResponse.setCode("-1");
