@@ -42,6 +42,9 @@ public class CleanChipsController {
      */
     @RequestMapping("/washBet")
     private GlobeResponse<Object> washBet(Integer userId,Integer agentId,Integer vipLevel){
+        if (vipLevel==0){
+            vipLevel=1;
+        }
         Boolean flag = platformServiceClient.washBet(userId,agentId,vipLevel);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(flag);
