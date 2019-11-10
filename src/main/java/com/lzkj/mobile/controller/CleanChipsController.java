@@ -1,14 +1,14 @@
 package com.lzkj.mobile.controller;
 
 import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.vo.CleanChipsRecordVO;
-import com.lzkj.mobile.vo.CleanChipsTotalVO;
-import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/clean")
@@ -71,6 +71,22 @@ public class CleanChipsController {
         List<CleanChipsRecordVO> list = platformServiceClient.getCleanChipsRecord(userId,recordDate);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    /**
+     * 洗码比列
+     */
+    @RequestMapping("/getCleanConfig")
+    private GlobeResponse<Object> getCleanConfig(Integer agentId,int kindType){
+        List<CleanChipsConfigVO> list =platformServiceClient.getCleanChipsConfig(agentId);
+        List<ThirdKindConfigVO> getThirdConfig = platformServiceClient.getThirdConfig(kindType);
+
+        Map data =new HashMap();
+        data.put("vip",list);
+        data.put("third",getThirdConfig);
+        GlobeResponse globeResponse =new GlobeResponse();
+        globeResponse.setData(data);
         return globeResponse;
     }
 }
