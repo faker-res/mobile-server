@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.lzkj.mobile.util.MD5Utils.getAllFields;
+import static com.lzkj.mobile.util.TimeUtil.*;
 
 @RestController
 @RequestMapping("/qmPromotionInterface")
@@ -100,10 +101,28 @@ public class QmPromotionController {
      * 直属玩家查询（gameid,昵称，今日流水，总流水，团队人数，直属人数）
      *
      * 查询全部： gameid 0,data ''
+     * code：0:所有，1：今日，2：昨日，3本周，4，本月
      */
     @RequestMapping("/directQuery")
-    private GlobeResponse<Object> getDirectQuery(Integer userId,Integer gameId,String date){
-
+    private GlobeResponse<Object> getDirectQuery(Integer userId,Integer gameId,int code){
+        String date =new String();
+        switch (code){
+            case 0:
+                date="";
+                break;
+            case 1:
+                date=getInitial();
+                break;
+            case 2:
+                date=getYesterday();
+                break;
+            case 3:
+                date =startWeek();
+                break;
+            case 4:
+                date =startMonth();
+                break;
+        }
         List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId,gameId,date);
 
         GlobeResponse globeResponse =new GlobeResponse();

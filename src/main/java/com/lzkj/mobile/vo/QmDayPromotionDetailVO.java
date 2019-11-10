@@ -10,11 +10,11 @@ public class QmDayPromotionDetailVO {
 
     private Integer memberCount;          //团员人数
 
-    private Integer newMemberCount;       //今日新增成员总数
+    private Integer newMemberCount;       //新增成员总数
 
     private Integer directlyMemberCount;     //直属玩家
 
-    private Integer newDirectlyMemberCount; //今日新增直属玩家数、
+    private Integer newDirectlyMemberCount; //新增直属玩家数、
 
     private String registerDate ; //注册时间
 
@@ -26,9 +26,13 @@ public class QmDayPromotionDetailVO {
 
     private BigDecimal todayDirectlyBet ;//今日直属业绩
 
-    private BigDecimal todayCommission; //今日佣金预估
+    private BigDecimal historyCommission;// 历史总佣金
 
     private BigDecimal yesterdayCommission;//昨日佣金
 
     private BigDecimal unReceipt;//未领取佣金
+
+    private Integer directlyAgent ;//直属代理
+
+    private Integer newDirectlyAgent ;//新增直属代理
 }

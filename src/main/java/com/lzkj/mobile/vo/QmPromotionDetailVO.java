@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class QmPromotionDetailVO {
     private Integer userId;
+    private Integer gameId;
     private String registerDate; //注册日期
     private Integer directMember;//直属人数
     private Integer teamMember;// 团队人数

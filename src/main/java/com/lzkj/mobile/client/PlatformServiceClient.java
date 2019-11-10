@@ -85,19 +85,19 @@ public interface PlatformServiceClient {
 	@RequestMapping("/platform/mobile/getMobileThirdKindList")
 	List<ThirdKindConfigVO> getMobileThirdKindList(@RequestParam("agentId")Integer agentId);
 
-	
+
 	@RequestMapping("/platform/mobile/getUserVIPLevelReward")
 	List<VipLevelRewardVO> getUserVIPLevelReward(@RequestParam("parentId")Integer parentId);
-	
+
 	@RequestMapping("/platform/mobile/getUserWeekReceive")
 	List<VIPReceiveInfoVO> getUserWeekReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
-	
+
 	@RequestMapping("/platform/mobile/getUserMonthReceive")
 	List<VIPReceiveInfoVO> getUserMonthReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
-	
+
 	@RequestMapping("/platform/mobile/getUserLevelReceive")
 	List<VipRankReceiveVO> getUserLevelReceive(@RequestParam("userId")Integer userId);
-	
+
 	@RequestMapping("/platform/mobile/insertVipRankReceive")
 	void insertVipRankReceive(@RequestBody List<VipRankReceiveVO> list);
 
@@ -115,4 +115,9 @@ public interface PlatformServiceClient {
 	List<CleanChipsRecordVO> getWashRecord(@RequestParam("userId") Integer userId);
 	@RequestMapping("/mobile/clean/getCleanChipsRecord")
 	List<CleanChipsRecordVO> getCleanChipsRecord(@RequestParam("userId") Integer userId,@RequestParam("recordTime") String recordTime);
+
+	@RequestMapping("/mobile/clean/getCleanChipsConfig")
+    List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId") Integer agentId);
+	@RequestMapping("/mobile/clean/getThirdConfig")
+	List<ThirdKindConfigVO> getThirdConfig(@RequestParam("kindType")int kindType);
 }
