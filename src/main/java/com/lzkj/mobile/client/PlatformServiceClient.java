@@ -1,7 +1,9 @@
 package com.lzkj.mobile.client;
 
 import com.lzkj.mobile.vo.*;
+
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -65,7 +67,7 @@ public interface PlatformServiceClient {
 	List<VipIntegrealConfigVO> getVipRelation(@RequestParam("agentId")Integer agentId);
 
 	@RequestMapping("/platform/mobile/getVipConfig")
-	Map<String, Object> getVipConfig(@RequestParam("agentId")Integer agentId, @RequestParam("userId") Integer userId);
+	Map<String, Object> getVipConfig(@RequestParam("parentId")Integer parentId, @RequestParam("userId") Integer userId);
 
 	@RequestMapping("/platform/mobile/levelReward")
 	String levelReward(@RequestParam("userId")Integer userId, @RequestParam("level")Integer level,@RequestParam("reward") BigDecimal reward);
@@ -79,7 +81,43 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/getServerName")
 	Map<String,Object> getServerName(@RequestParam("serverId") Integer serverId);
-	
+
 	@RequestMapping("/platform/mobile/getMobileThirdKindList")
 	List<ThirdKindConfigVO> getMobileThirdKindList(@RequestParam("agentId")Integer agentId);
+
+
+	@RequestMapping("/platform/mobile/getUserVIPLevelReward")
+	List<VipLevelRewardVO> getUserVIPLevelReward(@RequestParam("parentId")Integer parentId);
+
+	@RequestMapping("/platform/mobile/getUserWeekReceive")
+	List<VIPReceiveInfoVO> getUserWeekReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
+
+	@RequestMapping("/platform/mobile/getUserMonthReceive")
+	List<VIPReceiveInfoVO> getUserMonthReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
+
+	@RequestMapping("/platform/mobile/getUserLevelReceive")
+	List<VipRankReceiveVO> getUserLevelReceive(@RequestParam("userId")Integer userId);
+
+	@RequestMapping("/platform/mobile/insertVipRankReceive")
+	void insertVipRankReceive(@RequestBody List<VipRankReceiveVO> list);
+
+
+	/***************************************洗码相关***********************************************************/
+
+	@RequestMapping("/mobile/clean/getCleanChips")
+	CleanChipsTotalVO getCleanChips(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
+
+
+	@RequestMapping("/mobile/clean/washBet")
+	Boolean washBet(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,@RequestParam("vipLevel") Integer vipLevel);
+
+	@RequestMapping("/mobile/clean/getWashRecord")
+	List<CleanChipsRecordVO> getWashRecord(@RequestParam("userId") Integer userId);
+	@RequestMapping("/mobile/clean/getCleanChipsRecord")
+	List<CleanChipsRecordVO> getCleanChipsRecord(@RequestParam("userId") Integer userId,@RequestParam("recordTime") String recordTime);
+
+	@RequestMapping("/mobile/clean/getCleanChipsConfig")
+    List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId") Integer agentId);
+	@RequestMapping("/mobile/clean/getThirdConfig")
+	List<ThirdKindConfigVO> getThirdConfig(@RequestParam("kindType")int kindType);
 }

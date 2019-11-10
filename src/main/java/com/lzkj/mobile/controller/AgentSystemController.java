@@ -44,7 +44,7 @@ public class AgentSystemController {
     private String channelGameUrl;
 
     /**
-     * 代理系统-我的推广
+     * 全民代理 -我的推广(首页信息)
      *
      * @param userId
      * @return
@@ -389,6 +389,11 @@ public class AgentSystemController {
             	}
             }
         }
+        Integer typeId = 1;
+        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
+        data.put("GameList",mobileKindList);
+        data.put("ThirdGameList",thirdList);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);

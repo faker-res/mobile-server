@@ -136,6 +136,41 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("treasure/mobile/getLuckyIsOpen")
 	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
+	
+	@RequestMapping("treasure/mobile/getVideoType")
+	List<VideoTypeVO> getVideoType();
+	
+	@RequestMapping("treasure/mobile/getTransactionType")
+	List<TransactionTypeVO> getTransactionType();
 
+//	@RequestMapping("treasure/mobile/getMemberRecharge")
+//	List<MemberRechargeVO> getMemberRecharge(@RequestParam("userId")Integer userId);
+//	
+//	@RequestMapping("treasure/mobile/getMemberWithdrawal")
+//	List<MemberRechargeVO> getMemberWithdrawal(@RequestParam("userId")Integer userId);
+//	
+//	@RequestMapping("treasure/mobile/getCheckInGift")
+//	List<MemberRechargeVO> getCheckInGift(@RequestParam("userId")Integer userId);
+//	
+//	@RequestMapping("treasure/mobile/getTaskReward")
+//	List<MemberRechargeVO> getTaskReward(@RequestParam("userId")Integer userId);
+//	
+//	@RequestMapping("treasure/mobile/getDailyRecharge")
+//	List<MemberRechargeVO> getDailyRecharge(@RequestParam("userId")Integer userId);
+//	
+//	@RequestMapping("treasure/mobile/getRebateReward")
+//	List<MemberRechargeVO> getRebateReward(@RequestParam("userId")Integer userId);
+//	
+//	@RequestMapping("treasure/mobile/getVipReward")
+//	List<MemberRechargeVO> getVipReward(@RequestParam("userId")Integer userId);
+	
+	@RequestMapping("treasure/mobile/getAccountDetails")
+	CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
+
+	@RequestMapping("treasure/mobile/accountChangeStatistics")
+	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId);
+
+	@RequestMapping("/treasure/mobile/verifyPassword")
+	String verifyPassword(@RequestParam("userId") Integer userId);
 }
 
