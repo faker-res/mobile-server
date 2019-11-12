@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.lzkj.mobile.vo.*;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -172,5 +173,11 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/accounts/mobile/verifyPassword")
 	String verifyPassword(@RequestParam("userId") Integer userId);
+	
+	@RequestMapping("/accounts/mobile/getDomainInfo")
+	List<DomainInfoVO> getDomainInfo();
+	
+	@RequestMapping("/accounts/mobile/updateDomainRecord")
+	void updateDomainRecord(@RequestParam("status") Integer status,@RequestParam("date") String date,@RequestParam("sort") Integer sort);
 }
 

@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,6 +53,7 @@ import com.lzkj.mobile.exception.YunpianException;
 import com.lzkj.mobile.mongo.GameRecord;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.schedule.RequestDomainSchedule;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
@@ -80,7 +83,6 @@ public class MobileInterfaceController {
 
 //    @Value("#{${pay.url}}")
 //    private Map<String, String> payUrlList;
-
 
     @Autowired
     private TreasureServiceClient treasureServiceClient;
@@ -1178,6 +1180,7 @@ public class MobileInterfaceController {
      * @param qudaoId 渠道ID
      * @return
      */
+    @Deprecated
     @RequestMapping("/payPageLoad")
     private String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
         if (amount.equals(null) || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
@@ -1258,14 +1261,16 @@ public class MobileInterfaceController {
             data.put("ownerOrderId", onLineOrderVO.getOrderId());
             data.put("payType", payInfoVO.getPayTypeCode());
             data.put("appId", payInfoVO.getAppId());
+            data.put("formSendUrl", RequestDomainSchedule.formSendUrl);
             String params = getParam(data);
             String sign = "amount=" + data.get("amount") + "&backUrl=" + data.get("backUrl") + "&memberId=" + data.get("memberId") +
                     "&memberKey=" + data.get("memberKey") + "&ownerId=" + data.get("ownerId") + "&ownerOrderId=" + data.get("ownerOrderId") +
-                    "&payType=" + data.get("payType") + "&appId=" + data.get("appId");
+                    "&payType=" + data.get("payType") + "&appId=" + data.get("appId") + "&formSendUrl=" + data.get("formSendUrl");
             sign = MD5Encode(sign + payOwnerInfo.getOwnerKey(), "utf-8");
             params += "&ownerSign=" + sign;
             log.info("发送到中转中心：" + payInfoVO.getSendUrl() + "?" + params);
-            mag = HttpRequest.sendPost(payInfoVO.getSendUrl(), params);
+            //payInfoVO.getSendUrl()
+            mag = HttpRequest.sendPost(RequestDomainSchedule.domainSendUrl, params);
             return mag;
 
 
@@ -1700,29 +1705,16 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
         Map<String, Object> data = new HashMap<>();
-        if(vipLevel == null) {
-        	VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
-        	zeroLevel.setVipIntegral(zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral()));
-        	VipLevelRewardVO vo = new VipLevelRewardVO();
-        	vo.setVipLevel(0);
-    		vo.setWeekReward(BigDecimal.ZERO);
-    		vo.setStatus(1);
-    		w1.add(vo);
-    		vo.setVipLevel(0);
-    		vo.setMonthReward(BigDecimal.ZERO);
-    		vo.setStatus(1);
-    		w2.add(vo);
-    		vo.setVipLevel(0);
-    		vo.setVipRankReward(BigDecimal.ZERO);
-    		vo.setStatus(1);
-    		w3.add(vo);
-    		data.put("VipLevels", zeroLevel);
-            data.put("weekList", w1);
-            data.put("monthList", w2);
-            data.put("vipLevelList", w3);
-            globeResponse.setData(data);
-            return globeResponse;
+        VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
+
+        BigDecimal s = new BigDecimal("0");
+        if(vipLevel.getTotal()!=null) {
+        	s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
+        }else {
+        	s = zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral());
+        	vipLevel.setTotal(zeroLevel.getTotal());
         }
+        vipLevel.setVipIntegral(s);
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
@@ -1741,9 +1733,7 @@ public class MobileInterfaceController {
             }
         	platformServiceClient.insertVipRankReceive(lists);
         }
-        BigDecimal s = new BigDecimal("0");
-        s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
-        vipLevel.setVipIntegral(s);
+        
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1794,13 +1784,10 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w3.add(vo);
         }
-        //UserInformationVO userInfo = accountsServiceClient.getUserInfo(userId);
-        
         data.put("VipLevels", vipLevel);
         data.put("weekList", w1);
         data.put("monthList", w2);
         data.put("vipLevelList", w3);
-        //data.put("UserInfo", userInfo);
         globeResponse.setData(data);
         return globeResponse;
     }
@@ -1868,6 +1855,11 @@ public class MobileInterfaceController {
         videoTypeVO.setKindId(10000);
         videoTypeVO.setKindName("天天棋牌");
         list.add(videoTypeVO);
+        videoTypeVO = new VideoTypeVO();
+        videoTypeVO.setKindId(1);
+        videoTypeVO.setKindName("全部");
+        list.add(videoTypeVO);
+        Collections.sort(list, Comparator.comparing(VideoTypeVO::getKindId));
         Map<String, Object> data = new HashMap<>();
         data.put("list", list);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
@@ -1885,9 +1877,9 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getDate() {
     	List<Map<String, String>> data =new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
-        map.put("code", "0");
-        map.put("name", "全部时间");
-        data.add(map);
+//        map.put("code", "0");
+//        map.put("name", "全部时间");
+//        data.add(map);
         map = new HashMap<String, String>();
         map.put("code", "1");
         map.put("name", "今天");
@@ -1937,6 +1929,11 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getTransactionType() {
         List<TransactionTypeVO> list = treasureServiceClient.getTransactionType();
         Map<String, Object> data = new HashMap<>();
+        TransactionTypeVO transactionTypeVO = new TransactionTypeVO();
+        transactionTypeVO.setTypeId(0);
+        transactionTypeVO.setTypeName("全部");
+        list.add(transactionTypeVO);
+        Collections.sort(list, Comparator.comparing(TransactionTypeVO::getTypeId));
         data.put("list", list);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
