@@ -544,7 +544,7 @@ public class MobileInterfaceController {
      * @param phone
      * @param type
      * @return sendMode = 1 为完美短信发送   2 为3D短信发送    3-4 都为众鑫短信   5 为188短信   6 为天朝短信   7 为至尊短信
-     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来
+     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117
      */
     @RequestMapping("/getCode")
     private GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
@@ -676,7 +676,7 @@ public class MobileInterfaceController {
             log.info("短信发送失败：" + resTxt);
         }
 
-        if (sendMode == 4 || sendMode == 8) {
+        if (sendMode == 4 || sendMode == 8 || sendMode == 12 || sendMode == 13) {
             try {
                 SendSmsResponse response = singleALYSend(phone, vCode, sendMode);
                 log.info("阿里云短信接口返回的数据----------------");
@@ -792,7 +792,14 @@ public class MobileInterfaceController {
             accessKeyId = "LTAI7MgeSd8w0ji0";
             accessKeySecret = "wMwkKDHo5drZFRd3nUQpHgXe7jMKnw";
         }
-
+        if (sendMode == 12) {//大发
+            accessKeyId = "LTAI4FqyxG1Ke9Ba5Et1k7dT";
+            accessKeySecret = "O7OhzgufrypeJ8lgJzKGdXe45IiPLE";
+        }
+        if (sendMode == 13) {//117
+            accessKeyId = "LTAI4FxhXrZEGBT3YA8JMUTz";
+            accessKeySecret = "4ZWAr0ORKMPlUHyoPg9hvRCWHao7p2";
+        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -819,6 +826,22 @@ public class MobileInterfaceController {
             request.setSignName("联众");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_172530463");
+            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
+        }
+        if (sendMode == 12) {//大发
+            //必填:短信签名-可在短信控制台中找到
+            request.setSignName("大发");
+            //必填:短信模板-可在短信控制台中找到
+            request.setTemplateCode("SMS_177248087");
+            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
+        }
+        if (sendMode == 13) {//117
+            //必填:短信签名-可在短信控制台中找到
+            request.setSignName("117APP");
+            //必填:短信模板-可在短信控制台中找到
+            request.setTemplateCode("SMS_177253376");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
@@ -1707,6 +1730,11 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
+        	if(i == size) {
+        		vipLevel.setVipIntegral(new BigDecimal("0"));
+        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
+        		break;
+        	}
         	if(vipLevel.getVipLevel() == 0) {
         		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
@@ -1715,11 +1743,6 @@ public class MobileInterfaceController {
         	if(vipLevel.getVipLevel() == vipConfig.get(i).getVipLevel()) {
         		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
-        		break;
-        	}
-        	if(i == size) {
-        		vipLevel.setVipIntegral(new BigDecimal("0"));
-        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
         		break;
         	}
         		
@@ -2025,13 +2048,11 @@ public class MobileInterfaceController {
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<PersonalReportVO> list = accountsServiceClient.getPersonalReport(kindType,date,userId);
+    	PersonalReportVO list = accountsServiceClient.getPersonalReport(kindType,date,userId);
     	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId);
-    	PersonalReportVO personalReportVO = new PersonalReportVO();
-    	personalReportVO.setBackwater(rebate);
-    	list.add(personalReportVO);
+    	list.setBackwater(rebate);
     	data.put("list", list);
-    	globeResponse.setData(list);
+    	globeResponse.setData(data);
     	return globeResponse;
     }
 
