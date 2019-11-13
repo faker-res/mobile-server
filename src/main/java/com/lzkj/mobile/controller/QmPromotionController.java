@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -165,49 +166,9 @@ public class QmPromotionController {
         return globeResponse;
     }
 
-//    /**
-//     * 用户奖励
-//     * @param userId
-//     * @return
-//     */
-//    @RequestMapping("getUserReward")
-//    public GlobeResponse<Object> getUserReward (Integer userId){
-//        QmUserRewardVO list = qmPromotionServiceClient.getUserReward(userId);
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        Map<String,Object> data = new HashMap<>();
-//        data.put("list",list);
-//        globeResponse.setData(data);
-//        return globeResponse;
-//    }
-//
-//
-//
-//    /**
-//     * 推广明细
-//     * @param userId
-//     * @return
-//     */
-//    @RequestMapping("getPromotionDetails")
-//    public GlobeResponse<Object> getPromotionDetails (Integer userId){
-//        List<QmPromotionListVO> list = qmPromotionServiceClient.getPromotionDetails(userId);
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        Map<String,Object> data = new HashMap<>();
-//        data.put("list",list);
-//        globeResponse.setData(data);
-//        return globeResponse;
-//    }
-
-//    /**
-//     * 推广周榜
-//     * @return
-//     */
-//    @RequestMapping("getWeekTopList")
-//    public GlobeResponse<Object> getWeekTopList(){
-//        List<QmWeekTopListVO> list = qmPromotionServiceClient.getWeekTopList();
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        Map<String,Object> data = new HashMap<>();
-//        data.put("list",list);
-//        globeResponse.setData(data);
-//        return globeResponse;
-//    }
+   @RequestMapping("/receiveCommission")
+    private GlobeResponse<Object> receiveCommission(Integer userId){
+       BigDecimal score = qmPromotionServiceClient.receiveCommission(userId);
+       return null;
+   }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators.In;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -128,6 +129,9 @@ public interface AccountsServiceClient {
     
     @RequestMapping("/accounts/mobile/getUserVipLevel")
     VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getVipLevelConfig")
+    List<VipLevelRewardVO> getVipLevelConfig(@RequestParam("parentId")Integer parentId);
     
     @RequestMapping("/accounts/mobile/getUsersInfo")
     UserInformationVO getUsersInfo(@RequestParam("userId")Integer userId);

@@ -43,19 +43,19 @@ public class AgentSystemController {
     @Value("${channelGameUrl}")
     private String channelGameUrl;
 
-    /**
-     * 全民代理 -我的推广(首页信息)
-     *
-     * @param userId
-     * @return
-     */
-    @RequestMapping("/getAgentMyPopularize")
-    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
-        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(agentSystemVO);
-        return globeResponse;
-    }
+//    /**
+//     * 全民代理 -我的推广(首页信息)
+//     *
+//     * @param userId
+//     * @return
+//     */
+//    @RequestMapping("/getAgentMyPopularize")
+//    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
+//        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
+//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//        globeResponse.setData(agentSystemVO);
+//        return globeResponse;
+//    }
 
     /**
      * 代理系统-我的玩家
