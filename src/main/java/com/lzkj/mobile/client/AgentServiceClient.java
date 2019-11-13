@@ -57,6 +57,9 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/promotion/receiveCommission")
     BigDecimal receiveCommission(@RequestParam("userId")Integer userId);
 
+    @RequestMapping("/agent/mobile/promotion/getTeamMember")
+    MyPopularizeVO getTeamMember(@RequestParam("userId")Integer userId);
+
     /******************************代理系统**************************************/
 
     @RequestMapping("/agent/mobile/agentsystem/getAgentMyPopularize")
@@ -122,6 +125,5 @@ public interface AgentServiceClient {
 
     @RequestMapping("agent/access2game/getAccessAgent")
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
-
 
 }
