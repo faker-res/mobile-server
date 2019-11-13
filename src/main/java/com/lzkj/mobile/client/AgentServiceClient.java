@@ -1,5 +1,6 @@
 package com.lzkj.mobile.client;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +120,7 @@ public interface AgentServiceClient {
     @RequestMapping("agent/access2game/getAccessAgent")
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
 
-
+    @RequestMapping("/agent/mobile/getUserRebate")
+    BigDecimal getUserRebate(@RequestParam("kindType")Integer kindType,@RequestParam("userId") Integer userId);
 
 }
