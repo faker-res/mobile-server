@@ -1730,6 +1730,11 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
+        	if(i == size) {
+        		vipLevel.setVipIntegral(new BigDecimal("0"));
+        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
+        		break;
+        	}
         	if(vipLevel.getVipLevel() == 0) {
         		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
@@ -1738,11 +1743,6 @@ public class MobileInterfaceController {
         	if(vipLevel.getVipLevel() == vipConfig.get(i).getVipLevel()) {
         		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
-        		break;
-        	}
-        	if(i == size) {
-        		vipLevel.setVipIntegral(new BigDecimal("0"));
-        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
         		break;
         	}
         		
