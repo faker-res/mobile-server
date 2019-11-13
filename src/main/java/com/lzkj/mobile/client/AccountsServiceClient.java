@@ -146,7 +146,7 @@ public interface AccountsServiceClient {
     CommonPageVO<ChannelGameUserBetAndScoreVO> getChannelGameUserBetAndScore(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("kindId") Integer kindId,@RequestParam("userId") Integer userId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
     
     @RequestMapping("/accounts/mobile/getPersonalReport")
-    List<PersonalReportVO> getPersonalReport(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("userId") Integer userId);
+    PersonalReportVO getPersonalReport(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("userId") Integer userId);
     
     @RequestMapping("/accounts/mobile/getUserVipZeroLevel")
     VipLevelRewardVO getUserVipZeroLevel(@RequestParam("userId") Integer userId);

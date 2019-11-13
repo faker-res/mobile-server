@@ -2048,13 +2048,11 @@ public class MobileInterfaceController {
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<PersonalReportVO> list = accountsServiceClient.getPersonalReport(kindType,date,userId);
+    	PersonalReportVO list = accountsServiceClient.getPersonalReport(kindType,date,userId);
     	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId);
-    	PersonalReportVO personalReportVO = new PersonalReportVO();
-    	personalReportVO.setBackwater(rebate);
-    	list.add(personalReportVO);
+    	list.setBackwater(rebate);
     	data.put("list", list);
-    	globeResponse.setData(list);
+    	globeResponse.setData(data);
     	return globeResponse;
     }
 
