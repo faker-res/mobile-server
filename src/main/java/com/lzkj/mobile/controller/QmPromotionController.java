@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -164,4 +165,10 @@ public class QmPromotionController {
         globeResponse.setData(list);
         return globeResponse;
     }
+
+   @RequestMapping("/receiveCommission")
+    private GlobeResponse<Object> receiveCommission(Integer userId){
+       BigDecimal score = qmPromotionServiceClient.receiveCommission(userId);
+       return null;
+   }
 }
