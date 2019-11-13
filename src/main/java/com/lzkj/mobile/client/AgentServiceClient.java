@@ -1,12 +1,13 @@
 package com.lzkj.mobile.client;
 
-import java.util.List;
-import java.util.Map;
-
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "agent-service")
 public interface AgentServiceClient {
@@ -52,6 +53,9 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/promotion/getAchieveDetail")
     List<QmPromotionDetailVO> getAchieveDetail(@RequestParam("userId")Integer userId, @RequestParam("kindType")Integer kindType);
+
+    @RequestMapping("/agent/mobile/promotion/receiveCommission")
+    BigDecimal receiveCommission(@RequestParam("userId")Integer userId);
 
     /******************************代理系统**************************************/
 
@@ -118,7 +122,9 @@ public interface AgentServiceClient {
 
     @RequestMapping("agent/access2game/getAccessAgent")
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
-
+    
+    @RequestMapping("agent/mobile/getUserRebate")
+    BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId);
 
 
 }

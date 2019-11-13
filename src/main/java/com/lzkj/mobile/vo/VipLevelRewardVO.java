@@ -20,4 +20,6 @@ public class VipLevelRewardVO {
 	private Integer status;
 	
 	private BigDecimal total;
+	
+	private BigDecimal vipVersion;
 }
