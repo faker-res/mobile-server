@@ -10,4 +10,5 @@ public class PersonalReportVO {
 	private BigDecimal totalProfit;
 	private BigDecimal betAmount;
 	private BigDecimal score;
+	private BigDecimal backwater;
 }

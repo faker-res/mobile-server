@@ -1704,17 +1704,37 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
-        Map<String, Object> data = new HashMap<>();
-        VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
-
-        BigDecimal s = new BigDecimal("0");
-        if(vipLevel.getTotal()!=null) {
-        	s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
-        }else {
-        	s = zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral());
-        	vipLevel.setTotal(zeroLevel.getTotal());
+        List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
+        int size = vipConfig.size() - 1;
+        for(int i = 0;i<vipConfig.size();i++) {
+        	if(vipLevel.getVipLevel() == 0) {
+        		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
+        		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
+        		break;
+        	}
+        	if(vipLevel.getVipLevel() == vipConfig.get(i).getVipLevel()) {
+        		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
+        		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
+        		break;
+        	}
+        	if(i == size) {
+        		vipLevel.setVipIntegral(new BigDecimal("0"));
+        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
+        		break;
+        	}
+        		
         }
-        vipLevel.setVipIntegral(s);
+        Map<String, Object> data = new HashMap<>();
+//        VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
+//
+//        BigDecimal s = new BigDecimal("0");
+//        if(vipLevel.getTotal()!=null) {
+//        	s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
+//        }else {
+//        	s = zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral());
+//        	vipLevel.setTotal(zeroLevel.getTotal());
+//        }
+//        vipLevel.setVipIntegral(s);
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
@@ -1784,10 +1804,27 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w3.add(vo);
         }
+        Integer agentId = parentId;
+        List<CleanChipsConfigVO> ls = platformServiceClient.getCleanChipsConfig(agentId);
+        List<VipLevelRewardVO> clearBetAmount = new ArrayList<VipLevelRewardVO>();
+        for(int i = 0;i<ls.size();i++) {
+        	VipLevelRewardVO vo = new VipLevelRewardVO();
+        	if(vipLevel.getVipLevel() == 0) {
+        		if(ls.get(i).getVipLevel() == 1) {
+        			vo.setVipLevel(0);
+        			vo.setVipVersion(ls.get(i).getVipVersion());
+        		}
+        	}else {
+        		vo.setVipLevel(ls.get(i).getVipLevel());
+        		vo.setVipVersion(ls.get(i).getVipVersion());
+        	}
+        	clearBetAmount.add(vo);
+        }
         data.put("VipLevels", vipLevel);
         data.put("weekList", w1);
         data.put("monthList", w2);
         data.put("vipLevelList", w3);
+        data.put("clearBetAmount", clearBetAmount);
         globeResponse.setData(data);
         return globeResponse;
     }
@@ -1929,11 +1966,6 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getTransactionType() {
         List<TransactionTypeVO> list = treasureServiceClient.getTransactionType();
         Map<String, Object> data = new HashMap<>();
-        TransactionTypeVO transactionTypeVO = new TransactionTypeVO();
-        transactionTypeVO.setTypeId(0);
-        transactionTypeVO.setTypeName("全部");
-        list.add(transactionTypeVO);
-        Collections.sort(list, Comparator.comparing(TransactionTypeVO::getTypeId));
         data.put("list", list);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
@@ -1994,6 +2026,10 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	List<PersonalReportVO> list = accountsServiceClient.getPersonalReport(kindType,date,userId);
+    	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId);
+    	PersonalReportVO personalReportVO = new PersonalReportVO();
+    	personalReportVO.setBackwater(rebate);
+    	list.add(personalReportVO);
     	data.put("list", list);
     	globeResponse.setData(list);
     	return globeResponse;
