@@ -42,11 +42,12 @@ public class QmPromotionController {
 
     /**
      * 提取记录
+     *
      * @param request
      * @return
      */
     @RequestMapping("/getAppLiquidation")
-    public GlobeResponse<Object> getAppLiquidation (HttpServletRequest request){
+    public GlobeResponse<Object> getAppLiquidation(HttpServletRequest request) {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -55,28 +56,28 @@ public class QmPromotionController {
         Integer pageSize = pageSizeParam == null ? 10 : Integer.parseInt(pageSizeParam);
         Integer userId = userIdParam == null ? 0 : Integer.parseInt(userIdParam);
 
-        QmLiquidationPageVo pageVo = qmPromotionServiceClient.getAppLiquidation(userId,pageIndex,pageSize);
+        QmLiquidationPageVo pageVo = qmPromotionServiceClient.getAppLiquidation(userId, pageIndex, pageSize);
         Map<String, Object> data = new HashMap<>(8);
-        data.put("total",0);
-        data.put("list",new ArrayList<>());
+        data.put("total", 0);
+        data.put("list", new ArrayList<>());
         List<QmLiquidationRewardRecordVO> list = new ArrayList<>();
         if (pageVo.getRecordCount() > 0) {
-            pageVo.getQmLiquidationRewardRecordVO().stream().forEach(l->{
+            pageVo.getQmLiquidationRewardRecordVO().stream().forEach(l -> {
                 QmLiquidationRewardRecordVO Liquidation = new QmLiquidationRewardRecordVO();
                 getAllFields(l);
                 Liquidation.setUserID(l.getUserID());
                 Liquidation.setCreateDate(l.getCreateDate());
                 Liquidation.setLiquidationReward(l.getLiquidationReward());
                 Liquidation.setStatus(l.getStatus());
-                if(l.getStatus() == 0){
+                if (l.getStatus() == 0) {
                     Liquidation.setStatusWord("成功");
-                }else{
+                } else {
                     Liquidation.setStatusWord("失败");
                 }
                 list.add(Liquidation);
             });
             data.put("total", pageVo.getRecordCount());
-            data.put("list",list);
+            data.put("list", list);
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
@@ -85,11 +86,11 @@ public class QmPromotionController {
 
     /**
      * 查询推广佣金配置
-     *  1.视讯，2.电子，3.棋牌,4.捕鱼,5.体育,6.彩票
+     * 1.视讯，2.电子，3.棋牌,4.捕鱼,5.体育,6.彩票
      */
     @RequestMapping("/zzSysRatio")
     private GlobeResponse<Object> getZzSysRatio(Integer agentId) {
-        if (agentId==null||agentId ==0){
+        if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
         List<ZzSysRatioVO> list = qmPromotionServiceClient.getZzSysConfig(agentId);
@@ -100,33 +101,38 @@ public class QmPromotionController {
 
     /**
      * 直属玩家查询（gameid,昵称，今日流水，总流水，团队人数，直属人数）
-     *
+     * <p>
      * 查询全部： gameid 0,data ''
      * code：0:所有，1：今日，2：昨日，3本周，4，本月
      */
     @RequestMapping("/directQuery")
-    private GlobeResponse<Object> getDirectQuery(Integer userId,Integer gameId,int code){
-        String date =new String();
-        switch (code){
+    private GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code) {
+        String date = new String();
+        switch (code) {
             case 0:
-                date="";
+                date = "";
                 break;
             case 1:
-                date=getInitial();
+                date = getInitial();
                 break;
             case 2:
-                date=getYesterday();
+                date = getYesterday();
                 break;
             case 3:
-                date =startWeek();
+                date = startWeek();
                 break;
             case 4:
-                date =startMonth();
+                date = startMonth();
                 break;
         }
-        List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId,gameId,date);
-
-        GlobeResponse globeResponse =new GlobeResponse();
+        List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId, gameId, date);
+        MyPopularizeVO myPopularizeVO = qmPromotionServiceClient.getTeamMember(userId);
+        Map<String,Object> map =new HashMap<>();
+        map.put("list",list);
+        map.put("directlyMember",myPopularizeVO.getDirectlyMemberCount());
+        map.put("directlyAgent",myPopularizeVO.getDirectlyAgent());
+        map.put("todayTeamBet",myPopularizeVO.getTodayTeamBet());
+        GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
         return globeResponse;
     }
@@ -135,40 +141,47 @@ public class QmPromotionController {
      * 全民代理-直属玩家-推广详情
      */
     @RequestMapping("/directPromotionDetail")
-    private GlobeResponse<Object> getDirectPromotionDetail(Integer userId){
-        QmDayPromotionDetailVO qmDayPromotionDetailVO =qmPromotionServiceClient.getDirectPromotionDetail(userId);
-        GlobeResponse globeResponse =new GlobeResponse();
+    private GlobeResponse<Object> getDirectPromotionDetail(Integer userId) {
+        QmDayPromotionDetailVO qmDayPromotionDetailVO = qmPromotionServiceClient.getDirectPromotionDetail(userId);
+        GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(qmDayPromotionDetailVO);
         return globeResponse;
     }
 
     /**
      * 全民代理-业绩查询
-     *  useriD 当前玩家
-     *  根据玩家gameId查询
+     * useriD 当前玩家
+     * 根据玩家gameId查询
      */
-     @RequestMapping("/getDirectAchieve")
-     private GlobeResponse<Object> getDirectAchieve(Integer userId,Integer gameId){
-         List<QmPromotionDetailVO>list  = qmPromotionServiceClient.getDirectAchieve(userId,gameId);
-         GlobeResponse globeResponse =new GlobeResponse();
-         globeResponse.setData(list);
-         return globeResponse;
-     }
+    @RequestMapping("/getDirectAchieve")
+    private GlobeResponse<Object> getDirectAchieve(Integer userId, Integer gameId) {
+        List<QmPromotionDetailVO> list = qmPromotionServiceClient.getDirectAchieve(userId, gameId);
+        GlobeResponse globeResponse = new GlobeResponse();
+        globeResponse.setData(list);
+        return globeResponse;
+    }
 
     /**
      * 全民代理-业绩来源
      */
     @RequestMapping("/getAchieveDetail")
-    private GlobeResponse<Object> getAchieveDetail(Integer userId,Integer kindType){
-        List<QmPromotionDetailVO>list  = qmPromotionServiceClient.getAchieveDetail(userId,kindType);
-        GlobeResponse globeResponse =new GlobeResponse();
+    private GlobeResponse<Object> getAchieveDetail(Integer userId, Integer kindType) {
+        List<QmPromotionDetailVO> list = qmPromotionServiceClient.getAchieveDetail(userId, kindType);
+        GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
         return globeResponse;
     }
 
-   @RequestMapping("/receiveCommission")
-    private GlobeResponse<Object> receiveCommission(Integer userId){
-       BigDecimal score = qmPromotionServiceClient.receiveCommission(userId);
-       return null;
-   }
+    /**
+     *  全民-领取佣金
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/receiveCommission")
+    private GlobeResponse<Object> receiveCommission(Integer userId) {
+        BigDecimal score = qmPromotionServiceClient.receiveCommission(userId);
+        GlobeResponse globeResponse = new GlobeResponse();
+        globeResponse.setData(score);
+        return globeResponse;
+    }
 }

@@ -1748,16 +1748,6 @@ public class MobileInterfaceController {
         		
         }
         Map<String, Object> data = new HashMap<>();
-//        VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
-//
-//        BigDecimal s = new BigDecimal("0");
-//        if(vipLevel.getTotal()!=null) {
-//        	s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
-//        }else {
-//        	s = zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral());
-//        	vipLevel.setTotal(zeroLevel.getTotal());
-//        }
-//        vipLevel.setVipIntegral(s);
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
