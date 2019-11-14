@@ -1730,6 +1730,11 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
+        	if(i == size) {
+        		vipLevel.setVipIntegral(new BigDecimal("0"));
+        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
+        		break;
+        	}
         	if(vipLevel.getVipLevel() == 0) {
         		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
@@ -1740,24 +1745,9 @@ public class MobileInterfaceController {
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
         		break;
         	}
-        	if(i == size) {
-        		vipLevel.setVipIntegral(new BigDecimal("0"));
-        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
-        		break;
-        	}
         		
         }
         Map<String, Object> data = new HashMap<>();
-//        VipLevelRewardVO zeroLevel = accountsServiceClient.getUserVipZeroLevel(userId);
-//
-//        BigDecimal s = new BigDecimal("0");
-//        if(vipLevel.getTotal()!=null) {
-//        	s = vipLevel.getTotal().subtract(vipLevel.getVipIntegral());
-//        }else {
-//        	s = zeroLevel.getTotal().subtract(zeroLevel.getVipIntegral());
-//        	vipLevel.setTotal(zeroLevel.getTotal());
-//        }
-//        vipLevel.setVipIntegral(s);
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
@@ -2048,13 +2038,11 @@ public class MobileInterfaceController {
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<PersonalReportVO> list = accountsServiceClient.getPersonalReport(kindType,date,userId);
+    	PersonalReportVO list = accountsServiceClient.getPersonalReport(kindType,date,userId);
     	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId);
-    	PersonalReportVO personalReportVO = new PersonalReportVO();
-    	personalReportVO.setBackwater(rebate);
-    	list.add(personalReportVO);
+    	list.setBackwater(rebate);
     	data.put("list", list);
-    	globeResponse.setData(list);
+    	globeResponse.setData(data);
     	return globeResponse;
     }
 
