@@ -1752,6 +1752,7 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
+        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
         if(level == null || level.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i < 9; i++) {
@@ -1802,14 +1803,16 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w2.add(vo);
         }
-        
+        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	if(vipLevel.getVipLevel() == level.get(i).getVipRank() && level.get(i).getNullity() == false) {
+        	int s = vipLevel.getVipLevel();
+        	int d = levels.get(i).getVipRank();
+        	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == false) {
 				status = 0;
         	}
-        	if(vipLevel.getVipLevel() == level.get(i).getVipRank() && level.get(i).getNullity() == true) {
+        	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == true) {
 				status = 2;
         	}
     		vo.setVipLevel(list.get(i).getVipLevel());
@@ -1826,6 +1829,9 @@ public class MobileInterfaceController {
         		if(ls.get(i).getVipLevel() == 1) {
         			vo.setVipLevel(0);
         			vo.setVipVersion(ls.get(i).getVipVersion());
+        		}else {
+        			vo.setVipLevel(ls.get(i).getVipLevel());
+            		vo.setVipVersion(ls.get(i).getVipVersion());
         		}
         	}else {
         		vo.setVipLevel(ls.get(i).getVipLevel());
@@ -1838,6 +1844,7 @@ public class MobileInterfaceController {
         data.put("monthList", w2);
         data.put("vipLevelList", w3);
         data.put("clearBetAmount", clearBetAmount);
+        data.put("vipLevelCount", vipLevelCount);
         globeResponse.setData(data);
         return globeResponse;
     }
