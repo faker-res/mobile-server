@@ -97,6 +97,9 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/getUserLevelReceive")
 	List<VipRankReceiveVO> getUserLevelReceive(@RequestParam("userId")Integer userId);
+	
+	@RequestMapping("/platform/mobile/getVipLevelCount")
+	Integer getVipLevelCount(@RequestParam("parentId")Integer parentId);
 
 	@RequestMapping("/platform/mobile/insertVipRankReceive")
 	void insertVipRankReceive(@RequestBody List<VipRankReceiveVO> list);
