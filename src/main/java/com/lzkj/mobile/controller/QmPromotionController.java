@@ -133,7 +133,7 @@ public class QmPromotionController {
         map.put("directlyAgent",myPopularizeVO.getDirectlyAgent());
         map.put("todayTeamBet",myPopularizeVO.getTodayTeamBet());
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(list);
+        globeResponse.setData(map);
         return globeResponse;
     }
 
