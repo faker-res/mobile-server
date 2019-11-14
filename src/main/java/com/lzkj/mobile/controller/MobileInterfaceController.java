@@ -1826,6 +1826,9 @@ public class MobileInterfaceController {
         		if(ls.get(i).getVipLevel() == 1) {
         			vo.setVipLevel(0);
         			vo.setVipVersion(ls.get(i).getVipVersion());
+        		}else {
+        			vo.setVipLevel(ls.get(i).getVipLevel());
+            		vo.setVipVersion(ls.get(i).getVipVersion());
         		}
         	}else {
         		vo.setVipLevel(ls.get(i).getVipLevel());
