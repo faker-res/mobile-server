@@ -2049,7 +2049,7 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	PersonalReportVO list = accountsServiceClient.getPersonalReport(kindType,date,userId);
-    	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId);
+    	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId,date);
     	list.setBackwater(rebate);
     	data.put("list", list);
     	globeResponse.setData(data);

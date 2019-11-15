@@ -138,7 +138,7 @@ public class QmPromotionController {
     }
 
     /**
-     * 全民代理-直属玩家-推广详情
+     * 全民代理-直属玩家-直属玩家详情
      */
     @RequestMapping("/directPromotionDetail")
     private GlobeResponse<Object> getDirectPromotionDetail(Integer userId) {
