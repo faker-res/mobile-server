@@ -127,6 +127,6 @@ public interface AgentServiceClient {
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
     
     @RequestMapping("agent/mobile/getUserRebate")
-    BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId);
+    BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId,@RequestParam("date") Integer date);
 
 }
