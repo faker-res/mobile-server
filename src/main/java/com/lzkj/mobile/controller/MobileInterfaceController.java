@@ -1970,7 +1970,7 @@ public class MobileInterfaceController {
     	CommonPageVO<ChannelGameUserBetAndScoreVO> list = accountsServiceClient.getChannelGameUserBetAndScore(kindType,date,kindId,userId,pageIndex,pageSize);
         Map<String, Object> data = new HashMap<>();
         data.put("list", list.getLists());
-        data.put("total", list.getRecordCount());
+        data.put("total", list.getPageCount());
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
