@@ -2051,6 +2051,7 @@ public class MobileInterfaceController {
     	PersonalReportVO list = accountsServiceClient.getPersonalReport(kindType,date,userId);
     	BigDecimal rebate = agentServiceClient.getUserRebate(kindType, userId,date);
     	list.setBackwater(rebate);
+    	list.setTotalProfit(list.getScore().add(rebate));
     	data.put("list", list);
     	globeResponse.setData(data);
     	return globeResponse;
