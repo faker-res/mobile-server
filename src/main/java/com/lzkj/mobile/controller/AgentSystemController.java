@@ -578,4 +578,33 @@ public class AgentSystemController {
         	return globeResponse;
         throw new GlobeException(SystemConstants.FAIL_CODE, param.get("msg").toString());
     }
+
+    /**
+     * 提现流水详情
+     */
+    @RequestMapping("/cashFlowDetails")
+    public GlobeResponse<Object> cashFlowDetails(Integer agentId,Integer gameId) {
+        if (agentId == null || gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
+        List<Map<String, Object>> param = this.agentClient.cashFlowDetails(agentId,gameId);
+        globeResponse.setData(param);
+        return globeResponse;
+    }
+
+    /**
+     * 资金明细
+     */
+    @RequestMapping("/fundDetails")
+    public GlobeResponse<Object> fundDetails(Integer gameId,Integer agentId ) {
+        if (gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<Map<String, Object>> param = this.agentClient.fundDetails(gameId,agentId);
+        globeResponse.setData(param);
+        return globeResponse;
+    }
 }
