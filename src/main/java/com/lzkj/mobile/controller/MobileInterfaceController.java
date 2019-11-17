@@ -994,7 +994,7 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
-        Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId);   //第三方充值渠道
+        Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
         List<Object> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
         List<PayTypeList> lists = new ArrayList<>();
         if (companyList != null) {
@@ -1709,8 +1709,8 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    
-    
+
+
     /**
      * 查询玩家VIP等级
      *
@@ -1745,7 +1745,7 @@ public class MobileInterfaceController {
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
         		break;
         	}
-        		
+
         }
         Map<String, Object> data = new HashMap<>();
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
@@ -1763,11 +1763,11 @@ public class MobileInterfaceController {
                 vo.setRankMoney(BigDecimal.ZERO);
                 vo.setReceiveDate(TimeUtil.getNow());
                 lists.add(vo);
-                
+
             }
         	platformServiceClient.insertVipRankReceive(lists);
         }
-        
+
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1785,7 +1785,7 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w1.add(vo);
         }
-        
+
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1880,7 +1880,7 @@ public class MobileInterfaceController {
         globeResponse.setData(count);
         return globeResponse;
     }
-    
+
     /**
      * 修改用户个人信息
      *
@@ -1897,8 +1897,8 @@ public class MobileInterfaceController {
         globeResponse.setData(count);
         return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取所有平台
      *
@@ -1923,7 +1923,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 获取时间
      *
@@ -1955,7 +1955,7 @@ public class MobileInterfaceController {
         globeResponse.setData(maps);
         return globeResponse;
     }
-    
+
     /**
      * 获取投注记录
      *
@@ -1975,7 +1975,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 获取所有交易类型
      *
@@ -1991,7 +1991,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 获取账户明细
      *
@@ -2033,8 +2033,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
         return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取个人报表
      *
