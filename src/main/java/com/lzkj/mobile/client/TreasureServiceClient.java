@@ -174,8 +174,11 @@ public interface TreasureServiceClient {
 	@RequestMapping("/accounts/mobile/verifyPassword")
 	String verifyPassword(@RequestParam("userId") Integer userId);
 	
-	@RequestMapping("/treasure/mobile/getDomainInfo")
-	List<DomainInfoVO> getDomainInfo();
+	@RequestMapping("/treasure/mobile/getPayLineConfig")
+	List<PayUrlListVO> getPayLineConfig();
+	
+	@RequestMapping("/treasure/mobile/updatePayUrl")
+	void updatePayUrl(@RequestParam("url") String url);
 	
 	@RequestMapping("/treasure/mobile/updateDomainRecord")
 	void updateDomainRecord(@RequestParam("status") Integer status,@RequestParam("date") String date,@RequestParam("sort") Integer sort);
