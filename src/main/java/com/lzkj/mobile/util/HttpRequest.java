@@ -31,7 +31,7 @@ public class HttpRequest {
 			// 设置通用的请求属性
 			connection.setRequestProperty("accept", "*/*");
 			connection.setRequestProperty("connection", "Keep-Alive");
-			connection.setReadTimeout(10000);
+			connection.setReadTimeout(15000);
 			connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 			// 建立实际的连接
 			connection.connect();
