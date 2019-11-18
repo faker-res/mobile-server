@@ -1782,14 +1782,14 @@ public class MobileInterfaceController {
         String vip = "VIPOpen";
         Map<String, Object> data = new HashMap<>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<SystemStatusInfoVO> isOpen = platformServiceClient.getSystemOpen(parentId);
-        for (SystemStatusInfoVO s : isOpen) {
-        	if (s.getStatusName().equals(vip) && s.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
-        		data.put("isOpen", "1");
-        		globeResponse.setData(data);
-                return globeResponse;
-        	}
-        }
+//        List<SystemStatusInfoVO> isOpen = platformServiceClient.getSystemOpen(parentId);
+//        for (SystemStatusInfoVO s : isOpen) {
+//        	if (s.getStatusName().equals(vip) && s.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
+//        		data.put("isOpen", "1");
+//        		globeResponse.setData(data);
+//                return globeResponse;
+//        	}
+//        }
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
@@ -1814,7 +1814,7 @@ public class MobileInterfaceController {
         	}
 
         }
-        
+
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
@@ -2146,7 +2146,7 @@ public class MobileInterfaceController {
         globeResponse.setMsg("验证失败");
         return globeResponse;
     }
-    
+
     /**
      * 获取红包奖励
      *
@@ -2168,7 +2168,7 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
+
     /**
      * 领取红包奖励
      *
