@@ -399,11 +399,13 @@ public class AgentSystemController {
                 }
             }
         }
-//        Integer typeId = 1;
+        Integer typeId = 1;
+        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
 	    List<PlatformVO> platfromList = platformServiceClient.getAgentGameListByGameTypeItem(Integer.valueOf(agentId));
         List<AgentMobileKindConfigVO> thirdList =  platformServiceClient.getAgentGameByGameTypeItem(Integer.valueOf(agentId));
         data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
+        data.put("GameList",mobileKindList);
         data.put("imgUrl", gameImgUrl);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
