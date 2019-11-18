@@ -42,7 +42,7 @@ public class AgentSystemController {
 
     @Value("${channelGameUrl}")
     private String channelGameUrl;
-    
+
     @Value("${gameImg.url}")
     private String gameImgUrl;
 
@@ -321,13 +321,6 @@ public class AgentSystemController {
                 }
             }
             //如果总控没有维护,并且业主维护的时候
-            if (!flag) {
-                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
-                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
-                    	flag = true;
-                    }
-                }
-            }
             if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                     data.put("vip", true);
@@ -390,6 +383,20 @@ public class AgentSystemController {
             	}else {
             		data.put("yebiIsopen", false);
             	}
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.WXDLOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("wxdlopen", true);
+                }else {
+                    data.put("wxdlopen", false);
+                }
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.SJZCOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("sjzcopen", true);
+                }else {
+                    data.put("sjzcopen", false);
+                }
             }
         }
 //        Integer typeId = 1;
