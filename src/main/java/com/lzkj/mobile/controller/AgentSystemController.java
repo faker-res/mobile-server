@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -606,7 +604,9 @@ public class AgentSystemController {
             userCodeDetailsVO.setStatus(0);
             userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
             userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
+            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
             globeResponse.setData(userCodeDetailsVO);
+
             return globeResponse;
         }
         globeResponse.setData(param);
