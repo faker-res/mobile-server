@@ -1791,7 +1791,7 @@ public class MobileInterfaceController {
 //        	}
 //        }
         List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
-        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
+        
         if(level == null || level.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i < 9; i++) {
@@ -1806,6 +1806,7 @@ public class MobileInterfaceController {
             }
         	platformServiceClient.insertVipRankReceive(lists);
         }
+        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
