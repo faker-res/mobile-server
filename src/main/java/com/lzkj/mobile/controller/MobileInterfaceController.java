@@ -2176,14 +2176,14 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getReceivingRedEnvelope")
-    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String ip,String machineId,Integer typeId) {
+    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
     	if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	HashMap map = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
-    	Integer ret = (Integer) map.get("ret");
+    	String ip = getIpAddress(request);
+    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
     	switch (ret) {
 		case -1:
 			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
