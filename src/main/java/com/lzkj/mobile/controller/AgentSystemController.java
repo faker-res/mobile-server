@@ -607,12 +607,12 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
-        List<UserCodeDetailsVO> param = this.accountsClient.cashFlowDetails(userId,agentId);
-        if (param.size() == 0) {
+        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId,agentId);
+        if (param == null) {
             globeResponse.setData(new UserCodeDetailsVO());
             return globeResponse;
         }
-        globeResponse.setData(param.get(0));
+        globeResponse.setData(param);
         return globeResponse;
     }
 
