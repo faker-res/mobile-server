@@ -1722,10 +1722,20 @@ public class MobileInterfaceController {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
+        String vip = "VIPOpen";
+        Map<String, Object> data = new HashMap<>();
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<SystemStatusInfoVO> isOpen = platformServiceClient.getSystemOpen(parentId);
+        for (SystemStatusInfoVO s : isOpen) {
+        	if (s.getStatusName().equals(vip) && s.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
+        		data.put("isOpen", "1");
+        		globeResponse.setData(data);
+                return globeResponse;
+        	}
+        }
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
         int size = vipConfig.size() - 1;
@@ -1747,7 +1757,7 @@ public class MobileInterfaceController {
         	}
         		
         }
-        Map<String, Object> data = new HashMap<>();
+        
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
@@ -1839,6 +1849,7 @@ public class MobileInterfaceController {
         	}
         	clearBetAmount.add(vo);
         }
+        data.put("isOpen", "0");
         data.put("VipLevels", vipLevel);
         data.put("weekList", w1);
         data.put("monthList", w2);
@@ -2079,6 +2090,52 @@ public class MobileInterfaceController {
         data.put("status",-1);
         globeResponse.setData(data);
         return globeResponse;
+    }
+    
+    /**
+     * 获取红包奖励
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getRedEnvelopeReward")
+    private GlobeResponse<Object> getRedEnvelopeReward(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<ActivityRedEnvelopeRewardVO> list = accountsServiceClient.getRedEnvelopeReward(userId,parentId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    /**
+     * 领取红包奖励
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getReceivingRedEnvelope")
+    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String ip,String machineId,Integer typeId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	HashMap map = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
+    	Integer ret = (Integer) map.get("ret");
+    	switch (ret) {
+		case -1:
+			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
+		}
+    	data.put("code", ret);
+    	globeResponse.setData(data);
+    	return globeResponse;
     }
 
 }

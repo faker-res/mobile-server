@@ -2,6 +2,7 @@ package com.lzkj.mobile.client;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
+import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
 import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
 import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
@@ -150,4 +152,10 @@ public interface AccountsServiceClient {
     
     @RequestMapping("/accounts/mobile/getUserVipZeroLevel")
     VipLevelRewardVO getUserVipZeroLevel(@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getRedEnvelopeReward")
+    List<ActivityRedEnvelopeRewardVO> getRedEnvelopeReward(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/accounts/mobile/getReceivingRedEnvelope")
+    HashMap getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId);
 }

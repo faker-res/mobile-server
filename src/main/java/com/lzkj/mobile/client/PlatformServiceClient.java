@@ -123,4 +123,7 @@ public interface PlatformServiceClient {
     List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId") Integer agentId);
 	@RequestMapping("/mobile/clean/getThirdConfig")
 	List<ThirdKindConfigVO> getThirdConfig(@RequestParam("kindType")int kindType);
+	
+	@RequestMapping("/mobile/clean/getSystemOpen")
+	List<SystemStatusInfoVO> getSystemOpen(@RequestParam("parentId")Integer parentId);
 }
