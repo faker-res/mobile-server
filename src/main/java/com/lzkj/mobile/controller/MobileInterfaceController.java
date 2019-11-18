@@ -2072,9 +2072,6 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	if(typeId == 9) {
-    		return globeResponse;
-    	}
     	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
     	List<MemberRechargeVO> l = page.getLists();
