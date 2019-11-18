@@ -1790,6 +1790,22 @@ public class MobileInterfaceController {
 //                return globeResponse;
 //        	}
 //        }
+        List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
+        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
+        if(level == null || level.size() == 0) {
+        	List<VipRankReceiveVO> lists = new ArrayList<>();
+        	for (int i = 1; i < 9; i++) {
+                VipRankReceiveVO vo = new VipRankReceiveVO();
+                vo.setVipRank(i);
+                vo.setUserId(userId);
+                vo.setNullity(false);
+                vo.setRankMoney(BigDecimal.ZERO);
+                vo.setReceiveDate(TimeUtil.getNow());
+                lists.add(vo);
+
+            }
+        	platformServiceClient.insertVipRankReceive(lists);
+        }
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
@@ -1818,22 +1834,22 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
-        List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
-        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-        if(level == null || level.size() == 0) {
-        	List<VipRankReceiveVO> lists = new ArrayList<>();
-        	for (int i = 1; i < 9; i++) {
-                VipRankReceiveVO vo = new VipRankReceiveVO();
-                vo.setVipRank(i);
-                vo.setUserId(userId);
-                vo.setNullity(false);
-                vo.setRankMoney(BigDecimal.ZERO);
-                vo.setReceiveDate(TimeUtil.getNow());
-                lists.add(vo);
-
-            }
-        	platformServiceClient.insertVipRankReceive(lists);
-        }
+//        List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
+//        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
+//        if(level == null || level.size() == 0) {
+//        	List<VipRankReceiveVO> lists = new ArrayList<>();
+//        	for (int i = 1; i < 9; i++) {
+//                VipRankReceiveVO vo = new VipRankReceiveVO();
+//                vo.setVipRank(i);
+//                vo.setUserId(userId);
+//                vo.setNullity(false);
+//                vo.setRankMoney(BigDecimal.ZERO);
+//                vo.setReceiveDate(TimeUtil.getNow());
+//                lists.add(vo);
+//
+//            }
+//        	platformServiceClient.insertVipRankReceive(lists);
+//        }
 
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
