@@ -399,13 +399,11 @@ public class AgentSystemController {
                 }
             }
         }
-        Integer typeId = 1;
-        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+//        Integer typeId = 1;
 	    List<PlatformVO> platfromList = platformServiceClient.getAgentGameListByGameTypeItem(Integer.valueOf(agentId));
         List<AgentMobileKindConfigVO> thirdList =  platformServiceClient.getAgentGameByGameTypeItem(Integer.valueOf(agentId));
         data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
-        data.put("GameList",mobileKindList);
         data.put("imgUrl", gameImgUrl);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
@@ -604,7 +602,11 @@ public class AgentSystemController {
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
         UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId,agentId);
         if (param == null) {
-            globeResponse.setData(new UserCodeDetailsVO());
+            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
+            userCodeDetailsVO.setStatus(0);
+            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
+            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
+            globeResponse.setData(userCodeDetailsVO);
             return globeResponse;
         }
         globeResponse.setData(param);
