@@ -60,10 +60,10 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/promotion/getTeamMember")
     MyPopularizeVO getTeamMember(@RequestParam("userId")Integer userId);
 
-    /******************************代理系统**************************************/
-
     @RequestMapping("/agent/mobile/agentsystem/getAgentMyPopularize")
     MyPopularizeVO getAgentMyPopularize( @RequestParam("userId") Integer userId);
+    /******************************代理系统**************************************/
+
 
     @RequestMapping("/agent/mobile/agentsystem/getAgentMyPlayer")
     List<MyPlayerVO> getAgentMyPlayer(@RequestParam("userId") Integer userId, @RequestParam("memberId") Integer memberId, @RequestParam("pageIndex") Integer pageIndex);
@@ -125,7 +125,7 @@ public interface AgentServiceClient {
 
     @RequestMapping("agent/access2game/getAccessAgent")
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
-    
+
     @RequestMapping("agent/mobile/getUserRebate")
     BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId,@RequestParam("date") Integer date);
 
