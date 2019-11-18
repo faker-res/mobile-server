@@ -42,7 +42,7 @@ public class AgentSystemController {
 
     @Value("${channelGameUrl}")
     private String channelGameUrl;
-    
+
     @Value("${gameImg.url}")
     private String gameImgUrl;
 
@@ -390,6 +390,20 @@ public class AgentSystemController {
             	}else {
             		data.put("yebiIsopen", false);
             	}
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.WXDLOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("wxdlopen", true);
+                }else {
+                    data.put("wxdlopen", false);
+                }
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.SJZCOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("sjzcopen", true);
+                }else {
+                    data.put("sjzcopen", false);
+                }
             }
         }
 //        Integer typeId = 1;
