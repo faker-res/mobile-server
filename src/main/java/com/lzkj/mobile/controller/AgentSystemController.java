@@ -42,6 +42,9 @@ public class AgentSystemController {
 
     @Value("${channelGameUrl}")
     private String channelGameUrl;
+    
+    @Value("${gameImg.url}")
+    private String gameImgUrl;
 
 //    /**
 //     * 全民代理 -我的推广(首页信息)
@@ -389,11 +392,12 @@ public class AgentSystemController {
             	}
             }
         }
-        Integer typeId = 1;
-        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
-        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
-        data.put("GameList",mobileKindList);
+//        Integer typeId = 1;
+	    List<PlatformVO> platfromList = platformServiceClient.getAgentGameListByGameTypeItem(Integer.valueOf(agentId));
+        List<AgentMobileKindConfigVO> thirdList =  platformServiceClient.getAgentGameByGameTypeItem(Integer.valueOf(agentId));
+        data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
+        data.put("imgUrl", gameImgUrl);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);
@@ -577,5 +581,34 @@ public class AgentSystemController {
         if(ret == 0)
         	return globeResponse;
         throw new GlobeException(SystemConstants.FAIL_CODE, param.get("msg").toString());
+    }
+
+    /**
+     * 提现流水详情
+     */
+    @RequestMapping("/cashFlowDetails")
+    public GlobeResponse<Object> cashFlowDetails(Integer agentId,Integer gameId) {
+        if (agentId == null || gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
+        List<Map<String, Object>> param = this.agentClient.cashFlowDetails(agentId,gameId);
+        globeResponse.setData(param);
+        return globeResponse;
+    }
+
+    /**
+     * 资金明细
+     */
+    @RequestMapping("/fundDetails")
+    public GlobeResponse<Object> fundDetails(Integer gameId,Integer agentId ) {
+        if (gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<Map<String, Object>> param = this.agentClient.fundDetails(gameId,agentId);
+        globeResponse.setData(param);
+        return globeResponse;
     }
 }
