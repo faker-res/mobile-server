@@ -587,14 +587,18 @@ public class AgentSystemController {
      * 提现流水详情
      */
     @RequestMapping("/cashFlowDetails")
-    public GlobeResponse<Object> cashFlowDetails(Integer agentId,Integer gameId) {
-        if (agentId == null || gameId == null) {
+    public GlobeResponse<Object> cashFlowDetails(Integer userId, Integer agentId) {
+        if (agentId == null || userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
-        List<Map<String, Object>> param = this.agentClient.cashFlowDetails(agentId,gameId);
-        globeResponse.setData(param);
+        List<UserCodeDetailsVO> param = this.accountsClient.cashFlowDetails(userId,agentId);
+        if (param.size() == 0) {
+            globeResponse.setData(new UserCodeDetailsVO());
+            return globeResponse;
+        }
+        globeResponse.setData(param.get(0));
         return globeResponse;
     }
 

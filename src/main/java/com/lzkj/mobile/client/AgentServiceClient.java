@@ -127,8 +127,7 @@ public interface AgentServiceClient {
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
     
     @RequestMapping("agent/mobile/getUserRebate")
-    BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId,@RequestParam("date") Integer date); @RequestMapping("/agent/mobile/cashFlowDetails")
-    List<Map<String, Object>> cashFlowDetails(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId);
+    BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId,@RequestParam("date") Integer date);
 
     @RequestMapping("/agent/mobile/fundDetails")
     List<Map<String, Object>> fundDetails( @RequestParam("gameId") Integer gameId, @RequestParam("agentId") Integer agentId);

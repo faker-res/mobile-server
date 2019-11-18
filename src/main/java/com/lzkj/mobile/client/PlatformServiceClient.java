@@ -124,9 +124,14 @@ public interface PlatformServiceClient {
 	@RequestMapping("/mobile/clean/getThirdConfig")
 	List<ThirdKindConfigVO> getThirdConfig(@RequestParam("kindType")int kindType);
 	
+
+	@RequestMapping("/mobile/clean/getSystemOpen")
+	List<SystemStatusInfoVO> getSystemOpen(@RequestParam("parentId")Integer parentId);
+
 	@RequestMapping("/platform/mobile/getAgentGameListByGameTypeItem")
     public List<PlatformVO>  getAgentGameListByGameTypeItem(@RequestParam("agentId")Integer agentId);
 	
     @RequestMapping("/platform/mobile/getAgentGameByGameTypeItem")
     public List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
+
 }
