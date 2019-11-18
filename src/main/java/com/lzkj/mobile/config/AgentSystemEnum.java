@@ -15,8 +15,10 @@ public enum AgentSystemEnum {
     ResetPwd("ResetPwd","修改兑换密码"),
 	ActivityOpen("ActivityOpen","活动展示"),
 	ApplyOrderOpen("ApplyOrderOpen","提现展示"),
-	YebOpen("YebOpen","余额宝是否开启");
-	
+	YebOpen("YebOpen","余额宝是否开启"),
+    WXDLOpen("wxdlopen","微信登录开关"),
+    SJZCOpen("sjzcopen","手机登录开关");
+
     private String name;
 
     private String describe;
