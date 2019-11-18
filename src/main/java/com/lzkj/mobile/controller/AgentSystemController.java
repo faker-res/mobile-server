@@ -321,13 +321,6 @@ public class AgentSystemController {
                 }
             }
             //如果总控没有维护,并且业主维护的时候
-            if (!flag) {
-                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
-                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
-                    	flag = true;
-                    }
-                }
-            }
             if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                     data.put("vip", true);
