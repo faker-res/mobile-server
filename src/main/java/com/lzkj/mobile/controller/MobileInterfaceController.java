@@ -21,19 +21,16 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.lzkj.mobile.vo.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.DefaultAcsClient;
@@ -43,7 +40,11 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.mobile.client.*;
+import com.lzkj.mobile.client.AccountsServiceClient;
+import com.lzkj.mobile.client.AgentServiceClient;
+import com.lzkj.mobile.client.NativeWebServiceClient;
+import com.lzkj.mobile.client.PlatformServiceClient;
+import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
 import com.lzkj.mobile.config.SystemConfigKey;
@@ -53,11 +54,69 @@ import com.lzkj.mobile.exception.YunpianException;
 import com.lzkj.mobile.mongo.GameRecord;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.schedule.RequestDomainSchedule;
+import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
+import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
+import com.lzkj.mobile.vo.AccountsInfoVO;
+import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
+import com.lzkj.mobile.vo.AgentAccVO;
+import com.lzkj.mobile.vo.AgentInfoVO;
+import com.lzkj.mobile.vo.AgentIsIosVO;
+import com.lzkj.mobile.vo.ApplyRecordPageVo;
+import com.lzkj.mobile.vo.AwardOrderPageVo;
+import com.lzkj.mobile.vo.BankCardTypeVO;
+import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.BindPhoneVO;
+import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
+import com.lzkj.mobile.vo.CleanChipsConfigVO;
+import com.lzkj.mobile.vo.CommonPageVO;
+import com.lzkj.mobile.vo.ConfigInfo;
+import com.lzkj.mobile.vo.CustomerServiceConfigVO;
+import com.lzkj.mobile.vo.GameFeedbackVO;
+import com.lzkj.mobile.vo.GameListVO;
+import com.lzkj.mobile.vo.GamePropertyType;
+import com.lzkj.mobile.vo.GatewayInfo;
+import com.lzkj.mobile.vo.GetBankRecordVO;
+import com.lzkj.mobile.vo.GlobalSpreadInfo;
+import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.GoldExchangeVO;
+import com.lzkj.mobile.vo.LotteryConfigVO;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
+import com.lzkj.mobile.vo.LuckyVO;
+import com.lzkj.mobile.vo.MemberRechargeVO;
+import com.lzkj.mobile.vo.MobileAwardOrderVo;
+import com.lzkj.mobile.vo.MobileDayTask;
+import com.lzkj.mobile.vo.MobileKind;
+import com.lzkj.mobile.vo.MobileNoticeVo;
+import com.lzkj.mobile.vo.MobilePropertyTypeVO;
+import com.lzkj.mobile.vo.MobileShareConfigVO;
+import com.lzkj.mobile.vo.NewsVO;
+import com.lzkj.mobile.vo.OnLineOrderVO;
+import com.lzkj.mobile.vo.PayInfoVO;
+import com.lzkj.mobile.vo.PayTypeList;
+import com.lzkj.mobile.vo.PersonalReportVO;
+import com.lzkj.mobile.vo.ProblemConfigVO;
+import com.lzkj.mobile.vo.RecordInsurePageVO;
+import com.lzkj.mobile.vo.RecordInsureVO;
+import com.lzkj.mobile.vo.ScoreRankVO;
+import com.lzkj.mobile.vo.ShareDetailInfoVO;
+import com.lzkj.mobile.vo.SystemStatusInfoVO;
+import com.lzkj.mobile.vo.ThirdKindConfigVO;
+import com.lzkj.mobile.vo.TpayOwnerInfoVO;
+import com.lzkj.mobile.vo.TransactionTypeVO;
+import com.lzkj.mobile.vo.UserGameScoreInfoVO;
+import com.lzkj.mobile.vo.UserInformationVO;
+import com.lzkj.mobile.vo.UserScoreRankVO;
+import com.lzkj.mobile.vo.VIPReceiveInfoVO;
+import com.lzkj.mobile.vo.VerificationCodeVO;
+import com.lzkj.mobile.vo.VideoTypeVO;
+import com.lzkj.mobile.vo.ViewPayInfoVO;
+import com.lzkj.mobile.vo.VipLevelRewardVO;
+import com.lzkj.mobile.vo.VipRankReceiveVO;
+import com.lzkj.mobile.vo.VisitorBindResultVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,9 +139,6 @@ public class MobileInterfaceController {
 
     @Value("${server.url}")
     private String serverUrl;
-
-//    @Value("#{${pay.url}}")
-//    private Map<String, String> payUrlList;
 
     @Autowired
     private TreasureServiceClient treasureServiceClient;
@@ -994,7 +1050,7 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
-        Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId);   //第三方充值渠道
+        Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
         List<Object> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
         List<PayTypeList> lists = new ArrayList<>();
         if (companyList != null) {
@@ -1203,23 +1259,23 @@ public class MobileInterfaceController {
      * @param qudaoId 渠道ID
      * @return
      */
-    @Deprecated
-    @RequestMapping("/payPageLoad")
-    private String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
-        if (amount.equals(null) || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        StringBuffer url = request.getRequestURL();
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
-        StringBuilder html = new StringBuilder();
-        html.append("<!DOCTYPE html><html><head><title>支付页面</title><style>.tabPages{margin-top:150px;text-align:center;display:block; border:3px solid #d9d9de; padding:30px; font-size:14px;");
-        html.append("}</style></head><body>");
-        html.append("<div id=\"Content\"><div class=\"tabPages\">我们正在为您连接银行，请稍等......</div></div><form name=\"sendForm\" action=\"" + tempContextUrl + "/mobileInterface/payPageLoad/submit\" method=\"post\">");
-        html.append("<input type=\"hidden\" name=\"userId\"  value=\"" + userId + "\"><input type=\"hidden\" name=\"account\"  value=\"" + account + "\">");
-        html.append("<input type=\"hidden\" name=\"qudaoId\"  value=\"" + qudaoId + "\"><input type=\"hidden\" name=\"amount\"  value=\"" + amount + "\">");
-        html.append("</form><script>document.sendForm.submit();</script></body></html>");
-        return html.toString();
-    }
+//    @Deprecated
+//    @RequestMapping("/payPageLoad")
+//    private String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+//        if (amount.equals(null) || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+//        }
+//        StringBuffer url = request.getRequestURL();
+//        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+//        StringBuilder html = new StringBuilder();
+//        html.append("<!DOCTYPE html><html><head><title>支付页面</title><style>.tabPages{margin-top:150px;text-align:center;display:block; border:3px solid #d9d9de; padding:30px; font-size:14px;");
+//        html.append("}</style></head><body>");
+//        html.append("<div id=\"Content\"><div class=\"tabPages\">我们正在为您连接银行，请稍等......</div></div><form name=\"sendForm\" action=\"" + tempContextUrl + "/mobileInterface/payPageLoad/submit\" method=\"post\">");
+//        html.append("<input type=\"hidden\" name=\"userId\"  value=\"" + userId + "\"><input type=\"hidden\" name=\"account\"  value=\"" + account + "\">");
+//        html.append("<input type=\"hidden\" name=\"qudaoId\"  value=\"" + qudaoId + "\"><input type=\"hidden\" name=\"amount\"  value=\"" + amount + "\">");
+//        html.append("</form><script>document.sendForm.submit();</script></body></html>");
+//        return html.toString();
+//    }
 
     /**
      * 支付跳转
@@ -1233,7 +1289,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/payPageLoad/submit")
     private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
-        if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
+    	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
 
@@ -1284,17 +1340,18 @@ public class MobileInterfaceController {
             data.put("ownerOrderId", onLineOrderVO.getOrderId());
             data.put("payType", payInfoVO.getPayTypeCode());
             data.put("appId", payInfoVO.getAppId());
-            data.put("formSendUrl", RequestDomainSchedule.formSendUrl);
             String params = getParam(data);
             String sign = "amount=" + data.get("amount") + "&backUrl=" + data.get("backUrl") + "&memberId=" + data.get("memberId") +
                     "&memberKey=" + data.get("memberKey") + "&ownerId=" + data.get("ownerId") + "&ownerOrderId=" + data.get("ownerOrderId") +
-                    "&payType=" + data.get("payType") + "&appId=" + data.get("appId") + "&formSendUrl=" + data.get("formSendUrl");
+                    "&payType=" + data.get("payType") + "&appId=" + data.get("appId");
             sign = MD5Encode(sign + payOwnerInfo.getOwnerKey(), "utf-8");
             params += "&ownerSign=" + sign;
-            log.info("发送到中转中心：" + payInfoVO.getSendUrl() + "?" + params);
-            //payInfoVO.getSendUrl()
-            mag = HttpRequest.sendPost(RequestDomainSchedule.domainSendUrl, params);
+            String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
+            log.info("发送到中转中心：" + sendUrl + "?" + params);
+            mag = HttpRequest.sendPost(sendUrl, params);
             return mag;
+
+
 
 
         }
@@ -1709,8 +1766,8 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    
-    
+
+
     /**
      * 查询玩家VIP等级
      *
@@ -1755,7 +1812,7 @@ public class MobileInterfaceController {
         		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
         		break;
         	}
-        		
+
         }
         
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
@@ -1773,11 +1830,11 @@ public class MobileInterfaceController {
                 vo.setRankMoney(BigDecimal.ZERO);
                 vo.setReceiveDate(TimeUtil.getNow());
                 lists.add(vo);
-                
+
             }
         	platformServiceClient.insertVipRankReceive(lists);
         }
-        
+
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1795,7 +1852,7 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w1.add(vo);
         }
-        
+
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1891,7 +1948,7 @@ public class MobileInterfaceController {
         globeResponse.setData(count);
         return globeResponse;
     }
-    
+
     /**
      * 修改用户个人信息
      *
@@ -1908,8 +1965,8 @@ public class MobileInterfaceController {
         globeResponse.setData(count);
         return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取所有平台
      *
@@ -1934,7 +1991,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 获取时间
      *
@@ -1966,7 +2023,7 @@ public class MobileInterfaceController {
         globeResponse.setData(maps);
         return globeResponse;
     }
-    
+
     /**
      * 获取投注记录
      *
@@ -1986,7 +2043,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 获取所有交易类型
      *
@@ -2002,7 +2059,7 @@ public class MobileInterfaceController {
         globeResponse.setData(data);
         return globeResponse;
     }
-    
+
     /**
      * 获取账户明细
      *
@@ -2044,8 +2101,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
         return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取个人报表
      *
@@ -2075,20 +2132,18 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/verifyPassword")
-    public GlobeResponse<Object> verifyPassword(Integer userId,String password) {
+    public GlobeResponse verifyPassword(Integer userId,String password) {
         if (userId == null || password == null ) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Map<String, Object> data = new HashMap<>();
-        String mdPassword = MD5Encode(password, "utf-8").toUpperCase();
-        if (mdPassword.trim().equals(treasureServiceClient.verifyPassword(userId))) {
-            data.put("status",1);
-            globeResponse.setData(data);
+        GlobeResponse globeResponse = new GlobeResponse();
+        String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
+        String password1 = treasureServiceClient.verifyPassword(userId);
+        if (mdPassword.equals(password1)) {
             return globeResponse;
         }
-        data.put("status",-1);
-        globeResponse.setData(data);
+        globeResponse.setCode("-1");
+        globeResponse.setMsg("验证失败");
         return globeResponse;
     }
     

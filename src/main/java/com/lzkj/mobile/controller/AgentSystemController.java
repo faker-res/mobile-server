@@ -42,6 +42,9 @@ public class AgentSystemController {
 
     @Value("${channelGameUrl}")
     private String channelGameUrl;
+    
+    @Value("${gameImg.url}")
+    private String gameImgUrl;
 
 //    /**
 //     * 全民代理 -我的推广(首页信息)
@@ -389,11 +392,12 @@ public class AgentSystemController {
             	}
             }
         }
-        Integer typeId = 1;
-        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
-        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
-        data.put("GameList",mobileKindList);
+//        Integer typeId = 1;
+	    List<PlatformVO> platfromList = platformServiceClient.getAgentGameListByGameTypeItem(Integer.valueOf(agentId));
+        List<AgentMobileKindConfigVO> thirdList =  platformServiceClient.getAgentGameByGameTypeItem(Integer.valueOf(agentId));
+        data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
+        data.put("imgUrl", gameImgUrl);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);

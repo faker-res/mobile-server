@@ -31,7 +31,7 @@ public interface TreasureServiceClient {
 	RecordInsurePageVO getInsureTradeRecord(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize, @RequestParam("userId") Integer userId);
 
 	@RequestMapping("treasure/mobile/getPayList")
-	Map<String, List<PayInfoVO>> getPayList(@RequestParam("userId") Integer userId);
+	Map<String, List<PayInfoVO>> getPayList(@RequestParam("userId") Integer userId,@RequestParam("agentId") Integer agentId);
 
 	@RequestMapping("treasure/mobile/getGameRecord")
 	Object getGameRecord(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize, @RequestParam("userId") Integer userId, @RequestParam("kindId") Integer kindId);
@@ -137,46 +137,50 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("treasure/mobile/getLuckyIsOpen")
 	LuckyTurntableConfigurationVO getLuckyIsOpen(@RequestParam("parentId")Integer parentId);
-	
+
 	@RequestMapping("treasure/mobile/getVideoType")
 	List<VideoTypeVO> getVideoType();
-	
+
 	@RequestMapping("treasure/mobile/getTransactionType")
 	List<TransactionTypeVO> getTransactionType();
 
 //	@RequestMapping("treasure/mobile/getMemberRecharge")
 //	List<MemberRechargeVO> getMemberRecharge(@RequestParam("userId")Integer userId);
-//	
+//
 //	@RequestMapping("treasure/mobile/getMemberWithdrawal")
 //	List<MemberRechargeVO> getMemberWithdrawal(@RequestParam("userId")Integer userId);
-//	
+//
 //	@RequestMapping("treasure/mobile/getCheckInGift")
 //	List<MemberRechargeVO> getCheckInGift(@RequestParam("userId")Integer userId);
-//	
+//
 //	@RequestMapping("treasure/mobile/getTaskReward")
 //	List<MemberRechargeVO> getTaskReward(@RequestParam("userId")Integer userId);
-//	
+//
 //	@RequestMapping("treasure/mobile/getDailyRecharge")
 //	List<MemberRechargeVO> getDailyRecharge(@RequestParam("userId")Integer userId);
-//	
+//
 //	@RequestMapping("treasure/mobile/getRebateReward")
 //	List<MemberRechargeVO> getRebateReward(@RequestParam("userId")Integer userId);
-//	
+//
 //	@RequestMapping("treasure/mobile/getVipReward")
 //	List<MemberRechargeVO> getVipReward(@RequestParam("userId")Integer userId);
-	
+
 	@RequestMapping("treasure/mobile/getAccountDetails")
 	CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 
 	@RequestMapping("treasure/mobile/accountChangeStatistics")
 	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId);
 
-	@RequestMapping("/accounts/mobile/verifyPassword")
+	@RequestMapping("/treasure/mobile/verifyPassword")
 	String verifyPassword(@RequestParam("userId") Integer userId);
-	
-	@RequestMapping("/treasure/mobile/getDomainInfo")
-	List<DomainInfoVO> getDomainInfo();
-	
+
+	@RequestMapping("/treasure/mobile/getPayLineConfig")
+	List<PayUrlListVO> getPayLineConfig();
+
+	@RequestMapping("/treasure/mobile/updatePayUrl")
+	void updatePayUrl(@RequestParam("url") String url);
+
+
 	@RequestMapping("/treasure/mobile/updateDomainRecord")
 	void updateDomainRecord(@RequestParam("status") Integer status,@RequestParam("date") String date,@RequestParam("sort") Integer sort);
 }
