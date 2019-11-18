@@ -7,7 +7,6 @@ public enum AgentSystemEnum {
     BindMobileSend("BindMobileSend","绑定手机赠送"),
     VerificationIsOpen("VerificationIsOpen","开启游戏验证码"),
     ShowRealName("ShowRealName","注册填写真实姓名"),
-    EnjoinLogon("EnjoinLogon","系统维护"),
     VIPOpen("VIPOpen","vip功能是否开启"),
     MailOpen("MailOpen","邮件系统是否开启"),
     SignOpen("SingUp","签到开关"),
