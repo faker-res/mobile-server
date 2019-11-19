@@ -267,7 +267,7 @@ public class MobileInterfaceController {
         }
         String agentId = request.getParameter("agentId");
         List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
-        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
+//        List<ThirdKindConfigVO> thirdList =  platformServiceClient.getMobileThirdKindList(Integer.valueOf(agentId));
         GameListVO data = new GameListVO();
         data.setValid(true);
         data.setDownloadUrl(value2);
@@ -275,7 +275,7 @@ public class MobileInterfaceController {
         data.setWxLogon(status2);
         data.setIsOpenCard(systemStatusInfo == null ? 1 : systemStatusInfo.getStatusValue().intValue());
         data.setGameList(mobileKindList);
-        data.setThirdGameList(thirdList);
+//        data.setThirdGameList(thirdList);
         data.setPackageName(value6);
         int isIosShop = 0;
         if (agentId == null) {
