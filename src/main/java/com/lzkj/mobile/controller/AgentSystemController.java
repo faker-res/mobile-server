@@ -1,21 +1,56 @@
 package com.lzkj.mobile.controller;
 
-import com.lzkj.mobile.client.*;
-import com.lzkj.mobile.config.AgentSystemEnum;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.vo.*;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.lzkj.mobile.client.AccountsServiceClient;
+import com.lzkj.mobile.client.AgentServiceClient;
+import com.lzkj.mobile.client.NativeWebServiceClient;
+import com.lzkj.mobile.client.PlatformServiceClient;
+import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.config.AgentSystemEnum;
+import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.redis.JsonUtil;
+import com.lzkj.mobile.redis.RedisDao;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.vo.AccReportVO;
+import com.lzkj.mobile.vo.AgencyEqualReward;
+import com.lzkj.mobile.vo.AgentAccVO;
+import com.lzkj.mobile.vo.AgentMobileKindConfigVO;
+import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
+import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
+import com.lzkj.mobile.vo.DayUserAbsScoreVO;
+import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
+import com.lzkj.mobile.vo.MobileKind;
+import com.lzkj.mobile.vo.MyPlayerVO;
+import com.lzkj.mobile.vo.MyQmTxRecord;
+import com.lzkj.mobile.vo.MyRewardRecordVO;
+import com.lzkj.mobile.vo.MyRewardVO;
+import com.lzkj.mobile.vo.PlatformVO;
+import com.lzkj.mobile.vo.QmAchievementVO;
+import com.lzkj.mobile.vo.SystemStatusInfoVO;
+import com.lzkj.mobile.vo.UserCodeDetailsVO;
+import com.lzkj.mobile.vo.WeekRankingListVO;
+import com.lzkj.mobile.vo.ZzSysRatioVO;
+import com.lzkj.mobile.vo.yebProfitDetailsVO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -36,6 +71,9 @@ public class AgentSystemController {
 
     @Autowired
     private NativeWebServiceClient nativeWebServiceClient;
+    
+    @Autowired
+    private RedisDao redisService;
 
 
     @Value("${channelGameUrl}")
@@ -287,10 +325,15 @@ public class AgentSystemController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
+        String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
+        
+        //获取后台代理配置
         AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
+
         String key = "EnjoinLogon";
         //总控的维护
         SystemStatusInfoVO systemStatusInfo = accountsClient.getSystemStatusInfo(key);
+        
         Boolean flag = false;
         if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
             flag = true;
@@ -298,11 +341,25 @@ public class AgentSystemController {
         Map<String, Object> data = new HashMap<>();
 
         //获取业主配置
-        List<AgentSystemStatusInfoVO> agentSystemList = agentClient.getBindMobileSendInfo(agentId);
+        redisKey = RedisKeyPrefix.getAgentSystemStatusInfoKey(agentId);
+        List<AgentSystemStatusInfoVO> agentSystemList;
+        List agentSystemMapList = redisService.get(redisKey, List.class);
+        if(null == agentSystemMapList) {
+        	 agentSystemList = agentClient.getBindMobileSendInfo(agentId);
+        	 redisService.set(redisKey, agentSystemList);
+         	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+        	agentSystemList = new ArrayList<>();
+        	for(Object item : agentSystemMapList) {
+        		AgentSystemStatusInfoVO assi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), AgentSystemStatusInfoVO.class);
+        		agentSystemList.add(assi);
+        	}
+        }
 
         //获取首页弹窗链接
 
-        String imgUrl = nativeWebServiceClient.getShowImgUrl(agentId);
+        String imgUrl = ""; 
+        		//nativeWebServiceClient.getShowImgUrl(agentId);
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
@@ -403,10 +460,55 @@ public class AgentSystemController {
                 }
             }
         }
-        Integer typeId = 1;
-        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
-	    List<PlatformVO> platfromList = platformServiceClient.getAgentGameListByGameTypeItem(Integer.valueOf(agentId));
-        List<AgentMobileKindConfigVO> thirdList =  platformServiceClient.getAgentGameByGameTypeItem(Integer.valueOf(agentId));
+        //获取房间信息
+        redisKey = RedisKeyPrefix.getMobileKindList();
+        List<MobileKind> mobileKindList;
+        List mobileKindMapList = redisService.get(redisKey, List.class);
+        if(null == mobileKindMapList) {
+	        Integer typeId = 1;
+	        mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+	        redisService.set(redisKey, mobileKindList);
+	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+        	mobileKindList = new ArrayList<>();
+        	for(Object item : mobileKindMapList) {
+        		MobileKind mi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), MobileKind.class);
+        		mobileKindList.add(mi);
+        	}
+        }
+        
+
+	    redisKey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
+	    List<PlatformVO> platfromList;
+        List platfromMapList = redisService.get(redisKey, List.class);
+        if(null == platfromMapList) {
+        	platfromList = platformServiceClient.getAgentGameListByGameTypeItem(agentId);        	
+	        redisService.set(redisKey, platfromList);
+	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+        	platfromList = new ArrayList<>();
+        	for(Object item : platfromMapList) {
+        		PlatformVO mi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), PlatformVO.class);
+        		platfromList.add(mi);
+        	}
+        }
+	    
+	    
+        redisKey = RedisKeyPrefix.getAgentGameByGameTypeItemKey(agentId);
+        List<AgentMobileKindConfigVO> thirdList;
+        List thirdMapList = redisService.get(redisKey, List.class);
+        if(null == thirdMapList) {
+        	thirdList =  platformServiceClient.getAgentGameByGameTypeItem(agentId);	
+	        redisService.set(redisKey, thirdList);
+	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+        	thirdList = new ArrayList<>();
+        	for(Object item : thirdMapList) {
+        		AgentMobileKindConfigVO mi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), AgentMobileKindConfigVO.class);
+        		thirdList.add(mi);
+        	}
+        }	                            
+        
         data.put("GameList",mobileKindList);
         data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
@@ -609,7 +711,7 @@ public class AgentSystemController {
         UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId,agentId);
         if (param == null) {
             UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
-            userCodeDetailsVO.setStatus(0);
+            userCodeDetailsVO.setStatus(1);
             userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
             userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
             userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
