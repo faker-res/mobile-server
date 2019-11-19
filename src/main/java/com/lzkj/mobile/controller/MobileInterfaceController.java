@@ -104,7 +104,6 @@ import com.lzkj.mobile.vo.RecordInsureVO;
 import com.lzkj.mobile.vo.ScoreRankVO;
 import com.lzkj.mobile.vo.ShareDetailInfoVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.ThirdKindConfigVO;
 import com.lzkj.mobile.vo.TpayOwnerInfoVO;
 import com.lzkj.mobile.vo.TransactionTypeVO;
 import com.lzkj.mobile.vo.UserGameScoreInfoVO;
@@ -1805,7 +1804,11 @@ public class MobileInterfaceController {
 
             }
         	platformServiceClient.insertVipRankReceive(lists);
-        }
+        	try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+			}
+        }        
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
