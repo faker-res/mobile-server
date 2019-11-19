@@ -17,9 +17,16 @@ public class VipLevelRewardVO {
 	
 	private BigDecimal monthReward;
 	
+	private BigDecimal dayReward;
+	
+	private BigDecimal yearReward;
+	
 	private Integer status;
 	
 	private BigDecimal total;
 	
 	private BigDecimal vipVersion;
+	
+	private BigDecimal yebRate;
+	
 }

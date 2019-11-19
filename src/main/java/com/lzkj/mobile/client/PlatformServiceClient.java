@@ -94,6 +94,12 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/getUserMonthReceive")
 	List<VIPReceiveInfoVO> getUserMonthReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
+	
+	@RequestMapping("/platform/mobile/getUserDayReceive")
+	List<VIPReceiveInfoVO> getUserDayReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
+	
+	@RequestMapping("/platform/mobile/getUserYearReceive")
+	List<VIPReceiveInfoVO> getUserYearReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
 
 	@RequestMapping("/platform/mobile/getUserLevelReceive")
 	List<VipRankReceiveVO> getUserLevelReceive(@RequestParam("userId")Integer userId);
