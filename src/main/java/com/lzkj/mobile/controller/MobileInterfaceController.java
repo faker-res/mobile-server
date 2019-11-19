@@ -1941,8 +1941,7 @@ public class MobileInterfaceController {
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	int s = vipLevel.getVipLevel();
-        	int d = levels.get(i).getVipRank();
+        	log.info("~~~~~~~~~~~~~~~~~~~~~~"+levels+"~~~~~~~~~~~~~~~~~~~~~~");
         	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == false) {
 				status = 0;
         	}
