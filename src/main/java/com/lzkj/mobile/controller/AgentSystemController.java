@@ -609,7 +609,7 @@ public class AgentSystemController {
         UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId,agentId);
         if (param == null) {
             UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
-            userCodeDetailsVO.setStatus(0);
+            userCodeDetailsVO.setStatus(1);
             userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
             userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
             userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
