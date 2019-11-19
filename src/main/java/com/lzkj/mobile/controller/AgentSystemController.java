@@ -309,7 +309,8 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
-        data.put("huodongurl", huodongurl);
+        String [] huodong = huodongurl.split(",");
+        data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
