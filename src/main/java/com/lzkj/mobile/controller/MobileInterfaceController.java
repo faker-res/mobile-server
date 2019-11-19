@@ -1810,6 +1810,9 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
+        List<VipLevelRewardVO> w4 = new ArrayList<VipLevelRewardVO>();
+        List<VipLevelRewardVO> w5 = new ArrayList<VipLevelRewardVO>();
+        List<VipLevelRewardVO> w6 = new ArrayList<VipLevelRewardVO>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
         int size = vipConfig.size() - 1;
@@ -1835,6 +1838,8 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
         List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
+        List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
+        List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
 //        List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
 //        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
 //        if(level == null || level.size() == 0) {
@@ -1851,7 +1856,31 @@ public class MobileInterfaceController {
 //            }
 //        	platformServiceClient.insertVipRankReceive(lists);
 //        }
-
+        
+        for(int i =0;i<list.size();i++) {
+        	VipLevelRewardVO jf = new VipLevelRewardVO();
+        	jf.setVipLevel(list.get(i).getVipLevel());
+        	jf.setVipIntegral(list.get(i).getVipIntegral());
+        	w6.add(jf);
+        }
+        for(int i = 0 ;i<list.size();i++) {
+        	VipLevelRewardVO vo = new VipLevelRewardVO();
+        	int status = 1;
+    		if(day == null || day.size() == 0) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            		status = 0;
+            	}
+    		}else {
+    			if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+    				status = 2;
+            	}
+    		}
+    		vo.setVipLevel(list.get(i).getVipLevel());
+    		vo.setDayReward(list.get(i).getDayReward());
+    		vo.setStatus(status);
+    		w4.add(vo);
+        }
+        
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1886,6 +1915,24 @@ public class MobileInterfaceController {
     		vo.setMonthReward(list.get(i).getMonthReward());
     		vo.setStatus(status);
     		w2.add(vo);
+        }
+        
+        for(int i = 0 ;i<list.size();i++) {
+        	VipLevelRewardVO vo = new VipLevelRewardVO();
+        	int status = 1;
+    		if(year == null || year.size() == 0) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            		status = 0;
+            	}
+    		}else {
+    			if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+    				status = 2;
+            	}
+    		}
+    		vo.setVipLevel(list.get(i).getVipLevel());
+    		vo.setYearReward(list.get(i).getYearReward());
+    		vo.setStatus(status);
+    		w5.add(vo);
         }
         List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
         for(int i = 0 ;i<list.size();i++) {
@@ -1923,13 +1970,35 @@ public class MobileInterfaceController {
         	}
         	clearBetAmount.add(vo);
         }
-        data.put("isOpen", "0");
+        
+        List<VipLevelRewardVO> yebRate = new ArrayList<VipLevelRewardVO>();
+        for(int i = 0;i<list.size();i++) {
+        	VipLevelRewardVO vo = new VipLevelRewardVO();
+        	if(vipLevel.getVipLevel() == 0) {
+        		if(list.get(i).getVipLevel() == 1) {
+        			vo.setVipLevel(0);
+        			vo.setYebRate(list.get(i).getYebRate());
+        		}else {
+        			vo.setVipLevel(list.get(i).getVipLevel());
+            		vo.setYebRate(list.get(i).getYebRate());
+        		}
+        	}else {
+        		vo.setVipLevel(list.get(i).getVipLevel());
+        		vo.setYebRate(list.get(i).getYebRate());
+        	}
+        	yebRate.add(vo);
+        }
+        //data.put("isOpen", "0");
         data.put("VipLevels", vipLevel);
         data.put("weekList", w1);
+        data.put("dayList", w4);
         data.put("monthList", w2);
+        data.put("yearList", w5);
         data.put("vipLevelList", w3);
         data.put("clearBetAmount", clearBetAmount);
         data.put("vipLevelCount", vipLevelCount);
+        data.put("yebRate", yebRate);
+        data.put("vipScore", w6);
         globeResponse.setData(data);
         return globeResponse;
     }
