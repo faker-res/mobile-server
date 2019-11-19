@@ -1,12 +1,13 @@
 package com.lzkj.mobile.client;
 
-import java.util.List;
-import java.util.Map;
-
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "agent-service")
 public interface AgentServiceClient {
@@ -27,26 +28,42 @@ public interface AgentServiceClient {
 
     @RequestMapping("agent/mobile/getAgentContactInfo")
     AgentAccVO getAgentContactInfo(@RequestParam("agentId") Integer agentId);
+    /**********************************************全民代理************************************************/
 
-	@RequestMapping("/agent/mobile/promotion/getDayPromotion")
-    QmDayPromotionDetailVO getDayPromotion(@RequestParam("userId") Integer userId);
+	@RequestMapping("/agent/mobile/promotion/getDirectPromotionDetail")
+    QmDayPromotionDetailVO getDirectPromotionDetail(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/agent/mobile/promotion/getUserReward")
     QmUserRewardVO getUserReward(@RequestParam("userId") Integer userId);
 
-    @RequestMapping("/agent/mobile/promotion/getPromotionDetails")
-    List<QmPromotionListVO> getPromotionDetails(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/agent/mobile/promotion/getAppLiquidation")
     QmLiquidationPageVo getAppLiquidation(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageNumber);
 
-    @RequestMapping("/agent/mobile/promotion/getWeekTopList")
-    List<QmWeekTopListVO> getWeekTopList();
+    @RequestMapping("/agent/mobile/promotion/getDirectAchieve")
+    List<QmPromotionDetailVO> getDirectAchieve(@RequestParam("userId") Integer userId,@RequestParam("gameId") Integer gameId);
 
-    /******************************代理系统**************************************/
+    @RequestMapping("/agent/mobile/promotion/getZzSysConfig")
+    List<ZzSysRatioVO> getZzSysConfig(@RequestParam("agentId") Integer agentId);
+
+    @RequestMapping("/agent/mobile/promotion/getDirectQuery")
+    List<QmDirectQueryVO> getDirectQuery(@RequestParam("userId") Integer userId,
+            @RequestParam("gameId") Integer gameId,@RequestParam("date") String date);
+
+
+    @RequestMapping("/agent/mobile/promotion/getAchieveDetail")
+    List<QmPromotionDetailVO> getAchieveDetail(@RequestParam("userId")Integer userId, @RequestParam("kindType")Integer kindType);
+
+    @RequestMapping("/agent/mobile/promotion/receiveCommission")
+    BigDecimal receiveCommission(@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/agent/mobile/promotion/getTeamMember")
+    MyPopularizeVO getTeamMember(@RequestParam("userId")Integer userId);
 
     @RequestMapping("/agent/mobile/agentsystem/getAgentMyPopularize")
-    MyPopularizeVO getAgentMyPopularize(@RequestParam("userId") Integer userId);
+    MyPopularizeVO getAgentMyPopularize( @RequestParam("userId") Integer userId);
+    /******************************代理系统**************************************/
+
 
     @RequestMapping("/agent/mobile/agentsystem/getAgentMyPlayer")
     List<MyPlayerVO> getAgentMyPlayer(@RequestParam("userId") Integer userId, @RequestParam("memberId") Integer memberId, @RequestParam("pageIndex") Integer pageIndex);
@@ -108,4 +125,11 @@ public interface AgentServiceClient {
 
     @RequestMapping("agent/access2game/getAccessAgent")
     AgentAccVO getAccessAgent(@RequestParam("agent") Integer agent);
+
+    @RequestMapping("agent/mobile/getUserRebate")
+    BigDecimal getUserRebate(@RequestParam("kindType") Integer kindType,@RequestParam("userId") Integer userId,@RequestParam("date") Integer date);
+
+    @RequestMapping("/agent/mobile/fundDetails")
+    List<Map<String, Object>> fundDetails( @RequestParam("gameId") Integer gameId, @RequestParam("agentId") Integer agentId);
+
 }

@@ -7,12 +7,17 @@ public enum AgentSystemEnum {
     BindMobileSend("BindMobileSend","绑定手机赠送"),
     VerificationIsOpen("VerificationIsOpen","开启游戏验证码"),
     ShowRealName("ShowRealName","注册填写真实姓名"),
-    EnjoinLogon("EnjoinLogon","系统维护"),
     VIPOpen("VIPOpen","vip功能是否开启"),
     MailOpen("MailOpen","邮件系统是否开启"),
     SignOpen("SingUp","签到开关"),
     AgentRank("AgentRank","代理排行榜"),
-    ResetPwd("ResetPwd","修改兑换密码");
+    ResetPwd("ResetPwd","修改兑换密码"),
+	ActivityOpen("ActivityOpen","活动展示"),
+	ApplyOrderOpen("ApplyOrderOpen","提现展示"),
+	YebOpen("YebOpen","余额宝是否开启"),
+    WXDLOpen("wxdlopen","微信登录开关"),
+    SJZCOpen("sjzcopen","手机登录开关");
+
     private String name;
 
     private String describe;

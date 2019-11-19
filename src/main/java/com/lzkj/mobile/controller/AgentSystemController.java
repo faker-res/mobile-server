@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -43,19 +41,26 @@ public class AgentSystemController {
     @Value("${channelGameUrl}")
     private String channelGameUrl;
 
-    /**
-     * 代理系统-我的推广
-     *
-     * @param userId
-     * @return
-     */
-    @RequestMapping("/getAgentMyPopularize")
-    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
-        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(agentSystemVO);
-        return globeResponse;
-    }
+    @Value("${gameImg.url}")
+    private String gameImgUrl;
+    
+    @Value("${huodong.url}")
+    private String huodongurl;
+    
+
+//    /**
+//     * 全民代理 -我的推广(首页信息)
+//     *
+//     * @param userId
+//     * @return
+//     */
+//    @RequestMapping("/getAgentMyPopularize")
+//    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
+//        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
+//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//        globeResponse.setData(agentSystemVO);
+//        return globeResponse;
+//    }
 
     /**
      * 代理系统-我的玩家
@@ -304,6 +309,8 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        String [] huodong = huodongurl.split(",");
+        data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
@@ -318,13 +325,6 @@ public class AgentSystemController {
                 }
             }
             //如果总控没有维护,并且业主维护的时候
-            if (!flag) {
-                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
-                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
-                    	flag = true;
-                    }
-                }
-            }
             if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                     data.put("vip", true);
@@ -364,16 +364,53 @@ public class AgentSystemController {
                     data.put("canResetdhmm", false);
                 }
             }
+            //活动展示
+            if(vo.getStatusName().equals(AgentSystemEnum.ActivityOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		 data.put("ActivityOpen", true);
+                } else {
+                    data.put("ActivityOpen", false);
+                }
+            }
+           //提现展示
+            if(vo.getStatusName().equals(AgentSystemEnum.ApplyOrderOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		 data.put("ApplyOrderOpen", true);
+                } else {
+                    data.put("ApplyOrderOpen", false);
+                }
+            }
+            //余额宝是否开启
+            if(vo.getStatusName().equals(AgentSystemEnum.YebOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		data.put("yebiIsopen", true);
+            	}else {
+            		data.put("yebiIsopen", false);
+            	}
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.WXDLOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("wxdlopen", true);
+                }else {
+                    data.put("wxdlopen", false);
+                }
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.SJZCOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("sjzcopen", true);
+                }else {
+                    data.put("sjzcopen", false);
+                }
+            }
         }
-        //余额宝是否开启
-        YebConfigVO yebConfigVO = treasureServiceClient.getYebIsOpen(agentId);
-        if (yebConfigVO.getIsOpen() == 0) {
-            data.put("yebiIsopen", false);
-            data.put("description", yebConfigVO.getDescription());
-        } else {
-            data.put("yebiIsopen", true);
-            data.put("description", yebConfigVO.getDescription());
-        }
+        Integer typeId = 1;
+        List<MobileKind> mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+	    List<PlatformVO> platfromList = platformServiceClient.getAgentGameListByGameTypeItem(Integer.valueOf(agentId));
+        List<AgentMobileKindConfigVO> thirdList =  platformServiceClient.getAgentGameByGameTypeItem(Integer.valueOf(agentId));
+        data.put("GameList",mobileKindList);
+        data.put("platfromList",platfromList);
+        data.put("ThirdGameList",thirdList);
+        data.put("imgUrl", gameImgUrl);
         List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
         if(vo != null) {
         	data.put("CloudData", vo);
@@ -557,5 +594,44 @@ public class AgentSystemController {
         if(ret == 0)
         	return globeResponse;
         throw new GlobeException(SystemConstants.FAIL_CODE, param.get("msg").toString());
+    }
+
+    /**
+     * 提现流水详情
+     */
+    @RequestMapping("/cashFlowDetails")
+    public GlobeResponse<Object> cashFlowDetails(Integer userId, Integer agentId) {
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
+        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId,agentId);
+        if (param == null) {
+            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
+            userCodeDetailsVO.setStatus(1);
+            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
+            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
+            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
+            globeResponse.setData(userCodeDetailsVO);
+
+            return globeResponse;
+        }
+        globeResponse.setData(param);
+        return globeResponse;
+    }
+
+    /**
+     * 资金明细
+     */
+    @RequestMapping("/fundDetails")
+    public GlobeResponse<Object> fundDetails(Integer gameId,Integer agentId ) {
+        if (gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<Map<String, Object>> param = this.agentClient.fundDetails(gameId,agentId);
+        globeResponse.setData(param);
+        return globeResponse;
     }
 }

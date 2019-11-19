@@ -2,23 +2,32 @@ package com.lzkj.mobile.client;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators.In;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
+import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
 import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
+import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
+import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GoldExchangeVO;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.MailVO;
+import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
 import com.lzkj.mobile.vo.UserInfoVO;
+import com.lzkj.mobile.vo.UserInformationVO;
+import com.lzkj.mobile.vo.VipLevelRewardVO;
 import com.lzkj.mobile.vo.VisitorBindResultVO;
 
 @FeignClient(name = "accounts-service")
@@ -119,4 +128,38 @@ public interface AccountsServiceClient {
     
     @RequestMapping("/accounts/mobile/totalMail")
     int totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/accounts/mobile/getUserVipLevel")
+    VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getVipLevelConfig")
+    List<VipLevelRewardVO> getVipLevelConfig(@RequestParam("parentId")Integer parentId);
+    
+    @RequestMapping("/accounts/mobile/getUsersInfo")
+    UserInformationVO getUsersInfo(@RequestParam("userId")Integer userId);
+    
+    @RequestMapping("/accounts/mobile/updateUserBasicInfo")
+    int updateUserBasicInfo(@RequestParam("nickName") String nickName,@RequestParam("gender") Integer gender,@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/updateUserContactInfo")
+    int updateUserContactInfo(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("qq") String qq,@RequestParam("eMail") String eMail,@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getChannelGameUserBetAndScore")
+    CommonPageVO<ChannelGameUserBetAndScoreVO> getChannelGameUserBetAndScore(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("kindId") Integer kindId,@RequestParam("userId") Integer userId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+    
+    @RequestMapping("/accounts/mobile/getPersonalReport")
+    PersonalReportVO getPersonalReport(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getUserVipZeroLevel")
+    VipLevelRewardVO getUserVipZeroLevel(@RequestParam("userId") Integer userId);
+
+    @RequestMapping("/accounts/mobile/getUserCodeDetails")
+    UserCodeDetailsVO cashFlowDetails(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
+
+    @RequestMapping("/accounts/mobile/getRedEnvelopeReward")
+    List<ActivityRedEnvelopeRewardVO> getRedEnvelopeReward(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/accounts/mobile/getReceivingRedEnvelope")
+    Integer getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId);
+
 }

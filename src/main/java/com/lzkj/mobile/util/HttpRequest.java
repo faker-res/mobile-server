@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -24,13 +25,14 @@ public class HttpRequest {
 		String result = "";
 		BufferedReader in = null;
 		try {
-			String urlNameString = url + "?" + param;
+			String urlNameString = StringUtil.isEmpty(param)? url : url + "?" + param;
 			URL realUrl = new URL(urlNameString);
 			// 打开和URL之间的连接
 			URLConnection connection = realUrl.openConnection();
 			// 设置通用的请求属性
 			connection.setRequestProperty("accept", "*/*");
 			connection.setRequestProperty("connection", "Keep-Alive");
+			connection.setReadTimeout(15000);
 			connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 			// 建立实际的连接
 			connection.connect();
@@ -149,4 +151,5 @@ public class HttpRequest {
 		}
 		return result;
 	}
+	
 }
