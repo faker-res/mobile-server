@@ -23,5 +23,33 @@ public class RedisKeyPrefix {
 	public static String getAgentKey(Integer agentId){
 		return  "ACCESS2GAME_SERVER:AGENT:" + agentId;
 	}
+	
+	
+	
+	/**loginStatus相关**/
+	public static String getQrCodeKey(Integer agentId) {
+		return MOBILE_SERVER + "getQrCode:" + agentId;
+	}
+
+	public static String getSystemStatusInfoKey(String key) {
+		return MOBILE_SERVER + "getSystemStatusInfoKey:" + key;
+	}
+	
+	public static String  getAgentSystemStatusInfoKey(Integer agentId) {
+		return MOBILE_SERVER + "getAgentSystemStatusInfo:" + agentId;
+	}
+	
+	public static String getMobileKindList() {
+		return MOBILE_SERVER + "getMobileKindList";
+	}
+	
+	
+	public static String getAgentGameListByGameTypeItemKey(Integer agentId) {
+		return MOBILE_SERVER + "getAgentGameListByGameTypeItem:" + agentId;
+	}
+	
+	public static String getAgentGameByGameTypeItemKey(Integer agentId) {
+		return MOBILE_SERVER + "getAgentGameByGameTypeItem:" + agentId;
+	}
 
 }
