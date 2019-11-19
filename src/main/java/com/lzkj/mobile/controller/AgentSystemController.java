@@ -43,6 +43,10 @@ public class AgentSystemController {
 
     @Value("${gameImg.url}")
     private String gameImgUrl;
+    
+    @Value("${huodong.url}")
+    private String huodongurl;
+    
 
 //    /**
 //     * 全民代理 -我的推广(首页信息)
@@ -305,6 +309,7 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        data.put("huodongurl", huodongurl);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
