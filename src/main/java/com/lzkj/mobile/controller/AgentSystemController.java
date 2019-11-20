@@ -324,6 +324,12 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
+        String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
+        Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
+        if(cacheData != null) {
+        	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据");
+        	return cacheData;
+        }
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
         
@@ -541,6 +547,8 @@ public class AgentSystemController {
             }
 //        }
         data.put("Maitance", flag);
+        redisService.set(dataKey, data);
+        redisService.expire(dataKey, 5, TimeUnit.SECONDS);
         return data;
     }
 
