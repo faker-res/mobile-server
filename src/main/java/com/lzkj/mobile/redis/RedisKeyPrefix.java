@@ -51,5 +51,9 @@ public class RedisKeyPrefix {
 	public static String getAgentGameByGameTypeItemKey(Integer agentId) {
 		return MOBILE_SERVER + "getAgentGameByGameTypeItem:" + agentId;
 	}
+	
+	public static String getloginStatusCacheKey(Integer agentId, String registerMachine) {
+		return MOBILE_SERVER + "getloginStatusCache:" + agentId + "_" + registerMachine;
+	}
 
 }
