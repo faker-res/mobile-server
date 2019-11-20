@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class PayLineCheckJob {
-	public static String PAY_LINE = "http://lzapp-form.chengdulan.com";
+	public static String PAY_LINE = "http://lzapp-pay01.chengdulan.com";
 	
 	@Autowired
 	private TreasureServiceClient treasureMapper;
