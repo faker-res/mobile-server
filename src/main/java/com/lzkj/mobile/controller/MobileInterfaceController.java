@@ -1790,7 +1790,7 @@ public class MobileInterfaceController {
 //        	}
 //        }
         List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
-        
+
         if(level == null || level.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i < 9; i++) {
@@ -1826,8 +1826,6 @@ public class MobileInterfaceController {
         		break;
         	}
         	if(vipLevel.getVipLevel() == 0) {
-        		BigDecimal s = vipConfig.get(i).getVipIntegral();
-        		BigDecimal w = vipLevel.getVipIntegral();
         		vipLevel.setVipIntegral(vipConfig.get(i).getVipIntegral().subtract(vipLevel.getVipIntegral()));
         		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
         		break;
@@ -1846,7 +1844,6 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
 
-        
         for(int i =0;i<list.size();i++) {
         	VipLevelRewardVO jf = new VipLevelRewardVO();
         	jf.setVipLevel(list.get(i).getVipLevel());
@@ -1870,7 +1867,7 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w4.add(vo);
         }
-        
+
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1906,7 +1903,7 @@ public class MobileInterfaceController {
     		vo.setStatus(status);
     		w2.add(vo);
         }
-        
+
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
@@ -1928,7 +1925,6 @@ public class MobileInterfaceController {
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	log.info("~~~~~~~~~~~~~~~~~~~~~~"+levels+"~~~~~~~~~~~~~~~~~~~~~~");
         	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == false) {
 				status = 0;
         	}
@@ -1959,7 +1955,7 @@ public class MobileInterfaceController {
         	}
         	clearBetAmount.add(vo);
         }
-        
+
         List<VipLevelRewardVO> yebRate = new ArrayList<VipLevelRewardVO>();
         for(int i = 0;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
@@ -2210,7 +2206,7 @@ public class MobileInterfaceController {
         }
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
-        String password1 = treasureServiceClient.verifyPassword(userId);
+        String password1 = accountsServiceClient.verifyPassword(userId);
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }
