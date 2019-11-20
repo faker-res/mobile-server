@@ -1808,7 +1808,7 @@ public class MobileInterfaceController {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 			}
-        }        
+        }
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
@@ -1826,8 +1826,8 @@ public class MobileInterfaceController {
         		break;
         	}
         	if(vipLevel.getVipLevel() == 0) {
-        		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
-        		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
+        		vipLevel.setVipIntegral(vipConfig.get(i).getVipIntegral().subtract(vipLevel.getVipIntegral()));
+        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
         		break;
         	}
         	if(vipLevel.getVipLevel() == vipConfig.get(i).getVipLevel()) {
@@ -1843,22 +1843,6 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
-//        List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
-//        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-//        if(level == null || level.size() == 0) {
-//        	List<VipRankReceiveVO> lists = new ArrayList<>();
-//        	for (int i = 1; i < 9; i++) {
-//                VipRankReceiveVO vo = new VipRankReceiveVO();
-//                vo.setVipRank(i);
-//                vo.setUserId(userId);
-//                vo.setNullity(false);
-//                vo.setRankMoney(BigDecimal.ZERO);
-//                vo.setReceiveDate(TimeUtil.getNow());
-//                lists.add(vo);
-//
-//            }
-//        	platformServiceClient.insertVipRankReceive(lists);
-//        }
 
         for(int i =0;i<list.size();i++) {
         	VipLevelRewardVO jf = new VipLevelRewardVO();
@@ -1941,7 +1925,6 @@ public class MobileInterfaceController {
         for(int i = 0 ;i<list.size();i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	log.info("~~~~~~~~~~~~~~~~~~~~~~"+levels+"~~~~~~~~~~~~~~~~~~~~~~");
         	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == false) {
 				status = 0;
         	}
@@ -2223,7 +2206,7 @@ public class MobileInterfaceController {
         }
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
-        String password1 = treasureServiceClient.verifyPassword(userId).toLowerCase();
+        String password1 = accountsServiceClient.verifyPassword(userId);
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }
