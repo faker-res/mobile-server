@@ -1826,8 +1826,10 @@ public class MobileInterfaceController {
         		break;
         	}
         	if(vipLevel.getVipLevel() == 0) {
-        		vipLevel.setVipIntegral(vipConfig.get(i+1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
-        		vipLevel.setTotal(vipConfig.get(i+1).getVipIntegral());
+        		BigDecimal s = vipConfig.get(i).getVipIntegral();
+        		BigDecimal w = vipLevel.getVipIntegral();
+        		vipLevel.setVipIntegral(vipConfig.get(i).getVipIntegral().subtract(vipLevel.getVipIntegral()));
+        		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
         		break;
         	}
         	if(vipLevel.getVipLevel() == vipConfig.get(i).getVipLevel()) {
@@ -1843,22 +1845,7 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
-//        List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
-//        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-//        if(level == null || level.size() == 0) {
-//        	List<VipRankReceiveVO> lists = new ArrayList<>();
-//        	for (int i = 1; i < 9; i++) {
-//                VipRankReceiveVO vo = new VipRankReceiveVO();
-//                vo.setVipRank(i);
-//                vo.setUserId(userId);
-//                vo.setNullity(false);
-//                vo.setRankMoney(BigDecimal.ZERO);
-//                vo.setReceiveDate(TimeUtil.getNow());
-//                lists.add(vo);
-//
-//            }
-//        	platformServiceClient.insertVipRankReceive(lists);
-//        }
+
         
         for(int i =0;i<list.size();i++) {
         	VipLevelRewardVO jf = new VipLevelRewardVO();
