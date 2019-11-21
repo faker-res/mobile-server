@@ -139,5 +139,8 @@ public interface PlatformServiceClient {
 	
     @RequestMapping("/platform/mobile/getAgentGameByGameTypeItem")
     public List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/platform/mobile/getYebInterestRate")
+    List<YebInterestRateVO> getYebInterestRate(@RequestParam("parentId")Integer parentId);
 
 }

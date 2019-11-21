@@ -116,6 +116,8 @@ import com.lzkj.mobile.vo.ViewPayInfoVO;
 import com.lzkj.mobile.vo.VipLevelRewardVO;
 import com.lzkj.mobile.vo.VipRankReceiveVO;
 import com.lzkj.mobile.vo.VisitorBindResultVO;
+import com.lzkj.mobile.vo.YebInterestRateVO;
+import com.lzkj.mobile.vo.YebScoreVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -2257,6 +2259,31 @@ public class MobileInterfaceController {
 			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
 		}
     	data.put("code", ret);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /**
+     * 获取余额宝收益、余额宝日、月、年利率
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getYebScore")
+    private GlobeResponse<Object> getYebScore(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	YebScoreVO yebScore = treasureServiceClient.getYebScore(userId);
+    	if(yebScore == null) {
+    		yebScore = new YebScoreVO();
+    	}
+    	List<YebInterestRateVO> list = platformServiceClient.getYebInterestRate(parentId);
+    	data.put("yebScore", yebScore);
+    	data.put("yebInterestRate", list);
     	globeResponse.setData(data);
     	return globeResponse;
     }

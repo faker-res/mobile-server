@@ -1,56 +1,25 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.client.NativeWebServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.redis.JsonUtil;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.vo.AccReportVO;
-import com.lzkj.mobile.vo.AgencyEqualReward;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentMobileKindConfigVO;
-import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
-import com.lzkj.mobile.vo.DayUserAbsScoreVO;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MyPlayerVO;
-import com.lzkj.mobile.vo.MyQmTxRecord;
-import com.lzkj.mobile.vo.MyRewardRecordVO;
-import com.lzkj.mobile.vo.MyRewardVO;
-import com.lzkj.mobile.vo.PlatformVO;
-import com.lzkj.mobile.vo.QmAchievementVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.UserCodeDetailsVO;
-import com.lzkj.mobile.vo.WeekRankingListVO;
-import com.lzkj.mobile.vo.ZzSysRatioVO;
-import com.lzkj.mobile.vo.yebProfitDetailsVO;
-
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -71,7 +40,7 @@ public class AgentSystemController {
 
     @Autowired
     private NativeWebServiceClient nativeWebServiceClient;
-    
+
     @Autowired
     private RedisDao redisService;
 
@@ -81,10 +50,10 @@ public class AgentSystemController {
 
     @Value("${gameImg.url}")
     private String gameImgUrl;
-    
+
     @Value("${huodong.url}")
     private String huodongurl;
-    
+
 
 //    /**
 //     * 全民代理 -我的推广(首页信息)
@@ -329,19 +298,28 @@ public class AgentSystemController {
         if(cacheData != null) {
         	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据");
         	return cacheData;
-        	//return null;
-        	
         }
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
-        
-        //获取后台代理配置
-        AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
 
-        String key = "EnjoinLogon";
+      //获取后台代理配置
+        redisKey = RedisKeyPrefix.getQrCode(agentId);
+        AgentAccVO agentAccVO = redisService.get(redisKey, AgentAccVO.class);
+        if(agentAccVO == null) {
+        	agentAccVO = agentClient.getQrCode(agentId);
+        	redisService.set(redisKey, agentAccVO);
+        	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        }
+
         //总控的维护
-        SystemStatusInfoVO systemStatusInfo = accountsClient.getSystemStatusInfo(key);
-        
+        String controllerKey = RedisKeyPrefix.getControllerKey();
+        SystemStatusInfoVO systemStatusInfo = redisService.get(controllerKey,SystemStatusInfoVO.class);
+        if (null ==systemStatusInfo){
+            String key = "EnjoinLogon";
+            systemStatusInfo = accountsClient.getSystemStatusInfo(key);
+            redisService.set(controllerKey,systemStatusInfo);
+            redisService.expire(controllerKey, 2, TimeUnit.HOURS);
+        }
         Boolean flag = false;
         if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
             flag = true;
@@ -366,7 +344,7 @@ public class AgentSystemController {
 
         //获取首页弹窗链接
 
-        String imgUrl = ""; 
+        String imgUrl = "";
         		//nativeWebServiceClient.getShowImgUrl(agentId);
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
@@ -411,14 +389,6 @@ public class AgentSystemController {
                     data.put("signUp", true);
                 } else {
                     data.put("signUp", false);
-                }
-            }
-            //代理排行榜
-            if(vo.getStatusName().equals(AgentSystemEnum.AgentRank.getName())){
-                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
-                    data.put("AgentRank", true);
-                } else {
-                    data.put("AgentRank", false);
                 }
             }
             //修改密码开关
@@ -484,13 +454,13 @@ public class AgentSystemController {
         		mobileKindList.add(mi);
         	}
         }
-        
+
 
 	    redisKey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
 	    List<PlatformVO> platfromList;
         List platfromMapList = redisService.get(redisKey, List.class);
         if(null == platfromMapList) {
-        	platfromList = platformServiceClient.getAgentGameListByGameTypeItem(agentId);        	
+        	platfromList = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
 	        redisService.set(redisKey, platfromList);
 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
         } else {
@@ -500,13 +470,13 @@ public class AgentSystemController {
         		platfromList.add(mi);
         	}
         }
-	    
-	    
+
+
         redisKey = RedisKeyPrefix.getAgentGameByGameTypeItemKey(agentId);
         List<AgentMobileKindConfigVO> thirdList;
         List thirdMapList = redisService.get(redisKey, List.class);
         if(null == thirdMapList) {
-        	thirdList =  platformServiceClient.getAgentGameByGameTypeItem(agentId);	
+        	thirdList =  platformServiceClient.getAgentGameByGameTypeItem(agentId);
 	        redisService.set(redisKey, thirdList);
 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
         } else {
@@ -515,26 +485,45 @@ public class AgentSystemController {
         		AgentMobileKindConfigVO mi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), AgentMobileKindConfigVO.class);
         		thirdList.add(mi);
         	}
-        }	                            
-        
+        }
+
         data.put("GameList",mobileKindList);
         data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
         data.put("imgUrl", gameImgUrl);
-        List<CloudShieldConfigurationVO> vo = agentClient.getCloudShieldConfigurationInfos(agentId);
-        if(vo != null) {
-        	data.put("CloudData", vo);
+        List<CloudShieldConfigurationVO> cloudShieldConfigurationVOS;
+        redisKey =  RedisKeyPrefix.getCloudShieldConfigurationInfos(agentId);
+        List cloudShieldConfigurationMapList = redisService.get(redisKey, List.class);
+        if(null == cloudShieldConfigurationMapList) {
+            cloudShieldConfigurationVOS = agentClient.getCloudShieldConfigurationInfos(agentId);
+            redisService.set(redisKey, cloudShieldConfigurationVOS);
+            redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+            cloudShieldConfigurationVOS = new ArrayList<>();
+            for(Object item : cloudShieldConfigurationMapList) {
+                CloudShieldConfigurationVO cs = JsonUtil.parseObject(JsonUtil.parseJsonString(item), CloudShieldConfigurationVO.class);
+                cloudShieldConfigurationVOS.add(cs);
+            }
         }
-        LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = treasureServiceClient.getLuckyIsOpen(agentId);
+        data.put("CloudData", cloudShieldConfigurationVOS);
+
+        //获取新运转盘开关
+        redisKey = RedisKeyPrefix.getLuckyIsOpen(agentId);
+        LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = redisService.get(redisKey, LuckyTurntableConfigurationVO.class);
+        if(luckyTurntableConfigurationVO == null) {
+        	luckyTurntableConfigurationVO = treasureServiceClient.getLuckyIsOpen(agentId);
+        	redisService.set(redisKey, luckyTurntableConfigurationVO);
+ 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        }
         if(luckyTurntableConfigurationVO !=null) {
         	data.put("luckyWheel", luckyTurntableConfigurationVO.getMainSwitch());
         }
+
         //判断预更新热更开关開啓沒
         if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
             String[] update = agentAccVO.getUpdateAddress().split(",");
             data.put("HOT_UPDATE_URL", update);
         }
-//        else {
             //验证是否有机器码
             if (!StringUtils.isBlank(registerMachine)) {
                 int num = platformServiceClient.getWhitelist(registerMachine);
@@ -547,7 +536,6 @@ public class AgentSystemController {
                     data.put("HOT_UPDATE_URL", update);
                 }
             }
-//        }
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
@@ -747,3 +735,4 @@ public class AgentSystemController {
         return globeResponse;
     }
 }
+
