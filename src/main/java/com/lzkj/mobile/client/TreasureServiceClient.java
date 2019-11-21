@@ -183,5 +183,9 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/treasure/mobile/updateDomainRecord")
 	void updateDomainRecord(@RequestParam("status") Integer status,@RequestParam("date") String date,@RequestParam("sort") Integer sort);
+	
+	
+	@RequestMapping("/treasure/mobile/getYebScore")
+	YebScoreVO getYebScore(@RequestParam("userId") Integer userId);
 }
 
