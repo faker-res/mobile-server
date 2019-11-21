@@ -63,4 +63,12 @@ public class RedisKeyPrefix {
 	public static String getCloudShieldConfigurationInfos(Integer agentId) {
 		return MOBILE_SERVER + "getCloudShieldConfigurationInfos:" + agentId;
 	}
+	
+	public static String getQrCode(Integer agentId) {
+		return MOBILE_SERVER + "getgetQrCode:" + agentId;
+	}
+	
+	public static String getLuckyIsOpen(Integer agentId) {
+		return MOBILE_SERVER + "getLuckyIsOpen:" + agentId;
+	}
 }

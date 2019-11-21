@@ -302,8 +302,14 @@ public class AgentSystemController {
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
-        //获取后台代理配置
-        AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
+      //获取后台代理配置
+        redisKey = RedisKeyPrefix.getQrCode(agentId);
+        AgentAccVO agentAccVO = redisService.get(redisKey, AgentAccVO.class);
+        if(agentAccVO == null) {
+        	agentAccVO = agentClient.getQrCode(agentId);
+        	redisService.set(redisKey, agentAccVO);
+        	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        }
 
         //总控的维护
         String controllerKey = RedisKeyPrefix.getControllerKey();
@@ -500,10 +506,19 @@ public class AgentSystemController {
             }
         }
         data.put("CloudData", cloudShieldConfigurationVOS);
-        LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = treasureServiceClient.getLuckyIsOpen(agentId);
+        
+        //获取新运转盘开关
+        redisKey = RedisKeyPrefix.getLuckyIsOpen(agentId);
+        LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = redisService.get(redisKey, LuckyTurntableConfigurationVO.class);
+        if(luckyTurntableConfigurationVO == null) {
+        	luckyTurntableConfigurationVO = treasureServiceClient.getLuckyIsOpen(agentId);
+        	redisService.set(redisKey, luckyTurntableConfigurationVO);
+ 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        }
         if(luckyTurntableConfigurationVO !=null) {
         	data.put("luckyWheel", luckyTurntableConfigurationVO.getMainSwitch());
         }
+        
         //判断预更新热更开关開啓沒
         if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
             String[] update = agentAccVO.getUpdateAddress().split(",");
