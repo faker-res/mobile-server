@@ -494,7 +494,7 @@ public class AgentSystemController {
         List<CloudShieldConfigurationVO> cloudShieldConfigurationVOS;
         redisKey =  RedisKeyPrefix.getCloudShieldConfigurationInfos(agentId);
         List cloudShieldConfigurationMapList = redisService.get(redisKey, List.class);
-        if(null == mobileKindMapList) {
+        if(null == cloudShieldConfigurationMapList) {
             cloudShieldConfigurationVOS = agentClient.getCloudShieldConfigurationInfos(agentId);
             redisService.set(redisKey, cloudShieldConfigurationVOS);
             redisService.expire(redisKey, 2, TimeUnit.HOURS);
@@ -506,7 +506,7 @@ public class AgentSystemController {
             }
         }
         data.put("CloudData", cloudShieldConfigurationVOS);
-        
+
         //获取新运转盘开关
         redisKey = RedisKeyPrefix.getLuckyIsOpen(agentId);
         LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = redisService.get(redisKey, LuckyTurntableConfigurationVO.class);
@@ -518,7 +518,7 @@ public class AgentSystemController {
         if(luckyTurntableConfigurationVO !=null) {
         	data.put("luckyWheel", luckyTurntableConfigurationVO.getMainSwitch());
         }
-        
+
         //判断预更新热更开关開啓沒
         if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
             String[] update = agentAccVO.getUpdateAddress().split(",");
