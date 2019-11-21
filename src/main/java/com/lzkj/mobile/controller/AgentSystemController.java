@@ -328,8 +328,8 @@ public class AgentSystemController {
         Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
         if(cacheData != null) {
         	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据");
-        	//return cacheData;
-        	return null;
+        	return cacheData;
+        	//return null;
         	
         }
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
