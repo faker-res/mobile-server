@@ -1,7 +1,5 @@
 package com.lzkj.mobile.redis;
 
-import java.math.BigDecimal;
-
 public class RedisKeyPrefix {
 
 	public static final String MOBILE_SERVER= "MOBILE_SERVER:";
@@ -60,5 +58,9 @@ public class RedisKeyPrefix {
 
 	public static String getControllerKey() {
 		return MOBILE_SERVER + "getControllerKey:"  ;
+	}
+
+	public static String getCloudShieldConfigurationInfos(Integer agentId) {
+		return MOBILE_SERVER + "getCloudShieldConfigurationInfos:" + agentId;
 	}
 }
