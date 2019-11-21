@@ -337,7 +337,7 @@ public class AgentSystemController {
         AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
 
         //总控的维护
-        String controllerKey = RedisKeyPrefix.getControllerKey(agentId);
+        String controllerKey = RedisKeyPrefix.getControllerKey();
         SystemStatusInfoVO systemStatusInfo = redisService.get(controllerKey,SystemStatusInfoVO.class);
         if (null ==systemStatusInfo){
             String key = "EnjoinLogon";

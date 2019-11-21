@@ -58,7 +58,7 @@ public class RedisKeyPrefix {
 		return MOBILE_SERVER + "getloginStatusCache:" + agentId + "_" + registerMachine;
 	}
 
-	public static String getControllerKey(Integer agentId) {
-		return MOBILE_SERVER + "getControllerKey:" + agentId ;
+	public static String getControllerKey() {
+		return MOBILE_SERVER + "getControllerKey:"  ;
 	}
 }
