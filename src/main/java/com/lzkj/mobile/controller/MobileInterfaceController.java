@@ -1810,7 +1810,7 @@ public class MobileInterfaceController {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 			}
-        }        
+        }
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
