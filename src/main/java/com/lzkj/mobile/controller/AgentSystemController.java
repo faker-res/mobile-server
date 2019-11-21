@@ -71,7 +71,7 @@ public class AgentSystemController {
 
     @Autowired
     private NativeWebServiceClient nativeWebServiceClient;
-    
+
     @Autowired
     private RedisDao redisService;
 
@@ -81,10 +81,10 @@ public class AgentSystemController {
 
     @Value("${gameImg.url}")
     private String gameImgUrl;
-    
+
     @Value("${huodong.url}")
     private String huodongurl;
-    
+
 
 //    /**
 //     * 全民代理 -我的推广(首页信息)
@@ -332,14 +332,14 @@ public class AgentSystemController {
         }
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
-        
+
         //获取后台代理配置
         AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
 
         String key = "EnjoinLogon";
         //总控的维护
         SystemStatusInfoVO systemStatusInfo = accountsClient.getSystemStatusInfo(key);
-        
+
         Boolean flag = false;
         if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
             flag = true;
@@ -364,7 +364,7 @@ public class AgentSystemController {
 
         //获取首页弹窗链接
 
-        String imgUrl = ""; 
+        String imgUrl = "";
         		//nativeWebServiceClient.getShowImgUrl(agentId);
         data.put("QRcode", agentAccVO.getAgentUrl());
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
@@ -409,14 +409,6 @@ public class AgentSystemController {
                     data.put("signUp", true);
                 } else {
                     data.put("signUp", false);
-                }
-            }
-            //代理排行榜
-            if(vo.getStatusName().equals(AgentSystemEnum.AgentRank.getName())){
-                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
-                    data.put("AgentRank", true);
-                } else {
-                    data.put("AgentRank", false);
                 }
             }
             //修改密码开关
@@ -482,13 +474,13 @@ public class AgentSystemController {
         		mobileKindList.add(mi);
         	}
         }
-        
+
 
 	    redisKey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
 	    List<PlatformVO> platfromList;
         List platfromMapList = redisService.get(redisKey, List.class);
         if(null == platfromMapList) {
-        	platfromList = platformServiceClient.getAgentGameListByGameTypeItem(agentId);        	
+        	platfromList = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
 	        redisService.set(redisKey, platfromList);
 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
         } else {
@@ -498,13 +490,13 @@ public class AgentSystemController {
         		platfromList.add(mi);
         	}
         }
-	    
-	    
+
+
         redisKey = RedisKeyPrefix.getAgentGameByGameTypeItemKey(agentId);
         List<AgentMobileKindConfigVO> thirdList;
         List thirdMapList = redisService.get(redisKey, List.class);
         if(null == thirdMapList) {
-        	thirdList =  platformServiceClient.getAgentGameByGameTypeItem(agentId);	
+        	thirdList =  platformServiceClient.getAgentGameByGameTypeItem(agentId);
 	        redisService.set(redisKey, thirdList);
 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
         } else {
@@ -513,8 +505,8 @@ public class AgentSystemController {
         		AgentMobileKindConfigVO mi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), AgentMobileKindConfigVO.class);
         		thirdList.add(mi);
         	}
-        }	                            
-        
+        }
+
         data.put("GameList",mobileKindList);
         data.put("platfromList",platfromList);
         data.put("ThirdGameList",thirdList);
