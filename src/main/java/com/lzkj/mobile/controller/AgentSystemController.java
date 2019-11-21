@@ -336,10 +336,15 @@ public class AgentSystemController {
         //获取后台代理配置
         AgentAccVO agentAccVO = agentClient.getQrCode(agentId);
 
-        String key = "EnjoinLogon";
         //总控的维护
-        SystemStatusInfoVO systemStatusInfo = accountsClient.getSystemStatusInfo(key);
-
+        String controllerKey = RedisKeyPrefix.getControllerKey(agentId);
+        SystemStatusInfoVO systemStatusInfo = redisService.get(controllerKey,SystemStatusInfoVO.class);
+        if (null ==systemStatusInfo){
+            String key = "EnjoinLogon";
+            systemStatusInfo = accountsClient.getSystemStatusInfo(key);
+            redisService.set(controllerKey,systemStatusInfo);
+            redisService.expire(controllerKey, 2, TimeUnit.HOURS);
+        }
         Boolean flag = false;
         if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
             flag = true;
