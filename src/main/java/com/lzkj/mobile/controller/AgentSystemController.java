@@ -367,6 +367,15 @@ public class AgentSystemController {
                     data.put("ShowRealName", true);
                 }
             }
+
+            //注册时银行卡开关
+            if (vo.getStatusName().equals(AgentSystemEnum.BANKOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("BankOpen", true);
+                } else {
+                    data.put("BankOpen", false);
+                }
+            }
             //如果总控没有维护,并且业主维护的时候
             if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {

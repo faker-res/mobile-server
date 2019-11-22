@@ -16,8 +16,8 @@ public enum AgentSystemEnum {
 	ApplyOrderOpen("ApplyOrderOpen","提现展示"),
 	YebOpen("YebOpen","余额宝是否开启"),
     WXDLOpen("wxdlopen","微信登录开关"),
-    SJZCOpen("sjzcopen","手机登录开关");
-
+    SJZCOpen("sjzcopen","手机登录开关"),
+    BANKOPEN("BankOpen","注册时填写银行卡号");
     private String name;
 
     private String describe;
