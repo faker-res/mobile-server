@@ -48,11 +48,12 @@ public class MailController {
     @RequestMapping("/openMail")
     public GlobeResponse openMail(int [] id) {
         List<Integer> ids = new ArrayList<Integer>();
-        if (ids == null || ids.size() == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数");
-        }
+
         for (int i = 0; i < id.length; i++) {
             ids.add(id[i]);
+        }
+        if (ids == null || ids.size() == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数");
         }
         List<MailVO> mailsVO = accountsServiceClient.openMail(ids);
         GlobeResponse globeResponse = new GlobeResponse();
