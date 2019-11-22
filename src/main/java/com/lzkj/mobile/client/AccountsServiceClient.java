@@ -111,7 +111,7 @@ public interface AccountsServiceClient {
     List<MailVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/openMail")
-    MailVO openMail(@RequestParam("id") Integer id);
+    List<MailVO> openMail(@RequestParam("ids") List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/deleteMail")
     Boolean deleteMail(@RequestParam("ids") List<Integer> ids);

@@ -1783,17 +1783,9 @@ public class MobileInterfaceController {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        String vip = "VIPOpen";
         Map<String, Object> data = new HashMap<>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        List<SystemStatusInfoVO> isOpen = platformServiceClient.getSystemOpen(parentId);
-//        for (SystemStatusInfoVO s : isOpen) {
-//        	if (s.getStatusName().equals(vip) && s.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
-//        		data.put("isOpen", "1");
-//        		globeResponse.setData(data);
-//                return globeResponse;
-//        	}
-//        }
+
         List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
 
         if(level == null || level.size() == 0) {
@@ -1927,19 +1919,29 @@ public class MobileInterfaceController {
     		w5.add(vo);
         }
         List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
-        for(int i = 0 ;i<list.size();i++) {
+        int levelsLen = levels.size();
+        int rewardListLen = list.size();
+        int loopIndex = levelsLen > rewardListLen ? levelsLen : rewardListLen;
+        for(int i = 0 ;i < loopIndex; i++) {  
+        	if(levelsLen != rewardListLen) {
+	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
+	        		break;
+	        	}
+        	}
+        	VipRankReceiveVO levelItem = levels.get(i);
+        	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == false) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false) {
 				status = 0;
         	}
-        	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == true) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == true) {
 				status = 2;
         	}
-    		vo.setVipLevel(list.get(i).getVipLevel());
-    		vo.setVipRankReward(list.get(i).getVipRankReward());
+    		vo.setVipLevel(listItem.getVipLevel());
+    		vo.setVipRankReward(listItem.getVipRankReward());
     		vo.setStatus(status);
-    		w3.add(vo);
+    		w3.add(vo);    		
         }
         Integer agentId = parentId;
         List<CleanChipsConfigVO> ls = platformServiceClient.getCleanChipsConfig(agentId);
