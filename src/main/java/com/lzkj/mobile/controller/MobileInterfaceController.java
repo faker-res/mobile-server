@@ -108,7 +108,10 @@ import com.lzkj.mobile.vo.TpayOwnerInfoVO;
 import com.lzkj.mobile.vo.TransactionTypeVO;
 import com.lzkj.mobile.vo.UserGameScoreInfoVO;
 import com.lzkj.mobile.vo.UserInformationVO;
+import com.lzkj.mobile.vo.UserRecordInsureVO;
+import com.lzkj.mobile.vo.UserRewardDetailVO;
 import com.lzkj.mobile.vo.UserScoreRankVO;
+import com.lzkj.mobile.vo.UserYebIncomeVO;
 import com.lzkj.mobile.vo.VIPReceiveInfoVO;
 import com.lzkj.mobile.vo.VerificationCodeVO;
 import com.lzkj.mobile.vo.VideoTypeVO;
@@ -2284,6 +2287,63 @@ public class MobileInterfaceController {
     	List<YebInterestRateVO> list = platformServiceClient.getYebInterestRate(parentId);
     	data.put("yebScore", yebScore);
     	data.put("yebInterestRate", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /**
+     * 获取VIP奖励明细
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getUserRewardDetail")
+    private GlobeResponse<Object> getUserRewardDetail(Integer userId,Integer parentId,Integer pageSize,Integer pageIndex) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>(); 
+    	CommonPageVO<UserRewardDetailVO> list = treasureServiceClient.getUserRewardDetail(userId,parentId,pageSize,pageIndex);
+    	data.put("VipRewardDetail", list.getLists());
+    	data.put("total", list.getPageCount());
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /**
+     * 获取余额宝明细
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getUserYebInfo")
+    private GlobeResponse<Object> getUserYebInfo(Integer userId,Integer date,Integer flag,Integer pageSize,Integer pageIndex) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	if(flag.equals(1)) {
+    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex);
+        	data.put("yebAccountChange", list.getLists());
+        	data.put("total", list.getPageCount());
+    	}
+    	if(flag.equals(2)) {
+    		CommonPageVO<UserYebIncomeVO> list = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
+    		data.put("yebIncome", list.getLists());
+        	data.put("total", list.getPageCount());
+    	}
+    	if(flag.equals(0)) {
+    		pageSize = pageSize / 2;
+    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex);
+        	data.put("yebAccountChange", list.getLists());
+        	CommonPageVO<UserYebIncomeVO> list1 = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
+        	data.put("yebIncome", list1.getLists());
+        	data.put("total", list1.getPageCount() + list.getPageCount());
+    	}
     	globeResponse.setData(data);
     	return globeResponse;
     }
