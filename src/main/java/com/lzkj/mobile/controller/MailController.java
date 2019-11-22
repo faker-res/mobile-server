@@ -46,8 +46,15 @@ public class MailController {
      * 查看邮件内容
      */
     @RequestMapping("/openMail")
-    public GlobeResponse openMail(Integer id) {
-        MailVO mailsVO = accountsServiceClient.openMail(id);
+    public GlobeResponse openMail(int [] id) {
+        List<Integer> ids = new ArrayList<Integer>();
+        if (ids == null || ids.size() == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数");
+        }
+        for (int i = 0; i < id.length; i++) {
+            ids.add(id[i]);
+        }
+        List<MailVO> mailsVO = accountsServiceClient.openMail(ids);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(mailsVO);
         return globeResponse;
