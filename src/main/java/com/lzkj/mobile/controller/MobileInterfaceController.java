@@ -1665,19 +1665,19 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getMinBalanceInfo")
-    private GlobeResponse<Object> getMinBalanceInfo(Integer agentId) {
+    private GlobeResponse<Object> getMinBalanceInfo(Integer agentId,Integer userId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        GoldExchangeVO goldExchangeVO = accountsServiceClient.getMinBalanceInfo(agentId);
+        BigDecimal minBalance = accountsServiceClient.getMinBalanceInfo(agentId,userId);
         Map<String, Object> data = new HashMap<>();
-        data.put("minBalance", goldExchangeVO.getMinBalance());  //最低出售金币
-        data.put("counterFee", goldExchangeVO.getCounterFee() * 100);   //支付宝提现手续费
-        data.put("minCounterFee", goldExchangeVO.getMinCounterFee());   //支付宝提现最低手续费
-        data.put("bankCounterFee", goldExchangeVO.getBankCounterFee().multiply(new BigDecimal(100)));   //银行卡提现最低手续费
-        data.put("minBankCounterFee", goldExchangeVO.getMinBankCounterFee());   //银行卡提现最低手续费
-        data.put("isOpenAli", goldExchangeVO.getIsOpenAli());    //是否开启支付宝 0 开启  1是禁用
-        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
+        data.put("minBalance", minBalance);  //最低出售金币
+//        data.put("counterFee", goldExchangeVO.getCounterFee() * 100);   //支付宝提现手续费
+//        data.put("minCounterFee", goldExchangeVO.getMinCounterFee());   //支付宝提现最低手续费
+//        data.put("bankCounterFee", goldExchangeVO.getBankCounterFee().multiply(new BigDecimal(100)));   //银行卡提现最低手续费
+//        data.put("minBankCounterFee", goldExchangeVO.getMinBankCounterFee());   //银行卡提现最低手续费
+//        data.put("isOpenAli", goldExchangeVO.getIsOpenAli());    //是否开启支付宝 0 开启  1是禁用
+//        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
@@ -2262,8 +2262,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取余额宝收益、余额宝日、月、年利率
      *
