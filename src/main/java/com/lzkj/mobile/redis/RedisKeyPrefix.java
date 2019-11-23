@@ -71,4 +71,12 @@ public class RedisKeyPrefix {
 	public static String getLuckyIsOpen(Integer agentId) {
 		return MOBILE_SERVER + "getLuckyIsOpen:" + agentId;
 	}
+	
+	public static String getAgentGameListByGameTypeItemKeyStatus(Integer agentId) {
+		return MOBILE_SERVER + "gettAgentGameListByGameTypeItemKeyStatus:" + agentId;
+	}
+	
+	public static String getAgentGameByGameTypeItemKeyStatus(Integer agentId) {
+		return MOBILE_SERVER + "getAgentGameByGameTypeItemKeyStatus:" + agentId;
+	}
 }
