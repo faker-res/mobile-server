@@ -108,7 +108,10 @@ import com.lzkj.mobile.vo.TpayOwnerInfoVO;
 import com.lzkj.mobile.vo.TransactionTypeVO;
 import com.lzkj.mobile.vo.UserGameScoreInfoVO;
 import com.lzkj.mobile.vo.UserInformationVO;
+import com.lzkj.mobile.vo.UserRecordInsureVO;
+import com.lzkj.mobile.vo.UserRewardDetailVO;
 import com.lzkj.mobile.vo.UserScoreRankVO;
+import com.lzkj.mobile.vo.UserYebIncomeVO;
 import com.lzkj.mobile.vo.VIPReceiveInfoVO;
 import com.lzkj.mobile.vo.VerificationCodeVO;
 import com.lzkj.mobile.vo.VideoTypeVO;
@@ -1665,19 +1668,19 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getMinBalanceInfo")
-    private GlobeResponse<Object> getMinBalanceInfo(Integer agentId) {
+    private GlobeResponse<Object> getMinBalanceInfo(Integer agentId,Integer userId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        GoldExchangeVO goldExchangeVO = accountsServiceClient.getMinBalanceInfo(agentId);
+        BigDecimal minBalance = accountsServiceClient.getMinBalanceInfo(agentId,userId);
         Map<String, Object> data = new HashMap<>();
-        data.put("minBalance", goldExchangeVO.getMinBalance());  //最低出售金币
-        data.put("counterFee", goldExchangeVO.getCounterFee() * 100);   //支付宝提现手续费
-        data.put("minCounterFee", goldExchangeVO.getMinCounterFee());   //支付宝提现最低手续费
-        data.put("bankCounterFee", goldExchangeVO.getBankCounterFee().multiply(new BigDecimal(100)));   //银行卡提现最低手续费
-        data.put("minBankCounterFee", goldExchangeVO.getMinBankCounterFee());   //银行卡提现最低手续费
-        data.put("isOpenAli", goldExchangeVO.getIsOpenAli());    //是否开启支付宝 0 开启  1是禁用
-        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
+        data.put("minBalance", minBalance);  //最低出售金币
+//        data.put("counterFee", goldExchangeVO.getCounterFee() * 100);   //支付宝提现手续费
+//        data.put("minCounterFee", goldExchangeVO.getMinCounterFee());   //支付宝提现最低手续费
+//        data.put("bankCounterFee", goldExchangeVO.getBankCounterFee().multiply(new BigDecimal(100)));   //银行卡提现最低手续费
+//        data.put("minBankCounterFee", goldExchangeVO.getMinBankCounterFee());   //银行卡提现最低手续费
+//        data.put("isOpenAli", goldExchangeVO.getIsOpenAli());    //是否开启支付宝 0 开启  1是禁用
+//        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
@@ -1780,17 +1783,9 @@ public class MobileInterfaceController {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        String vip = "VIPOpen";
         Map<String, Object> data = new HashMap<>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        List<SystemStatusInfoVO> isOpen = platformServiceClient.getSystemOpen(parentId);
-//        for (SystemStatusInfoVO s : isOpen) {
-//        	if (s.getStatusName().equals(vip) && s.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
-//        		data.put("isOpen", "1");
-//        		globeResponse.setData(data);
-//                return globeResponse;
-//        	}
-//        }
+
         List<VipRankReceiveVO> level = platformServiceClient.getUserLevelReceive(userId);
 
         if(level == null || level.size() == 0) {
@@ -1845,14 +1840,20 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
-
-        for(int i =0;i<list.size();i++) {
+        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
+        int levelsLen = levels.size();
+        int rewardListLen = list.size();
+        int loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i =0;i<loopIndex;i++) {
         	VipLevelRewardVO jf = new VipLevelRewardVO();
         	jf.setVipLevel(list.get(i).getVipLevel());
         	jf.setVipIntegral(list.get(i).getVipIntegral());
         	w6.add(jf);
         }
-        for(int i = 0 ;i<list.size();i++) {
+        levelsLen = levels.size();
+        rewardListLen = list.size();
+        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(day == null || day.size() == 0) {
@@ -1868,9 +1869,16 @@ public class MobileInterfaceController {
     		vo.setDayReward(list.get(i).getDayReward());
     		vo.setStatus(status);
     		w4.add(vo);
+    		if(levelsLen != rewardListLen) {
+	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
+	        		break;
+	        	}
+        	}
         }
-
-        for(int i = 0 ;i<list.size();i++) {
+        levelsLen = levels.size();
+        rewardListLen = list.size();
+        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(week == null || week.size() == 0) {
@@ -1886,9 +1894,16 @@ public class MobileInterfaceController {
     		vo.setWeekReward(list.get(i).getWeekReward());
     		vo.setStatus(status);
     		w1.add(vo);
+    		if(levelsLen != rewardListLen) {
+	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
+	        		break;
+	        	}
+        	}
         }
-
-        for(int i = 0 ;i<list.size();i++) {
+        levelsLen = levels.size();
+        rewardListLen = list.size();
+        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
         	if(month == null || month.size() == 0) {
@@ -1904,9 +1919,16 @@ public class MobileInterfaceController {
     		vo.setMonthReward(list.get(i).getMonthReward());
     		vo.setStatus(status);
     		w2.add(vo);
+    		if(levelsLen != rewardListLen) {
+	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
+	        		break;
+	        	}
+        	}
         }
-
-        for(int i = 0 ;i<list.size();i++) {
+        levelsLen = levels.size();
+        rewardListLen = list.size();
+        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(year == null || year.size() == 0) {
@@ -1922,21 +1944,36 @@ public class MobileInterfaceController {
     		vo.setYearReward(list.get(i).getYearReward());
     		vo.setStatus(status);
     		w5.add(vo);
+    		if(levelsLen != rewardListLen) {
+	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
+	        		break;
+	        	}
+        	}
         }
-        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
-        for(int i = 0 ;i<list.size();i++) {
+        
+        levelsLen = levels.size();
+        rewardListLen = list.size();
+        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i = 0 ;i < loopIndex; i++) {  
+        	VipRankReceiveVO levelItem = levels.get(i);
+        	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == false) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false) {
 				status = 0;
         	}
-        	if(vipLevel.getVipLevel() >= levels.get(i).getVipRank() && levels.get(i).getNullity() == true) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == true) {
 				status = 2;
         	}
-    		vo.setVipLevel(list.get(i).getVipLevel());
-    		vo.setVipRankReward(list.get(i).getVipRankReward());
+    		vo.setVipLevel(listItem.getVipLevel());
+    		vo.setVipRankReward(listItem.getVipRankReward());
     		vo.setStatus(status);
-    		w3.add(vo);
+    		w3.add(vo);   
+    		if(levelsLen != rewardListLen) {
+	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
+	        		break;
+	        	}
+        	}
         }
         Integer agentId = parentId;
         List<CleanChipsConfigVO> ls = platformServiceClient.getCleanChipsConfig(agentId);
@@ -1959,7 +1996,10 @@ public class MobileInterfaceController {
         }
 
         List<VipLevelRewardVO> yebRate = new ArrayList<VipLevelRewardVO>();
-        for(int i = 0;i<list.size();i++) {
+        levelsLen = levels.size();
+        rewardListLen = list.size();
+        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
         		if(list.get(i).getVipLevel() == 1) {
@@ -2262,8 +2302,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取余额宝收益、余额宝日、月、年利率
      *
@@ -2284,6 +2324,76 @@ public class MobileInterfaceController {
     	List<YebInterestRateVO> list = platformServiceClient.getYebInterestRate(parentId);
     	data.put("yebScore", yebScore);
     	data.put("yebInterestRate", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /**
+     * 获取VIP奖励明细
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getUserRewardDetail")
+    private GlobeResponse<Object> getUserRewardDetail(Integer userId,Integer parentId,Integer pageSize,Integer pageIndex) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>(); 
+    	CommonPageVO<UserRewardDetailVO> list = treasureServiceClient.getUserRewardDetail(userId,parentId,pageSize,pageIndex);
+    	data.put("VipRewardDetail", list.getLists());
+    	data.put("total", list.getPageCount());
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /**
+     * 获取余额宝明细
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getUserYebInfo")
+    private GlobeResponse<Object> getUserYebInfo(Integer userId,Integer date,Integer flag,Integer pageSize,Integer pageIndex,Integer typeId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	if(flag.equals(1)) {
+    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex,typeId);
+    		if(list.getLists().size() == 0) {
+    			data.put("yebAccountChange", list.getLists());
+	        	data.put("total", list.getPageCount());
+    		}
+    		for(int i = 0;i < list.getLists().size(); i++) {
+    			if(list.getLists().get(i).getTradeType() == 1) {
+    				data.put("yebAccountChange", list.getLists());
+    	        	data.put("total", list.getPageCount());
+    			}else {
+    				data.put("yebAccountChange", list.getLists());
+    	        	data.put("total", list.getPageCount());
+    			}
+    			
+    		}
+        	
+    	}
+    	if(flag.equals(2)) {
+    		CommonPageVO<UserYebIncomeVO> list = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
+    		data.put("yebIncome", list.getLists());
+        	data.put("total", list.getPageCount());
+    	}
+    	if(flag.equals(0)) {
+    		pageSize = pageSize / 2;
+    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex,typeId);
+        	CommonPageVO<UserYebIncomeVO> list1 = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
+        	data.put("yebAccountChange", list.getLists());
+        	data.put("yebIncome", list1.getLists());
+        	data.put("total", (list.getPageCount() + list1.getPageCount()) - 1);
+    	}
     	globeResponse.setData(data);
     	return globeResponse;
     }

@@ -85,7 +85,7 @@ public interface AccountsServiceClient {
 
     //查询业主最低出售金额
     @RequestMapping("accounts/mobile/getMinBalanceInfo")
-    GoldExchangeVO getMinBalanceInfo(@RequestParam("agentId") Integer agentId);
+    BigDecimal getMinBalanceInfo(@RequestParam("agentId") Integer agentId,@RequestParam("userId")Integer userId);
 
     //查询用户动态密码
     @RequestMapping("accounts/mobile/getInsurePassInfo")
@@ -111,7 +111,7 @@ public interface AccountsServiceClient {
     List<MailVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/openMail")
-    MailVO openMail(@RequestParam("id") Integer id);
+    List<MailVO> openMail(@RequestParam("ids") List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/deleteMail")
     Boolean deleteMail(@RequestParam("ids") List<Integer> ids);
