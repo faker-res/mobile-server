@@ -108,15 +108,14 @@ public class GameListJob implements ApplicationRunner {
 					uploadFTPGameList(data,agentId,fc);
 				}
 			}
-//			fc.logout();
-//			fc.disconnect();
+			fc.logout();
+			fc.disconnect();
 		}catch (Exception e) {
 			// TODO: handle exception
 			log.info("写文件到游戏列表报错",e);
 		}
 	}
 	
-	@Async
 	public void uploadFTPGameList(Map<String,List> map,Integer agentId,FTPClient ftpClient)  {
 		try {
 			log.info(agentId+"开始上传到文件服务器");
