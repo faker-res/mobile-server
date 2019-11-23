@@ -44,6 +44,8 @@ public class AgentSystemController {
     @Autowired
     private RedisDao redisService;
 
+    @Value("${gameUrlList}")
+    private String gameUrlList;
 
     @Value("${channelGameUrl}")
     private String channelGameUrl;
@@ -352,6 +354,8 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        String [] gameUrl = gameUrlList.split(",");
+        data.put("gameUrlList", gameUrl);
         String [] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
