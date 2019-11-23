@@ -192,7 +192,7 @@ public interface TreasureServiceClient {
 	CommonPageVO<UserRewardDetailVO> getUserRewardDetail(@RequestParam("userId")Integer userId,@RequestParam("parentId")Integer parentId,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 	
 	@RequestMapping("/treasure/mobile/getUserRecordInsure")
-	CommonPageVO<UserRecordInsureVO> getUserRecordInsure(@RequestParam("userId") Integer userId,@RequestParam("date") Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
+	CommonPageVO<UserRecordInsureVO> getUserRecordInsure(@RequestParam("userId") Integer userId,@RequestParam("date") Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex,@RequestParam("typeId")Integer typeId);
 	
 	@RequestMapping("/treasure/mobile/getUserYebIncome")
 	CommonPageVO<UserYebIncomeVO> getUserYebIncome(@RequestParam("userId") Integer userId,@RequestParam("date") Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);

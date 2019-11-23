@@ -2357,16 +2357,29 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserYebInfo")
-    private GlobeResponse<Object> getUserYebInfo(Integer userId,Integer date,Integer flag,Integer pageSize,Integer pageIndex) {
+    private GlobeResponse<Object> getUserYebInfo(Integer userId,Integer date,Integer flag,Integer pageSize,Integer pageIndex,Integer typeId) {
     	if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	if(flag.equals(1)) {
-    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex);
-        	data.put("yebAccountChange", list.getLists());
-        	data.put("total", list.getPageCount());
+    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex,typeId);
+    		if(list.getLists().size() == 0) {
+    			data.put("yebAccountChange", list.getLists());
+	        	data.put("total", list.getPageCount());
+    		}
+    		for(int i = 0;i < list.getLists().size(); i++) {
+    			if(list.getLists().get(i).getTradeType() == 1) {
+    				data.put("yebAccountChange", list.getLists());
+    	        	data.put("total", list.getPageCount());
+    			}else {
+    				data.put("yebAccountChange", list.getLists());
+    	        	data.put("total", list.getPageCount());
+    			}
+    			
+    		}
+        	
     	}
     	if(flag.equals(2)) {
     		CommonPageVO<UserYebIncomeVO> list = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
@@ -2375,11 +2388,11 @@ public class MobileInterfaceController {
     	}
     	if(flag.equals(0)) {
     		pageSize = pageSize / 2;
-    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex);
-        	data.put("yebAccountChange", list.getLists());
+    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex,typeId);
         	CommonPageVO<UserYebIncomeVO> list1 = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
+        	data.put("yebAccountChange", list.getLists());
         	data.put("yebIncome", list1.getLists());
-        	data.put("total", list1.getPageCount() + list.getPageCount());
+        	data.put("total", (list.getPageCount() + list1.getPageCount()) - 1);
     	}
     	globeResponse.setData(data);
     	return globeResponse;
