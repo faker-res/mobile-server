@@ -326,7 +326,7 @@ public class AgentSystemController {
         String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
         Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
         if(cacheData != null) {
-        	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据， 耗时:" + (System.currentTimeMillis() - timeMillis));
+        	log.info("loginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据， 耗时:" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
         }        
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
@@ -570,7 +570,7 @@ public class AgentSystemController {
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
-        log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + "， 耗时:" + (System.currentTimeMillis() - timeMillis));
+        log.info("loginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + "， 耗时:" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
 
@@ -778,10 +778,11 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
+        long timeMillis = System.currentTimeMillis();
         String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
         Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
         if(cacheData != null) {
-        	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据");
+        	log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据，耗时：" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
         }
         log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
@@ -991,6 +992,7 @@ public class AgentSystemController {
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
+        log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
 }
