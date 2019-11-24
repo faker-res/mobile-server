@@ -83,6 +83,7 @@ public class GameListJob implements ApplicationRunner {
 				Integer status = redisService.get(rediskey, Integer.class);
 				log.info(agentId+ "status:" +status);
 				if(null == status) {
+					log.info("11111111111111111111111");
 					redisService.set(rediskey, 0);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 					platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
@@ -96,6 +97,7 @@ public class GameListJob implements ApplicationRunner {
 					redisService.set(rediskey, thirdList);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 				}else if(1 == status) {
+					log.info("222222222222");
 					redisService.set(rediskey, 0);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 					rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
@@ -105,6 +107,7 @@ public class GameListJob implements ApplicationRunner {
 				    data.put("ThirdGameList",thirdList);
 					data.put("platfromList",platformVo);
 				}
+				log.info("data.size()");
 				if(data.size() > 0) {
 					uploadFTPGameList(data,agentId,fc);
 				}
