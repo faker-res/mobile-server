@@ -1,7 +1,6 @@
 package com.lzkj.mobile.schedule;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
@@ -15,6 +14,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class GameListJob {
+public class GameListJob implements ApplicationRunner {
 	
 	@Autowired
 	private AgentServiceClient agentServiceClient;
@@ -107,27 +108,35 @@ public class GameListJob {
 					uploadFTPGameList(data,agentId,fc);
 				}
 			}
-//			fc.logout();
-//			fc.disconnect();
+			fc.logout();
+			fc.disconnect();
 		}catch (Exception e) {
 			// TODO: handle exception
 			log.info("写文件到游戏列表报错",e);
 		}
 	}
 	
-	@Async
-	public void uploadFTPGameList(Map<String,List> map,Integer agentId,FTPClient ftpClient) throws SocketException, IOException {
-		log.info(agentId+"开始上传到文件服务器");
-		JSONArray jArray = new JSONArray();
-        jArray.add(map);
-        String data = jArray.toString();
-		InputStream input = new ByteArrayInputStream(data.getBytes("utf-8"));
-		ftpClient.enterLocalPassiveMode();
-		ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
-		if(!ftpClient.storeFile(agentId+".json", input)) {
-			log.info("上传文件失败"+agentId);
+	public void uploadFTPGameList(Map<String,List> map,Integer agentId,FTPClient ftpClient)  {
+		try {
+			log.info(agentId+"开始上传到文件服务器");
+			JSONArray jArray = new JSONArray();
+	        jArray.add(map);
+	        String data = jArray.toString();
+			InputStream input = new ByteArrayInputStream(data.getBytes("utf-8"));
+			ftpClient.enterLocalPassiveMode();
+			ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
+			if(!ftpClient.storeFile(agentId+".json", input)) {
+				log.info("上传文件失败"+agentId);
+			}
+			input.close();	
+		}catch (Exception e) {
+			log.info(agentId+"上传到文件服务器报错",e);
 		}
-		input.close();	
 		log.info(agentId+"结束上传到文件服务器");
+	}
+
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+		uploadGameList();
 	}
 }

@@ -1,13 +1,15 @@
 package com.lzkj.mobile.client;
 
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.NewsVO;
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import com.lzkj.mobile.vo.ActivityTypeVO;
+import com.lzkj.mobile.vo.AwardOrderPageVo;
+import com.lzkj.mobile.vo.ConfigInfo;
+import com.lzkj.mobile.vo.NewsVO;
 
 @FeignClient(name = "nativeweb-service")
 public interface NativeWebServiceClient {
@@ -29,4 +31,10 @@ public interface NativeWebServiceClient {
 
 	@RequestMapping("/nativeWeb/mobile/getShowImgUrl")
     String getShowImgUrl(@RequestParam("agentId") Integer agentId);
+	
+	@RequestMapping("/nativeweb/manager/active/getActivityType")
+	List<ActivityTypeVO> getActivityType();
+	
+	@RequestMapping("/nativeweb/manager/active/getActivityListByMobile")
+	List<Object> getActivityListByMobile(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory")Integer gameCategory,@RequestParam("pageIndex")Integer pageIndex);
 }
