@@ -81,6 +81,7 @@ public class GameListJob implements ApplicationRunner {
 				List<AgentMobileKindConfigVO> thirdList;
 				rediskey = RedisKeyPrefix.getAgentGameByGameTypeItemKeyStatus(agentId);
 				Integer status = redisService.get(rediskey, Integer.class);
+				log.info(agentId+ "status:" +status);
 				if(null == status) {
 					redisService.set(rediskey, 0);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
