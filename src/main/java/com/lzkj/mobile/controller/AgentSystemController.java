@@ -1,25 +1,55 @@
 package com.lzkj.mobile.controller;
 
-import com.lzkj.mobile.client.*;
-import com.lzkj.mobile.config.AgentSystemEnum;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.redis.JsonUtil;
-import com.lzkj.mobile.redis.RedisDao;
-import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.vo.*;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import com.lzkj.mobile.client.AccountsServiceClient;
+import com.lzkj.mobile.client.AgentServiceClient;
+import com.lzkj.mobile.client.PlatformServiceClient;
+import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.config.AgentSystemEnum;
+import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.redis.JsonUtil;
+import com.lzkj.mobile.redis.RedisDao;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.vo.AccReportVO;
+import com.lzkj.mobile.vo.AgencyEqualReward;
+import com.lzkj.mobile.vo.AgentAccVO;
+import com.lzkj.mobile.vo.AgentMobileKindConfigVO;
+import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
+import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
+import com.lzkj.mobile.vo.DayUserAbsScoreVO;
+import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
+import com.lzkj.mobile.vo.MobileKind;
+import com.lzkj.mobile.vo.MyPlayerVO;
+import com.lzkj.mobile.vo.MyQmTxRecord;
+import com.lzkj.mobile.vo.MyRewardRecordVO;
+import com.lzkj.mobile.vo.MyRewardVO;
+import com.lzkj.mobile.vo.PlatformVO;
+import com.lzkj.mobile.vo.QmAchievementVO;
+import com.lzkj.mobile.vo.SystemStatusInfoVO;
+import com.lzkj.mobile.vo.UserCodeDetailsVO;
+import com.lzkj.mobile.vo.WeekRankingListVO;
+import com.lzkj.mobile.vo.ZzSysRatioVO;
+import com.lzkj.mobile.vo.yebProfitDetailsVO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -37,9 +67,6 @@ public class AgentSystemController {
 
     @Autowired
     private PlatformServiceClient platformServiceClient;
-
-    @Autowired
-    private NativeWebServiceClient nativeWebServiceClient;
 
     @Autowired
     private RedisDao redisService;
@@ -295,6 +322,7 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
+        long timeMillis = System.currentTimeMillis();
         String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
         Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
         if(cacheData != null) {
@@ -543,6 +571,7 @@ public class AgentSystemController {
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
+        log.info("耗时:{}", System.currentTimeMillis() - timeMillis);
         return data;
     }
 
