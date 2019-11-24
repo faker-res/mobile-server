@@ -784,8 +784,7 @@ public class AgentSystemController {
         if(cacheData != null) {
         	log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据，耗时：" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }
-        log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
+        }        
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
