@@ -62,6 +62,7 @@ import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
+import com.lzkj.mobile.vo.ActivityTypeVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.AgentInfoVO;
 import com.lzkj.mobile.vo.AgentIsIosVO;
@@ -2325,4 +2326,26 @@ public class MobileInterfaceController {
     	return globeResponse;
     }
 
+    @RequestMapping("/getActivityType")
+    public GlobeResponse<Object> getActivityType() {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	globeResponse.setData(nativeWebServiceClient.getActivityType());
+    	return globeResponse;
+    }
+
+    @RequestMapping("/getActivityListByMobile")
+    public GlobeResponse<Object> getActivityListByMobile(Integer gameCategory, Integer agentId,Integer pageIndex) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	if(agentId == null) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+    	}
+    	if(gameCategory == null) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+    	}
+    	if(pageIndex == null) {
+    		pageIndex = 1;
+    	}
+    	globeResponse.setData(nativeWebServiceClient.getActivityListByMobile(agentId, gameCategory,pageIndex));
+    	return globeResponse;
+    }
 }
