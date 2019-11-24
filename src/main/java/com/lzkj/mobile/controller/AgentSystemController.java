@@ -326,10 +326,9 @@ public class AgentSystemController {
         String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
         Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
         if(cacheData != null) {
-        	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据");
+        	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据， 耗时:" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }
-        log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
+        }        
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
@@ -571,7 +570,7 @@ public class AgentSystemController {
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
-        log.info("耗时:{}", System.currentTimeMillis() - timeMillis);
+        log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + "， 耗时:" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
 
