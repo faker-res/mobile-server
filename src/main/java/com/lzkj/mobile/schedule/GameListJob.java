@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,10 +80,11 @@ public class GameListJob implements ApplicationRunner {
 			for (Integer agentId : agentList) {
 				List<PlatformVO> platformVo;
 				List<AgentMobileKindConfigVO> thirdList;
-				rediskey = RedisKeyPrefix.getAgentGameByGameTypeItemKeyStatus(agentId);
-				Integer status = redisService.get(rediskey, Integer.class);
+				rediskey = RedisKeyPrefix.getGameListStatus(agentId);
+				String status = redisService.get(rediskey,  String.class);
+				log.info(agentId+" statuskey:"+rediskey);
 				log.info(agentId+ "status:" +status);
-				if(null == status) {
+				if(StringUtils.isBlank(status)) {
 					log.info("11111111111111111111111");
 					redisService.set(rediskey, 0);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
@@ -96,7 +98,7 @@ public class GameListJob implements ApplicationRunner {
 					data.put("ThirdGameList",thirdList);
 					redisService.set(rediskey, thirdList);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
-				}else if(1 == status) {
+				}else if("1".equals(status)) {
 					log.info("222222222222");
 					redisService.set(rediskey, 0);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);

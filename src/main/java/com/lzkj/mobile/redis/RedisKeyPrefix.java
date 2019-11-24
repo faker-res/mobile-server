@@ -79,4 +79,8 @@ public class RedisKeyPrefix {
 	public static String getAgentGameByGameTypeItemKeyStatus(Integer agentId) {
 		return MOBILE_SERVER + "getAgentGameByGameTypeItemKeyStatus:" + agentId;
 	}
+	
+	public static String getGameListStatus(Integer agentId) {
+		return MOBILE_SERVER + "getGameListStatus:" + agentId;
+	}
 }
