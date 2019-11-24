@@ -86,7 +86,7 @@ public class GameListJob implements ApplicationRunner {
 				log.info(agentId+ "status:" +status);
 				if(StringUtils.isBlank(status)) {
 					log.info("11111111111111111111111");
-					redisService.set(rediskey, 0);
+					redisService.set(rediskey, "0");
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 					platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
 					rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
@@ -100,7 +100,7 @@ public class GameListJob implements ApplicationRunner {
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 				}else if("1".equals(status)) {
 					log.info("222222222222");
-					redisService.set(rediskey, 0);
+					redisService.set(rediskey, "0");
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 					rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
 					platformVo = redisService.getList(rediskey, PlatformVO.class);
