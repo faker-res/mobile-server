@@ -75,9 +75,9 @@ public class GameListJob implements ApplicationRunner {
 				log.info("将游戏列表写入到ftp服务器没有取到业主信息"+new Date());
 				return;
 			}
-			Map<String,List> data = new HashMap<String,List>();
 			String rediskey = "";
 			for (Integer agentId : agentList) {
+				Map<String,List> data = new HashMap<String,List>();
 				List<PlatformVO> platformVo;
 				List<AgentMobileKindConfigVO> thirdList;
 				rediskey = RedisKeyPrefix.getGameListStatus(agentId);
@@ -109,7 +109,7 @@ public class GameListJob implements ApplicationRunner {
 				    data.put("ThirdGameList",thirdList);
 					data.put("platfromList",platformVo);
 				}
-				log.info("data.size()");
+				log.info("data.size():"+data.size());
 				if(data.size() > 0) {
 					uploadFTPGameList(data,agentId,fc);
 				}
