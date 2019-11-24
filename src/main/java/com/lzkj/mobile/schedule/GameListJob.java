@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,15 +75,16 @@ public class GameListJob implements ApplicationRunner {
 				log.info("将游戏列表写入到ftp服务器没有取到业主信息"+new Date());
 				return;
 			}
-			Map<String,List> data = new HashMap<String,List>();
 			String rediskey = "";
 			for (Integer agentId : agentList) {
+				Map<String,List> data = new HashMap<String,List>();
 				List<PlatformVO> platformVo;
 				List<AgentMobileKindConfigVO> thirdList;
-				rediskey = RedisKeyPrefix.getAgentGameByGameTypeItemKeyStatus(agentId);
-				Integer status = redisService.get(rediskey, Integer.class);
-				if(null == status) {
-					redisService.set(rediskey, 0);
+				rediskey = RedisKeyPrefix.getGameListStatus(agentId);
+				String status = redisService.get(rediskey,  String.class);
+				log.info(agentId+ "status:" +status);
+				if(StringUtils.isBlank(status)) {
+					redisService.set(rediskey, "0");
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 					platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
 					rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
@@ -94,8 +96,8 @@ public class GameListJob implements ApplicationRunner {
 					data.put("ThirdGameList",thirdList);
 					redisService.set(rediskey, thirdList);
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
-				}else if(1 == status) {
-					redisService.set(rediskey, 0);
+				}else if("1".equals(status)) {
+					redisService.set(rediskey, "0");
 					redisService.expire(rediskey, 2, TimeUnit.HOURS);
 					rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
 					platformVo = redisService.getList(rediskey, PlatformVO.class);
@@ -104,6 +106,7 @@ public class GameListJob implements ApplicationRunner {
 				    data.put("ThirdGameList",thirdList);
 					data.put("platfromList",platformVo);
 				}
+				log.info("data.size():"+data.size());
 				if(data.size() > 0) {
 					uploadFTPGameList(data,agentId,fc);
 				}
@@ -122,6 +125,7 @@ public class GameListJob implements ApplicationRunner {
 			JSONArray jArray = new JSONArray();
 	        jArray.add(map);
 	        String data = jArray.toString();
+	        log.info(agentId+"data"+data);
 			InputStream input = new ByteArrayInputStream(data.getBytes("utf-8"));
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
