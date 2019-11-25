@@ -48,7 +48,6 @@ public class MailController {
     @RequestMapping("/openMail")
     public GlobeResponse openMail(int [] id) {
         List<Integer> ids = new ArrayList<Integer>();
-
         for (int i = 0; i < id.length; i++) {
             ids.add(id[i]);
         }
