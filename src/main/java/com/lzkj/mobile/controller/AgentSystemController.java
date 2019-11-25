@@ -1,25 +1,55 @@
 package com.lzkj.mobile.controller;
 
-import com.lzkj.mobile.client.*;
-import com.lzkj.mobile.config.AgentSystemEnum;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.redis.JsonUtil;
-import com.lzkj.mobile.redis.RedisDao;
-import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.vo.*;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import com.lzkj.mobile.client.AccountsServiceClient;
+import com.lzkj.mobile.client.AgentServiceClient;
+import com.lzkj.mobile.client.PlatformServiceClient;
+import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.config.AgentSystemEnum;
+import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.redis.JsonUtil;
+import com.lzkj.mobile.redis.RedisDao;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.vo.AccReportVO;
+import com.lzkj.mobile.vo.AgencyEqualReward;
+import com.lzkj.mobile.vo.AgentAccVO;
+import com.lzkj.mobile.vo.AgentMobileKindConfigVO;
+import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
+import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
+import com.lzkj.mobile.vo.DayUserAbsScoreVO;
+import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
+import com.lzkj.mobile.vo.MobileKind;
+import com.lzkj.mobile.vo.MyPlayerVO;
+import com.lzkj.mobile.vo.MyQmTxRecord;
+import com.lzkj.mobile.vo.MyRewardRecordVO;
+import com.lzkj.mobile.vo.MyRewardVO;
+import com.lzkj.mobile.vo.PlatformVO;
+import com.lzkj.mobile.vo.QmAchievementVO;
+import com.lzkj.mobile.vo.SystemStatusInfoVO;
+import com.lzkj.mobile.vo.UserCodeDetailsVO;
+import com.lzkj.mobile.vo.WeekRankingListVO;
+import com.lzkj.mobile.vo.ZzSysRatioVO;
+import com.lzkj.mobile.vo.yebProfitDetailsVO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -39,11 +69,10 @@ public class AgentSystemController {
     private PlatformServiceClient platformServiceClient;
 
     @Autowired
-    private NativeWebServiceClient nativeWebServiceClient;
-
-    @Autowired
     private RedisDao redisService;
 
+    @Value("${gameUrlList}")
+    private String gameUrlList;
 
     @Value("${channelGameUrl}")
     private String channelGameUrl;
@@ -293,13 +322,13 @@ public class AgentSystemController {
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
+        long timeMillis = System.currentTimeMillis();
         String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
         Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
         if(cacheData != null) {
-        	log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据");
+        	log.info("loginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据， 耗时:" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }
-        log.info("agentId:"+agentId+"\t registerMachine:"+registerMachine);
+        }        
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
@@ -352,6 +381,8 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        String [] gameUrl = gameUrlList.split(",");
+        data.put("gameUrlList", gameUrl);
         String [] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
@@ -539,6 +570,7 @@ public class AgentSystemController {
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
+        log.info("loginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + "， 耗时:" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
 
@@ -734,5 +766,232 @@ public class AgentSystemController {
         globeResponse.setData(param);
         return globeResponse;
     }
-}
+    
+    /**
+     * 获取二维码和热更地址
+     *
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/newLoginStatus")
+    public Map<String, Object> getNewLoginStatus(Integer agentId, String registerMachine) {
+        if (null == agentId || agentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        long timeMillis = System.currentTimeMillis();
+        String dataKey = RedisKeyPrefix.getloginStatusCacheKey(agentId, registerMachine);
+        Map<String, Object> cacheData = redisService.get(dataKey, Map.class);
+        if(cacheData != null) {
+        	log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据，耗时：" + (System.currentTimeMillis() - timeMillis));
+        	return cacheData;
+        }        
+        String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
+      //获取后台代理配置
+        redisKey = RedisKeyPrefix.getQrCode(agentId);
+        AgentAccVO agentAccVO = redisService.get(redisKey, AgentAccVO.class);
+        if(agentAccVO == null) {
+        	agentAccVO = agentClient.getQrCode(agentId);
+        	redisService.set(redisKey, agentAccVO);
+        	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        }
+
+        //总控的维护
+        String controllerKey = RedisKeyPrefix.getControllerKey();
+        SystemStatusInfoVO systemStatusInfo = redisService.get(controllerKey,SystemStatusInfoVO.class);
+        if (null ==systemStatusInfo){
+            String key = "EnjoinLogon";
+            systemStatusInfo = accountsClient.getSystemStatusInfo(key);
+            redisService.set(controllerKey,systemStatusInfo);
+            redisService.expire(controllerKey, 2, TimeUnit.HOURS);
+        }
+        Boolean flag = false;
+        if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
+            flag = true;
+        }
+        Map<String, Object> data = new HashMap<>();
+
+        //获取业主配置
+        redisKey = RedisKeyPrefix.getAgentSystemStatusInfoKey(agentId);
+        List<AgentSystemStatusInfoVO> agentSystemList;
+        List agentSystemMapList = redisService.get(redisKey, List.class);
+        if(null == agentSystemMapList) {
+        	 agentSystemList = agentClient.getBindMobileSendInfo(agentId);
+        	 redisService.set(redisKey, agentSystemList);
+         	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+        	agentSystemList = new ArrayList<>();
+        	for(Object item : agentSystemMapList) {
+        		AgentSystemStatusInfoVO assi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), AgentSystemStatusInfoVO.class);
+        		agentSystemList.add(assi);
+        	}
+        }
+
+        //获取首页弹窗链接
+
+        String imgUrl = "";
+        		//nativeWebServiceClient.getShowImgUrl(agentId);
+        data.put("QRcode", agentAccVO.getAgentUrl());
+        data.put("VERSION_APK", agentAccVO.getAgentVersion());
+        data.put("ClientUrl", agentAccVO.getClientUrl());
+        data.put("prompt", agentAccVO.getPrompt());
+        data.put("channelGameUrl",channelGameUrl);
+        data.put("showbanner",imgUrl);
+        String [] gameUrl = gameUrlList.split(",");
+        data.put("gameUrlList", gameUrl);
+        String [] huodong = huodongurl.split(",");
+        data.put("huodongurl", huodong);
+        for (AgentSystemStatusInfoVO vo : agentSystemList) {
+            //绑定手机
+            if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
+                data.put("bindMobileSend", vo.getStatusValue());
+            }
+            //注册填写真实姓名
+            if (vo.getStatusName().equals(AgentSystemEnum.ShowRealName.getName())) {
+                if (vo.getIsShow() == 1) {
+                    data.put("ShowRealName", false);
+                } else {
+                    data.put("ShowRealName", true);
+                }
+            }
+            //如果总控没有维护,并且业主维护的时候
+            if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("vip", true);
+                } else {
+                    data.put("vip", false);
+                }
+            }
+            //邮件系统是否开启
+            if(vo.getStatusName().equals(AgentSystemEnum.MailOpen.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("mail", true);
+                } else {
+                    data.put("mail", false);
+                }
+            }
+            //签到
+            if(vo.getStatusName().equals(AgentSystemEnum.SignOpen.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("signUp", true);
+                } else {
+                    data.put("signUp", false);
+                }
+            }
+            //修改密码开关
+            if(vo.getStatusName().equals(AgentSystemEnum.ResetPwd.getName())){
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("canResetdhmm", true);
+                } else {
+                    data.put("canResetdhmm", false);
+                }
+            }
+            //活动展示
+            if(vo.getStatusName().equals(AgentSystemEnum.ActivityOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		 data.put("ActivityOpen", true);
+                } else {
+                    data.put("ActivityOpen", false);
+                }
+            }
+           //提现展示
+            if(vo.getStatusName().equals(AgentSystemEnum.ApplyOrderOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		 data.put("ApplyOrderOpen", true);
+                } else {
+                    data.put("ApplyOrderOpen", false);
+                }
+            }
+            //余额宝是否开启
+            if(vo.getStatusName().equals(AgentSystemEnum.YebOpen.getName())) {
+            	if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+            		data.put("yebiIsopen", true);
+            	}else {
+            		data.put("yebiIsopen", false);
+            	}
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.WXDLOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("wxdlopen", true);
+                }else {
+                    data.put("wxdlopen", false);
+                }
+            }
+            if(vo.getStatusName().equals(AgentSystemEnum.SJZCOpen.getName())){
+                if(vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("sjzcopen", true);
+                }else {
+                    data.put("sjzcopen", false);
+                }
+            }
+        }
+        //获取房间信息
+        redisKey = RedisKeyPrefix.getMobileKindList();
+        List<MobileKind> mobileKindList;
+        List mobileKindMapList = redisService.get(redisKey, List.class);
+        if(null == mobileKindMapList) {
+	        Integer typeId = 1;
+	        mobileKindList = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
+	        redisService.set(redisKey, mobileKindList);
+	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+        	mobileKindList = new ArrayList<>();
+        	for(Object item : mobileKindMapList) {
+        		MobileKind mi = JsonUtil.parseObject(JsonUtil.parseJsonString(item), MobileKind.class);
+        		mobileKindList.add(mi);
+        	}
+        }
+        data.put("GameList",mobileKindList);
+        data.put("imgUrl", gameImgUrl);
+        List<CloudShieldConfigurationVO> cloudShieldConfigurationVOS;
+        redisKey =  RedisKeyPrefix.getCloudShieldConfigurationInfos(agentId);
+        List cloudShieldConfigurationMapList = redisService.get(redisKey, List.class);
+        if(null == cloudShieldConfigurationMapList) {
+            cloudShieldConfigurationVOS = agentClient.getCloudShieldConfigurationInfos(agentId);
+            redisService.set(redisKey, cloudShieldConfigurationVOS);
+            redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        } else {
+            cloudShieldConfigurationVOS = new ArrayList<>();
+            for(Object item : cloudShieldConfigurationMapList) {
+                CloudShieldConfigurationVO cs = JsonUtil.parseObject(JsonUtil.parseJsonString(item), CloudShieldConfigurationVO.class);
+                cloudShieldConfigurationVOS.add(cs);
+            }
+        }
+        data.put("CloudData", cloudShieldConfigurationVOS);
+
+        //获取新运转盘开关
+        redisKey = RedisKeyPrefix.getLuckyIsOpen(agentId);
+        LuckyTurntableConfigurationVO luckyTurntableConfigurationVO = redisService.get(redisKey, LuckyTurntableConfigurationVO.class);
+        if(luckyTurntableConfigurationVO == null) {
+        	luckyTurntableConfigurationVO = treasureServiceClient.getLuckyIsOpen(agentId);
+        	redisService.set(redisKey, luckyTurntableConfigurationVO);
+ 	        redisService.expire(redisKey, 2, TimeUnit.HOURS);
+        }
+        if(luckyTurntableConfigurationVO !=null) {
+        	data.put("luckyWheel", luckyTurntableConfigurationVO.getMainSwitch());
+        }
+
+        //判断预更新热更开关開啓沒
+        if ("0".equals(String.valueOf(agentAccVO.getStatus()))) {
+            String[] update = agentAccVO.getUpdateAddress().split(",");
+            data.put("HOT_UPDATE_URL", update);
+        }
+            //验证是否有机器码
+            if (!StringUtils.isBlank(registerMachine)) {
+                int num = platformServiceClient.getWhitelist(registerMachine);
+                if (num > 0) {
+                    String[] preUpdateAddress = agentAccVO.getPreUpdateAddress().split(",");
+                    data.put("preUpdateAddress", preUpdateAddress);
+                    flag = false;
+                } else {
+                    String[] update = agentAccVO.getUpdateAddress().split(",");
+                    data.put("HOT_UPDATE_URL", update);
+                }
+            }
+        data.put("Maitance", flag);
+        redisService.set(dataKey, data);
+        redisService.expire(dataKey, 5, TimeUnit.SECONDS);
+        log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
+        return data;
+    }
+}

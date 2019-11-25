@@ -132,4 +132,6 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/fundDetails")
     List<Map<String, Object>> fundDetails( @RequestParam("gameId") Integer gameId, @RequestParam("agentId") Integer agentId);
 
+    @RequestMapping("/agent/mobile/getALLAgent")
+    List<Integer> getALLAgent();
 }
