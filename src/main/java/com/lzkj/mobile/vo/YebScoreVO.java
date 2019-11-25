@@ -9,5 +9,7 @@ public class YebScoreVO {
 	
 	private BigDecimal dayPresentScore = BigDecimal.ZERO;
 	
+	private BigDecimal yesterdayPresentScore = BigDecimal.ZERO;
+	
 	private BigDecimal historyPresentScore = BigDecimal.ZERO;
 }
