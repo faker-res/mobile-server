@@ -2418,7 +2418,11 @@ public class MobileInterfaceController {
     	if(pageIndex == null) {
     		pageIndex = 1;
     	}
-    	globeResponse.setData(nativeWebServiceClient.getActivityListByMobile(agentId, gameCategory,pageIndex));
+    	CommonPageVO page = nativeWebServiceClient.getActivityListByMobile(agentId, gameCategory,pageIndex);
+    	Map<String,Object> data = new HashMap<String, Object>();
+    	data.put("list", page.getLists());
+    	data.put("total",page.getPageCount());
+    	globeResponse.setData(data);
     	return globeResponse;
     }
 }
