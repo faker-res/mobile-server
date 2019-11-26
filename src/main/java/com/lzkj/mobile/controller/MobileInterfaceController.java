@@ -80,6 +80,7 @@ import com.lzkj.mobile.vo.GameListVO;
 import com.lzkj.mobile.vo.GamePropertyType;
 import com.lzkj.mobile.vo.GatewayInfo;
 import com.lzkj.mobile.vo.GetBankRecordVO;
+import com.lzkj.mobile.vo.GetRedIdVO;
 import com.lzkj.mobile.vo.GlobalSpreadInfo;
 import com.lzkj.mobile.vo.GlobeResponse;
 import com.lzkj.mobile.vo.LotteryConfigVO;
@@ -100,6 +101,7 @@ import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.ProblemConfigVO;
 import com.lzkj.mobile.vo.RecordInsurePageVO;
 import com.lzkj.mobile.vo.RecordInsureVO;
+import com.lzkj.mobile.vo.RedEnvelopeRainVO;
 import com.lzkj.mobile.vo.ScoreRankVO;
 import com.lzkj.mobile.vo.ShareDetailInfoVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
@@ -2425,6 +2427,25 @@ public class MobileInterfaceController {
     	data.put("list", page.getLists());
     	data.put("total",page.getPageCount());
     	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    /*
+     * 红包雨
+     */
+    @RequestMapping("/getRedEnvelopeRain")
+    public GlobeResponse<Object> getRedEnvelopeRain(Integer parentId,Integer userId) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	RedEnvelopeRainVO vo = new RedEnvelopeRainVO();
+    	GetRedIdVO v = agentServiceClient.getRedId(parentId);
+    	if(v != null) {
+    		int count = treasureServiceClient.getLQRecord(userId);
+    		if(count == 0) {
+    			vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
+    			agentServiceClient.deleteRedEnvelopeRain(vo.getId());
+    		}
+    	}
+    	globeResponse.setData(vo);
     	return globeResponse;
     }
 }

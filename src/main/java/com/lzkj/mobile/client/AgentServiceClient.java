@@ -134,4 +134,13 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/getALLAgent")
     List<Integer> getALLAgent();
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeRain")
+    RedEnvelopeRainVO getRedEnvelopeRain(@RequestParam("parentId") Integer parentId,@RequestParam("activityId") Integer activityId);
+    
+    @RequestMapping("/agent/mobile/deleteRedEnvelopeRain")
+    void deleteRedEnvelopeRain(@RequestParam("id") Integer id);
+    
+    @RequestMapping("/agent/mobile/getRedId")
+    GetRedIdVO getRedId(@RequestParam("parentId") Integer parentId);
 }
