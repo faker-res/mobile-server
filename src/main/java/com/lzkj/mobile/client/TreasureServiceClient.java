@@ -196,5 +196,8 @@ public interface TreasureServiceClient {
 	
 	@RequestMapping("/treasure/mobile/getUserYebIncome")
 	CommonPageVO<UserYebIncomeVO> getUserYebIncome(@RequestParam("userId") Integer userId,@RequestParam("date") Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
+	
+	@RequestMapping("/treasure/mobile/getLQRecord")
+	int getLQRecord(@RequestParam("userId") Integer userId);
 }
 
