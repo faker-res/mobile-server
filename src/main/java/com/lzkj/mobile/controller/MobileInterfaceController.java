@@ -974,7 +974,7 @@ public class MobileInterfaceController {
     public GlobeResponse<Object> resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
         String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
-        if (verificationCode == null) {
+       /* if (verificationCode == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
         }
         if (!verificationCode.getCode().equals(verifyCode)) {
@@ -982,7 +982,7 @@ public class MobileInterfaceController {
         }
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
-        }
+        }*/
         if (oldPwd.equals(newPwd)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "新密码与旧密码一致");
         }
@@ -2272,7 +2272,7 @@ public class MobileInterfaceController {
         }
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
-        String password1 = accountsServiceClient.verifyPassword(userId);
+        String password1 = accountsServiceClient.verifyPassword(userId).toLowerCase();
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }
