@@ -49,5 +49,6 @@ public class AgentAccVO {
     private String prompt="";   //维护提示
     private String PreUpdateAddress; //熱更地址
     private short status = 0;
+    private String primaryDomain;
 
 }

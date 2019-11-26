@@ -339,7 +339,7 @@ public class AgentSystemController {
         	redisService.set(redisKey, agentAccVO);
         	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
         }
-
+        
         //总控的维护
         String controllerKey = RedisKeyPrefix.getControllerKey();
         SystemStatusInfoVO systemStatusInfo = redisService.get(controllerKey,SystemStatusInfoVO.class);
@@ -381,6 +381,7 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
         String [] gameUrl = gameUrlList.split(",");
         data.put("gameUrlList", gameUrl);
         String [] huodong = huodongurl.split(",");
@@ -837,6 +838,7 @@ public class AgentSystemController {
         data.put("prompt", agentAccVO.getPrompt());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
         String [] gameUrl = gameUrlList.split(",");
         data.put("gameUrlList", gameUrl);
         String [] huodong = huodongurl.split(",");
