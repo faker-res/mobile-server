@@ -15,9 +15,10 @@ public class AgentMobileKindConfigVO implements Serializable{
     private String kindCode;
     private Integer gameKindID;
     private Integer maintain;
-    private Integer IsPlatform;
+    private Integer isPlatform;
     private Integer gameTypeItem;
     private Integer kindMark;
     private List<RoomOpenVO> roomList;
     private String imageUrl;
+    private Integer subscript;
 }
