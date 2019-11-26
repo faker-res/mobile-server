@@ -62,7 +62,6 @@ import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.ActivityTypeVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.AgentInfoVO;
 import com.lzkj.mobile.vo.AgentIsIosVO;
@@ -84,7 +83,6 @@ import com.lzkj.mobile.vo.GetBankRecordVO;
 import com.lzkj.mobile.vo.GetRedIdVO;
 import com.lzkj.mobile.vo.GlobalSpreadInfo;
 import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.GoldExchangeVO;
 import com.lzkj.mobile.vo.LotteryConfigVO;
 import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.LuckyVO;
@@ -114,7 +112,6 @@ import com.lzkj.mobile.vo.UserInformationVO;
 import com.lzkj.mobile.vo.UserRecordInsureVO;
 import com.lzkj.mobile.vo.UserRewardDetailVO;
 import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.UserYebIncomeVO;
 import com.lzkj.mobile.vo.VIPReceiveInfoVO;
 import com.lzkj.mobile.vo.VerificationCodeVO;
 import com.lzkj.mobile.vo.VideoTypeVO;
@@ -979,7 +976,7 @@ public class MobileInterfaceController {
     public GlobeResponse<Object> resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
         String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
-        if (verificationCode == null) {
+       /* if (verificationCode == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
         }
         if (!verificationCode.getCode().equals(verifyCode)) {
@@ -987,7 +984,7 @@ public class MobileInterfaceController {
         }
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
-        }
+        }*/
         if (oldPwd.equals(newPwd)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "新密码与旧密码一致");
         }
@@ -2277,7 +2274,7 @@ public class MobileInterfaceController {
         }
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
-        String password1 = accountsServiceClient.verifyPassword(userId);
+        String password1 = accountsServiceClient.verifyPassword(userId).toLowerCase();
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }
@@ -2386,45 +2383,24 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserYebInfo")
-    private GlobeResponse<Object> getUserYebInfo(Integer userId,Integer date,Integer flag,Integer pageSize,Integer pageIndex,Integer typeId) {
-    	if (userId == null) {
+    private GlobeResponse<Object> getUserYebInfo(Integer userId, Integer date, Integer pageSize, Integer pageIndex, Integer typeId) {
+    	if (userId == null || typeId == null || date == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	if(flag.equals(1)) {
-    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex,typeId);
-    		if(list.getLists().size() == 0) {
-    			data.put("yebAccountChange", list.getLists());
-	        	data.put("total", list.getPageCount());
-    		}
-    		for(int i = 0;i < list.getLists().size(); i++) {
-    			if(list.getLists().get(i).getTradeType() == 1) {
-    				data.put("yebAccountChange", list.getLists());
-    	        	data.put("total", list.getPageCount());
-    			}else {
-    				data.put("yebAccountChange", list.getLists());
-    	        	data.put("total", list.getPageCount());
-    			}
-    			
-    		}
-        	
-    	}
-    	if(flag.equals(2)) {
-    		CommonPageVO<UserYebIncomeVO> list = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
-    		data.put("yebIncome", list.getLists());
-        	data.put("total", list.getPageCount());
-    	}
-    	if(flag.equals(0)) {
-    		pageSize = pageSize / 2;
-    		CommonPageVO<UserRecordInsureVO> list = treasureServiceClient.getUserRecordInsure(userId,date,pageSize,pageIndex,typeId);
-        	CommonPageVO<UserYebIncomeVO> list1 = treasureServiceClient.getUserYebIncome(userId, date,pageSize,pageIndex);
-        	data.put("yebAccountChange", list.getLists());
-        	data.put("yebIncome", list1.getLists());
-        	data.put("total", (list.getPageCount() + list1.getPageCount()) - 1);
-    	}
     	globeResponse.setData(data);
-    	return globeResponse;
+    	CommonPageVO<UserRecordInsureVO> list;
+    	if(typeId > 0) {
+    		list = treasureServiceClient.getUserRecordInsure(userId, date, pageSize, pageIndex, typeId);
+    	} else {
+    		list = treasureServiceClient.getUserYebIncome(userId, date, pageSize, pageIndex);
+    	}
+    	if(list != null) {
+    		data.put("yebAccountChange", list.getLists());
+    		data.put("total", list.getPageCount());
+    	}
+    	return globeResponse;    	    	    
     }
 
     @RequestMapping("/getActivityType")
