@@ -2275,7 +2275,7 @@ public class MobileInterfaceController {
         }
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
-        String password1 = accountsServiceClient.verifyPassword(userId);
+        String password1 = accountsServiceClient.verifyPassword(userId).toLowerCase();
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }
