@@ -84,20 +84,6 @@ public class AgentSystemController {
     private String huodongurl;
 
 
-//    /**
-//     * 全民代理 -我的推广(首页信息)
-//     *
-//     * @param userId
-//     * @return
-//     */
-//    @RequestMapping("/getAgentMyPopularize")
-//    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
-//        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        globeResponse.setData(agentSystemVO);
-//        return globeResponse;
-//    }
-
     /**
      * 代理系统-我的玩家
      *
@@ -328,7 +314,7 @@ public class AgentSystemController {
         if(cacheData != null) {
         	log.info("loginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据， 耗时:" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }        
+        }
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
@@ -339,7 +325,7 @@ public class AgentSystemController {
         	redisService.set(redisKey, agentAccVO);
         	 redisService.expire(redisKey, 2, TimeUnit.HOURS);
         }
-        
+
         //总控的维护
         String controllerKey = RedisKeyPrefix.getControllerKey();
         SystemStatusInfoVO systemStatusInfo = redisService.get(controllerKey,SystemStatusInfoVO.class);
@@ -767,7 +753,7 @@ public class AgentSystemController {
         globeResponse.setData(param);
         return globeResponse;
     }
-    
+
     /**
      * 获取二维码和热更地址
      *
@@ -785,7 +771,7 @@ public class AgentSystemController {
         if(cacheData != null) {
         	log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据，耗时：" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }        
+        }
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
