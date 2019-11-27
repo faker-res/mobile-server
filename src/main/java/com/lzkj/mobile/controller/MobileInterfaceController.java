@@ -2436,15 +2436,16 @@ public class MobileInterfaceController {
     @RequestMapping("/getRedEnvelopeRain")
     public GlobeResponse<Object> getRedEnvelopeRain(Integer parentId,Integer userId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	RedEnvelopeRainVO vo = new RedEnvelopeRainVO();
     	RedEnvelopeVO v = agentServiceClient.getRedEnvelope(parentId);
     	if(v != null) {
-    		int count = agentServiceClient.userSingleRedEnvelopeCount(v.getId());
-    		if(count == 0) {
-    			vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());    			
+    		int count = agentServiceClient.userSingleRedEnvelopeCount(parentId, v.getEventId());
+    		if(count < 1) {
+    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId()); 
+    			globeResponse.setData(vo);
+    			return globeResponse;
     		}
     	}
-    	globeResponse.setData(vo);
+    	globeResponse.setData("");
     	return globeResponse;
     }
     
@@ -2455,6 +2456,16 @@ public class MobileInterfaceController {
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	String ip = getIpAddress(request);
-    	return globeResponse;
+    	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
+    	if(param == null) {
+    		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
+    	}
+    	Integer ret = (Integer)param.get("ret");
+    	String msg = param.get("msg").toString();
+    	if(ret.intValue() == 0) {
+    		globeResponse.setMsg("领取成功");
+    		return globeResponse;
+    	}
+    	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
 }
