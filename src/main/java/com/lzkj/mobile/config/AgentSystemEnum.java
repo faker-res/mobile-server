@@ -18,7 +18,9 @@ public enum AgentSystemEnum {
     WXDLOpen("wxdlopen","微信登录开关"),
     SJZCOpen("sjzcopen","手机登录开关"),
     BANKOPEN("BankOpen","注册时填写银行卡号"),
-    REGISTEREDPHONEOPEN("RegisteredPhoneOpen","注册时手机号开关");
+    REGISTEREDPHONEOPEN("RegisteredPhoneOpen","注册时手机号开关"),
+    TXYEBPASSWORDOPEN("TXYEBpasswordOpen","提现时输入余额宝密码开关");
+
     private String name;
 
     private String describe;

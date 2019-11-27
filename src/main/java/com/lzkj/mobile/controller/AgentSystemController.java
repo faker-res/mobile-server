@@ -401,6 +401,15 @@ public class AgentSystemController {
                     data.put("RegisteredPhoneOpen", false);
                 }
             }
+
+            //提现时输入余额宝密码开关
+            if (vo.getStatusName().equals(AgentSystemEnum.TXYEBPASSWORDOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("TXYEBpasswordOpen", true);
+                } else {
+                    data.put("TXYEBpasswordOpen", false);
+                }
+            }
             //如果总控没有维护,并且业主维护的时候
             if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
