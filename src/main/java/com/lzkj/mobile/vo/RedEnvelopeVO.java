@@ -3,7 +3,7 @@ package com.lzkj.mobile.vo;
 import lombok.Data;
 
 @Data
-public class GetRedIdVO {
-
+public class RedEnvelopeVO {
+	private Integer id;
 	private Integer eventId;
 }

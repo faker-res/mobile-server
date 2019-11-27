@@ -138,9 +138,12 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/getRedEnvelopeRain")
     RedEnvelopeRainVO getRedEnvelopeRain(@RequestParam("parentId") Integer parentId,@RequestParam("activityId") Integer activityId);
     
-    @RequestMapping("/agent/mobile/deleteRedEnvelopeRain")
-    void deleteRedEnvelopeRain(@RequestParam("id") Integer id);
+    @RequestMapping("/agent/mobile/userSingleRedEnvelopeCount")
+    Integer userSingleRedEnvelopeCount(@RequestParam("redEnvelopId") Integer redEnvelopId);
     
-    @RequestMapping("/agent/mobile/getRedId")
-    GetRedIdVO getRedId(@RequestParam("parentId") Integer parentId);
+    @RequestMapping("/agent/mobile/getRedEnvelope")
+    RedEnvelopeVO getRedEnvelope(@RequestParam("parentId") Integer parentId);
+
+    @RequestMapping("/agent/mobile/receiveRedEnvelopeRain")
+    Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") Integer machineId);
 }

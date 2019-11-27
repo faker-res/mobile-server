@@ -1,17 +1,14 @@
 package com.lzkj.mobile.client;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators.In;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
@@ -20,11 +17,10 @@ import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
 import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
 import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.GoldExchangeVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.MailVO;
 import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
+import com.lzkj.mobile.vo.UserCodeDetailsVO;
 import com.lzkj.mobile.vo.UserInfoVO;
 import com.lzkj.mobile.vo.UserInformationVO;
 import com.lzkj.mobile.vo.VipLevelRewardVO;
