@@ -60,9 +60,9 @@ public class GameListJob implements ApplicationRunner {
 	 */
 	@Scheduled(cron = "0 0/3 * * * *")
 	public void uploadGameList() {
+		log.info("开始写游戏列表到文件服务器");
+		FTPClient fc = new FTPClient();
 		try {
-			log.info("开始写游戏列表到文件服务器");
-			FTPClient fc = new FTPClient();
 			fc.connect(url, port); // 连接ftp服务器
 			fc.login(name, password); // 登录ftp服务器
 			int replyCode = fc.getReplyCode(); // 是否成功登录服务器
@@ -111,12 +111,21 @@ public class GameListJob implements ApplicationRunner {
 					uploadFTPGameList(data,agentId,fc);
 				}
 			}
-			fc.logout();
-			fc.disconnect();
+			
 		}catch (Exception e) {
 			// TODO: handle exception
 			log.info("写文件到游戏列表报错",e);
+		} finally {
+			if(fc.isConnected()) {
+				try {
+					fc.logout();
+					fc.disconnect();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}			
+			}
 		}
+		log.info("结束写游戏列表到文件服务器");
 	}
 	
 	public void uploadFTPGameList(Map<String,List> map,Integer agentId,FTPClient ftpClient)  {
