@@ -62,7 +62,6 @@ import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.ActivityTypeVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.AgentInfoVO;
 import com.lzkj.mobile.vo.AgentIsIosVO;
@@ -1667,6 +1666,8 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getMinBalanceInfo")
     private GlobeResponse<Object> getMinBalanceInfo(Integer agentId) {
+    	long startMillis = System.currentTimeMillis();
+    	log.info("/getMinBalanceInfo,参数agentId={}", agentId);
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1681,6 +1682,7 @@ public class MobileInterfaceController {
         data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
+        log.info("/getMinBalanceInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 

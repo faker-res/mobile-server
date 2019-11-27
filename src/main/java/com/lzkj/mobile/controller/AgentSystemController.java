@@ -302,12 +302,15 @@ public class AgentSystemController {
      */
     @RequestMapping("/getBankInfo")
     public GlobeResponse<Object> getMaintainKey(Integer agentId) {
+    	long startMillis = System.currentTimeMillis();
+    	log.info("/getBankInfo,参数:agentId={}",agentId);
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
         List<BankInfoVO> bankInfos = platformServiceClient.getBankList(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(bankInfos);
+        log.info("/getBankInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
