@@ -1049,6 +1049,8 @@ public class MobileInterfaceController {
 
     @RequestMapping("/getPayList")
     private GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
+    	long startMillis = System.currentTimeMillis();
+    	log.info("/getPayList,参数:userId={},agentId={}", userId, agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
@@ -1093,7 +1095,7 @@ public class MobileInterfaceController {
         data.put("compayList", lists);
 
         globeResponse.setData(data);
-
+        log.info("/getPayList,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
