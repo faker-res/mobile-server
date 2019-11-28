@@ -2278,6 +2278,10 @@ public class MobileInterfaceController {
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
         String password1 = accountsServiceClient.verifyPassword(userId).toLowerCase();
+        if (StringUtil.isEmpty(password1)) {
+            globeResponse.setData(true);//代表后台以重置密码
+            return globeResponse;
+        }
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }
