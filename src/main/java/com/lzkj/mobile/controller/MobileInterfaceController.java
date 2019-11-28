@@ -2144,9 +2144,9 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getDate() {
     	List<Map<String, String>> data =new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
-//        map.put("code", "0");
-//        map.put("name", "全部时间");
-//        data.add(map);
+        map.put("code", "0");
+        map.put("name", "全部时间");
+        data.add(map);
         map = new HashMap<String, String>();
         map.put("code", "1");
         map.put("name", "今天");
