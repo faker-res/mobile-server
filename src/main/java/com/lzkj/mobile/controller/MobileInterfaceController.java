@@ -1669,6 +1669,8 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/getMinBalanceInfo")
     private GlobeResponse<Object> getMinBalanceInfo(Integer agentId,Integer userId) {
+    	long startMillis = System.currentTimeMillis();
+    	log.info("/getMinBalanceInfo,参数agentId={}", agentId);
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1683,6 +1685,7 @@ public class MobileInterfaceController {
 //        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
+        log.info("/getMinBalanceInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
@@ -2275,6 +2278,10 @@ public class MobileInterfaceController {
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
         String password1 = accountsServiceClient.verifyPassword(userId).toLowerCase();
+        if (StringUtil.isEmpty(password1)) {
+            globeResponse.setData(true);//代表后台以重置密码
+            return globeResponse;
+        }
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }

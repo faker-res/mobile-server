@@ -94,16 +94,16 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/platform/mobile/getUserMonthReceive")
 	List<VIPReceiveInfoVO> getUserMonthReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
-	
+
 	@RequestMapping("/platform/mobile/getUserDayReceive")
 	List<VIPReceiveInfoVO> getUserDayReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
-	
+
 	@RequestMapping("/platform/mobile/getUserYearReceive")
 	List<VIPReceiveInfoVO> getUserYearReceive(@RequestParam("userId")Integer userId,@RequestParam("level")Integer level);
 
 	@RequestMapping("/platform/mobile/getUserLevelReceive")
 	List<VipRankReceiveVO> getUserLevelReceive(@RequestParam("userId")Integer userId);
-	
+
 	@RequestMapping("/platform/mobile/getVipLevelCount")
 	Integer getVipLevelCount(@RequestParam("parentId")Integer parentId);
 
@@ -118,7 +118,7 @@ public interface PlatformServiceClient {
 
 
 	@RequestMapping("/mobile/clean/washBet")
-	Boolean washBet(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,@RequestParam("vipLevel") Integer vipLevel);
+	Map <String ,Object> washBet(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,@RequestParam("vipLevel") Integer vipLevel);
 
 	@RequestMapping("/mobile/clean/getWashRecord")
 	List<CleanChipsRecordVO> getWashRecord(@RequestParam("userId") Integer userId);
@@ -129,17 +129,17 @@ public interface PlatformServiceClient {
     List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId") Integer agentId);
 	@RequestMapping("/mobile/clean/getThirdConfig")
 	List<ThirdKindConfigVO> getThirdConfig(@RequestParam("kindType")int kindType);
-	
+
 
 	@RequestMapping("/mobile/clean/getSystemOpen")
 	List<SystemStatusInfoVO> getSystemOpen(@RequestParam("parentId")Integer parentId);
 
 	@RequestMapping("/platform/mobile/getAgentGameListByGameTypeItem")
     public List<PlatformVO>  getAgentGameListByGameTypeItem(@RequestParam("agentId")Integer agentId);
-	
+
     @RequestMapping("/platform/mobile/getAgentGameByGameTypeItem")
     public List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
-    
+
     @RequestMapping("/platform/mobile/getYebInterestRate")
     List<YebInterestRateVO> getYebInterestRate(@RequestParam("parentId")Integer parentId);
 

@@ -21,4 +21,5 @@ public class AgentMobileKindConfigVO implements Serializable{
     private List<RoomOpenVO> roomList;
     private String imageUrl;
     private Integer subscript;
+    private String iconImgUrl;
 }
