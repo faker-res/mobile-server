@@ -2146,9 +2146,9 @@ public class MobileInterfaceController {
     private GlobeResponse<Object> getDate() {
     	List<Map<String, String>> data =new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
-//        map.put("code", "0");
-//        map.put("name", "全部时间");
-//        data.add(map);
+        map.put("code", "0");
+        map.put("name", "全部时间");
+        data.add(map);
         map = new HashMap<String, String>();
         map.put("code", "1");
         map.put("name", "今天");
@@ -2280,6 +2280,10 @@ public class MobileInterfaceController {
         GlobeResponse globeResponse = new GlobeResponse();
         String mdPassword = MD5Encode(password, "utf-8").toLowerCase();
         String password1 = accountsServiceClient.verifyPassword(userId).toLowerCase();
+        if (StringUtil.isEmpty(password1)) {
+            globeResponse.setData(true);//代表后台以重置密码
+            return globeResponse;
+        }
         if (mdPassword.equals(password1)) {
             return globeResponse;
         }

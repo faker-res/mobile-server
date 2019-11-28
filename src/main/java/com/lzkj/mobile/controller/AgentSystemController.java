@@ -368,6 +368,7 @@ public class AgentSystemController {
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
+        data.put("hotVersion",agentAccVO.getHotVersion());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
         data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
@@ -850,6 +851,7 @@ public class AgentSystemController {
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
+        data.put("hotVersion",agentAccVO.getHotVersion());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
         data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
