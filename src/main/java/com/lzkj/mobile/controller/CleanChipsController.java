@@ -60,6 +60,7 @@ public class CleanChipsController {
             String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                     ", \"VipLevel\":" + vipLevel + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
             log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
+            globeResponse.setData(true);
         }else{
             globeResponse.setData(false);
         }
