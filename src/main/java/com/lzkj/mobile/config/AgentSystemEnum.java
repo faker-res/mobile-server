@@ -19,7 +19,8 @@ public enum AgentSystemEnum {
     SJZCOpen("sjzcopen","手机登录开关"),
     BANKOPEN("BankOpen","注册时填写银行卡号"),
     REGISTEREDPHONEOPEN("RegisteredPhoneOpen","注册时手机号开关"),
-    TXYEBPASSWORDOPEN("TXYEBpasswordOpen","提现时输入余额宝密码开关");
+    TXYEBPASSWORDOPEN("TXYEBpasswordOpen","提现时输入余额宝密码开关"),
+    REGISTERACCOUNTOPEN("RegisterAccountOpen","注册帐号开关");
 
     private String name;
 

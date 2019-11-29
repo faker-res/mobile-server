@@ -888,6 +888,14 @@ public class AgentSystemController {
                     data.put("RegisteredPhoneOpen", false);
                 }
             }
+            //注册帐号开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REGISTERACCOUNTOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("RegisterAccountOpen", true);
+                } else {
+                    data.put("RegisterAccountOpen", false);
+                }
+            }
 
             //提现时输入余额宝密码开关
             if (vo.getStatusName().equals(AgentSystemEnum.TXYEBPASSWORDOPEN.getName())) {
