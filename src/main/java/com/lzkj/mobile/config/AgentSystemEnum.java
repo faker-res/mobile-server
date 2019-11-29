@@ -5,6 +5,7 @@ package com.lzkj.mobile.config;
  */
 public enum AgentSystemEnum {
     BindMobileSend("BindMobileSend","绑定手机赠送"),
+    EnjoinLogon("EnjoinLogon","系统维护"),
     VerificationIsOpen("VerificationIsOpen","开启游戏验证码"),
     ShowRealName("ShowRealName","注册填写真实姓名"),
     VIPOpen("VIPOpen","vip功能是否开启"),
