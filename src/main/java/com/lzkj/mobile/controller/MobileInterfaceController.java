@@ -1261,7 +1261,7 @@ public class MobileInterfaceController {
         }
         if (sendMode == 2) {
             params.put("apikey", "5d3d8fb1a1cd3401b1987d7301fddf0d");
-            params.put("text", "【3D网络】您的验证码是" + vCode + "。如非本人操作，请忽略本短信");
+            params.put("text", "【王者科技】您的验证码是" + vCode + "。如非本人操作，请忽略本短信");
         }
         params.put("mobile", phone);
         return post("https://sms.yunpian.com/v2/sms/single_send.json", params);
