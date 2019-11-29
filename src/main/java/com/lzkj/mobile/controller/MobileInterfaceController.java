@@ -1852,6 +1852,11 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
+        	if(vipLevel.getVipIntegral().compareTo(vipConfig.get(size).getVipIntegral()) == 1) {
+        		vipLevel.setVipIntegral(new BigDecimal("0"));
+        		vipLevel.setTotal(new BigDecimal("0"));
+        		break;
+        	}
         	if(i == size) {
         		vipLevel.setVipIntegral(new BigDecimal("0"));
         		vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
@@ -2209,6 +2214,7 @@ public class MobileInterfaceController {
     @RequestMapping("/getTransactionType")
     private GlobeResponse<Object> getTransactionType() {
         List<TransactionTypeVO> list = treasureServiceClient.getTransactionType();
+        Collections.sort(list, Comparator.comparing(TransactionTypeVO::getTypeId));
         Map<String, Object> data = new HashMap<>();
         data.put("list", list);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
