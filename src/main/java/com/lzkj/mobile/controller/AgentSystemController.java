@@ -377,6 +377,13 @@ public class AgentSystemController {
         String [] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
+            if(!flag) {
+                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
+                        flag =true;
+                    }
+                }
+            }
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
                 data.put("bindMobileSend", vo.getStatusValue());
@@ -860,6 +867,14 @@ public class AgentSystemController {
         String [] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
+            //是否系统维护
+            if(!flag) {
+                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
+                     flag =true;
+                    }
+                }
+            }
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
                 data.put("bindMobileSend", vo.getStatusValue());
