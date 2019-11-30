@@ -361,21 +361,21 @@ public class MobileInterfaceController {
                 getBankRecordResponse.setTargetGold(l.getTargetGold());
                 getBankRecordResponse.setTargetUserId(l.getTargetUserId());
                 if (l.getTradeType() == 1) {
-                    getBankRecordResponse.setTradeTypeDescription("银行存款");
+                    getBankRecordResponse.setTradeTypeDescription("余额宝存款");
                     getBankRecordResponse.setTransferAccounts("");
                 } else if (l.getTradeType() == 2) {
-                    getBankRecordResponse.setTradeTypeDescription("银行取款");
+                    getBankRecordResponse.setTradeTypeDescription("余额宝取款");
                     getBankRecordResponse.setTransferAccounts("");
                 } else {
                     if (l.getSourceUserId() == userId) {
                         BigDecimal swapScore = l.getSwapScore().negate();
                         l.setSwapScore(swapScore);
-                        getBankRecordResponse.setTradeTypeDescription("银行转账");
+                        getBankRecordResponse.setTradeTypeDescription("余额宝转账");
                         AccountsInfoVO accountsInfo = accountsServiceClient.getAccountsInfo(l.getTargetUserId());
                         getBankRecordResponse.setTransferAccounts(String.valueOf(accountsInfo.getGameId()));
                         getBankRecordResponse.setSwapScore(l.getSwapScore());
                     } else {
-                        getBankRecordResponse.setTradeTypeDescription("银行收款");
+                        getBankRecordResponse.setTradeTypeDescription("余额宝收款");
                         AccountsInfoVO accountsInfo = accountsServiceClient.getAccountsInfo(l.getSourceUserId());
                         getBankRecordResponse.setTransferAccounts(String.valueOf(accountsInfo.getGameId()));
                     }
@@ -1823,7 +1823,7 @@ public class MobileInterfaceController {
 			} catch (InterruptedException e) {
 			}
         }else if(levels.size() < vipLevelCount) {
-        	
+
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = levels.size() + 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
@@ -1841,7 +1841,7 @@ public class MobileInterfaceController {
 			} catch (InterruptedException e) {
 			}
         }
-        
+
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
@@ -1990,11 +1990,11 @@ public class MobileInterfaceController {
 	        	}
         	}
         }
-        
+
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        for(int i = 0 ;i < loopIndex; i++) {  
+        for(int i = 0 ;i < loopIndex; i++) {
         	VipRankReceiveVO levelItem = levels.get(i);
         	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
@@ -2008,7 +2008,7 @@ public class MobileInterfaceController {
     		vo.setVipLevel(listItem.getVipLevel());
     		vo.setVipRankReward(listItem.getVipRankReward());
     		vo.setStatus(status);
-    		w3.add(vo);   
+    		w3.add(vo);
     		if(levelsLen != rewardListLen) {
 	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
 	        		break;
@@ -2380,8 +2380,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取VIP奖励明细
      *
@@ -2394,15 +2394,15 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	Map<String, Object> data = new HashMap<>(); 
+    	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<UserRewardDetailVO> list = treasureServiceClient.getUserRewardDetail(userId,parentId,pageSize,pageIndex);
     	data.put("VipRewardDetail", list.getLists());
     	data.put("total", list.getPageCount());
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取余额宝明细
      *
@@ -2427,7 +2427,7 @@ public class MobileInterfaceController {
     		data.put("yebAccountChange", list.getLists());
     		data.put("total", list.getPageCount());
     	}
-    	return globeResponse;    	    	    
+    	return globeResponse;
     }
 
     @RequestMapping("/getActivityType")
@@ -2456,7 +2456,7 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
+
     /*
      * 红包雨
      */
@@ -2467,7 +2467,7 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId()); 
+    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
     			globeResponse.setData(vo);
     			return globeResponse;
     		}
@@ -2475,7 +2475,7 @@ public class MobileInterfaceController {
     	globeResponse.setData("");
     	return globeResponse;
     }
-    
+
     /*
      * 领取红包雨红包
      */
