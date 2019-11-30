@@ -84,20 +84,6 @@ public class AgentSystemController {
     private String huodongurl;
 
 
-//    /**
-//     * 全民代理 -我的推广(首页信息)
-//     *
-//     * @param userId
-//     * @return
-//     */
-//    @RequestMapping("/getAgentMyPopularize")
-//    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
-//        MyPopularizeVO agentSystemVO = agentClient.getAgentMyPopularize(userId);
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        globeResponse.setData(agentSystemVO);
-//        return globeResponse;
-//    }
-
     /**
      * 代理系统-我的玩家
      *
@@ -302,12 +288,15 @@ public class AgentSystemController {
      */
     @RequestMapping("/getBankInfo")
     public GlobeResponse<Object> getMaintainKey(Integer agentId) {
+    	long startMillis = System.currentTimeMillis();
+    	log.info("/getBankInfo,参数:agentId={}",agentId);
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
         List<BankInfoVO> bankInfos = platformServiceClient.getBankList(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(bankInfos);
+        log.info("/getBankInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
@@ -328,7 +317,7 @@ public class AgentSystemController {
         if(cacheData != null) {
         	log.info("loginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据， 耗时:" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }        
+        }
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
@@ -379,13 +368,22 @@ public class AgentSystemController {
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
+        data.put("hotVersion",agentAccVO.getHotVersion());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
         String [] gameUrl = gameUrlList.split(",");
         data.put("gameUrlList", gameUrl);
         String [] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
+            if(!flag) {
+                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
+                        flag =true;
+                    }
+                }
+            }
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
                 data.put("bindMobileSend", vo.getStatusValue());
@@ -396,6 +394,31 @@ public class AgentSystemController {
                     data.put("ShowRealName", false);
                 } else {
                     data.put("ShowRealName", true);
+                }
+            }
+            //注册时银行卡开关
+            if (vo.getStatusName().equals(AgentSystemEnum.BANKOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("BankOpen", true);
+                } else {
+                    data.put("BankOpen", false);
+                }
+            }
+            //注册时手机号开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REGISTEREDPHONEOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("RegisteredPhoneOpen", true);
+                } else {
+                    data.put("RegisteredPhoneOpen", false);
+                }
+            }
+
+            //提现时输入余额宝密码开关
+            if (vo.getStatusName().equals(AgentSystemEnum.TXYEBPASSWORDOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("TXYEBpasswordOpen", true);
+                } else {
+                    data.put("TXYEBpasswordOpen", false);
                 }
             }
             //如果总控没有维护,并且业主维护的时候
@@ -766,7 +789,7 @@ public class AgentSystemController {
         globeResponse.setData(param);
         return globeResponse;
     }
-    
+
     /**
      * 获取二维码和热更地址
      *
@@ -784,7 +807,7 @@ public class AgentSystemController {
         if(cacheData != null) {
         	log.info("newLoginStatus：agentId:"+agentId+"\t registerMachine:"+registerMachine + ", 从redis获取数据，耗时：" + (System.currentTimeMillis() - timeMillis));
         	return cacheData;
-        }        
+        }
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
       //获取后台代理配置
@@ -835,13 +858,23 @@ public class AgentSystemController {
         data.put("VERSION_APK", agentAccVO.getAgentVersion());
         data.put("ClientUrl", agentAccVO.getClientUrl());
         data.put("prompt", agentAccVO.getPrompt());
+        data.put("hotVersion",agentAccVO.getHotVersion());
         data.put("channelGameUrl",channelGameUrl);
         data.put("showbanner",imgUrl);
+        data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
         String [] gameUrl = gameUrlList.split(",");
         data.put("gameUrlList", gameUrl);
         String [] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
+            //是否系统维护
+            if(!flag) {
+                if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
+                     flag =true;
+                    }
+                }
+            }
             //绑定手机
             if (vo.getStatusName().equals(AgentSystemEnum.BindMobileSend.getName())) {
                 data.put("bindMobileSend", vo.getStatusValue());
@@ -852,6 +885,39 @@ public class AgentSystemController {
                     data.put("ShowRealName", false);
                 } else {
                     data.put("ShowRealName", true);
+                }
+            }
+            //注册时银行卡开关
+            if (vo.getStatusName().equals(AgentSystemEnum.BANKOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("BankOpen", true);
+                } else {
+                    data.put("BankOpen", false);
+                }
+            }
+            //注册时手机号开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REGISTEREDPHONEOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("RegisteredPhoneOpen", true);
+                } else {
+                    data.put("RegisteredPhoneOpen", false);
+                }
+            }
+            //注册帐号开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REGISTERACCOUNTOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("RegisterAccountOpen", true);
+                } else {
+                    data.put("RegisterAccountOpen", false);
+                }
+            }
+
+            //提现时输入余额宝密码开关
+            if (vo.getStatusName().equals(AgentSystemEnum.TXYEBPASSWORDOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("TXYEBpasswordOpen", true);
+                } else {
+                    data.put("TXYEBpasswordOpen", false);
                 }
             }
             //如果总控没有维护,并且业主维护的时候
@@ -995,4 +1061,3 @@ public class AgentSystemController {
         return data;
     }
 }
-

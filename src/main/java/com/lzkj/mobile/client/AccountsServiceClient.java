@@ -1,17 +1,14 @@
 package com.lzkj.mobile.client;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators.In;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
@@ -20,11 +17,10 @@ import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
 import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
 import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.GoldExchangeVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.MailVO;
 import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
+import com.lzkj.mobile.vo.UserCodeDetailsVO;
 import com.lzkj.mobile.vo.UserInfoVO;
 import com.lzkj.mobile.vo.UserInformationVO;
 import com.lzkj.mobile.vo.VipLevelRewardVO;
@@ -85,7 +81,7 @@ public interface AccountsServiceClient {
 
     //查询业主最低出售金额
     @RequestMapping("accounts/mobile/getMinBalanceInfo")
-    GoldExchangeVO getMinBalanceInfo(@RequestParam("agentId") Integer agentId);
+    BigDecimal getMinBalanceInfo(@RequestParam("agentId") Integer agentId,@RequestParam("userId")Integer userId);
 
     //查询用户动态密码
     @RequestMapping("accounts/mobile/getInsurePassInfo")
@@ -111,7 +107,7 @@ public interface AccountsServiceClient {
     List<MailVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/openMail")
-    MailVO openMail(@RequestParam("id") Integer id);
+    List<MailVO> openMail(@RequestParam("ids") List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/deleteMail")
     Boolean deleteMail(@RequestParam("ids") List<Integer> ids);

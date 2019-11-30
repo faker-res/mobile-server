@@ -5,6 +5,7 @@ package com.lzkj.mobile.config;
  */
 public enum AgentSystemEnum {
     BindMobileSend("BindMobileSend","绑定手机赠送"),
+    EnjoinLogon("EnjoinLogon","系统维护"),
     VerificationIsOpen("VerificationIsOpen","开启游戏验证码"),
     ShowRealName("ShowRealName","注册填写真实姓名"),
     VIPOpen("VIPOpen","vip功能是否开启"),
@@ -16,7 +17,11 @@ public enum AgentSystemEnum {
 	ApplyOrderOpen("ApplyOrderOpen","提现展示"),
 	YebOpen("YebOpen","余额宝是否开启"),
     WXDLOpen("wxdlopen","微信登录开关"),
-    SJZCOpen("sjzcopen","手机登录开关");
+    SJZCOpen("sjzcopen","手机登录开关"),
+    BANKOPEN("BankOpen","注册时填写银行卡号"),
+    REGISTEREDPHONEOPEN("RegisteredPhoneOpen","注册时手机号开关"),
+    TXYEBPASSWORDOPEN("TXYEBpasswordOpen","提现时输入余额宝密码开关"),
+    REGISTERACCOUNTOPEN("RegisterAccountOpen","注册帐号开关");
 
     private String name;
 

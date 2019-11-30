@@ -131,7 +131,19 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/fundDetails")
     List<Map<String, Object>> fundDetails( @RequestParam("gameId") Integer gameId, @RequestParam("agentId") Integer agentId);
-    
+
     @RequestMapping("/agent/mobile/getALLAgent")
     List<Integer> getALLAgent();
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeRain")
+    RedEnvelopeRainVO getRedEnvelopeRain(@RequestParam("parentId") Integer parentId,@RequestParam("activityId") Integer activityId);
+    
+    @RequestMapping("/agent/mobile/userSingleRedEnvelopeCount")
+    Integer userSingleRedEnvelopeCount(@RequestParam("userId") Integer userId, @RequestParam("parentId") Integer parentId, @RequestParam("eventId") Integer eventId);
+    
+    @RequestMapping("/agent/mobile/getRedEnvelope")
+    RedEnvelopeVO getRedEnvelope(@RequestParam("parentId") Integer parentId);
+
+    @RequestMapping("/agent/mobile/receiveRedEnvelopeRain")
+    Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") String machineId, @RequestParam("ip") String ip);
 }

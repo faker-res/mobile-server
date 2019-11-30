@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lzkj.mobile.vo.ActivityTypeVO;
 import com.lzkj.mobile.vo.AwardOrderPageVo;
+import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.ConfigInfo;
 import com.lzkj.mobile.vo.NewsVO;
 
@@ -36,5 +37,5 @@ public interface NativeWebServiceClient {
 	List<ActivityTypeVO> getActivityType();
 	
 	@RequestMapping("/nativeweb/manager/active/getActivityListByMobile")
-	List<Object> getActivityListByMobile(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory")Integer gameCategory,@RequestParam("pageIndex")Integer pageIndex);
+	CommonPageVO getActivityListByMobile(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory")Integer gameCategory,@RequestParam("pageIndex")Integer pageIndex);
 }
