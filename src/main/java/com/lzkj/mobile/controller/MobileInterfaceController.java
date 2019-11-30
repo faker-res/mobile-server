@@ -359,21 +359,21 @@ public class MobileInterfaceController {
                 getBankRecordResponse.setTargetGold(l.getTargetGold());
                 getBankRecordResponse.setTargetUserId(l.getTargetUserId());
                 if (l.getTradeType() == 1) {
-                    getBankRecordResponse.setTradeTypeDescription("银行存款");
+                    getBankRecordResponse.setTradeTypeDescription("余额宝存款");
                     getBankRecordResponse.setTransferAccounts("");
                 } else if (l.getTradeType() == 2) {
-                    getBankRecordResponse.setTradeTypeDescription("银行取款");
+                    getBankRecordResponse.setTradeTypeDescription("余额宝取款");
                     getBankRecordResponse.setTransferAccounts("");
                 } else {
                     if (l.getSourceUserId() == userId) {
                         BigDecimal swapScore = l.getSwapScore().negate();
                         l.setSwapScore(swapScore);
-                        getBankRecordResponse.setTradeTypeDescription("银行转账");
+                        getBankRecordResponse.setTradeTypeDescription("余额宝转账");
                         AccountsInfoVO accountsInfo = accountsServiceClient.getAccountsInfo(l.getTargetUserId());
                         getBankRecordResponse.setTransferAccounts(String.valueOf(accountsInfo.getGameId()));
                         getBankRecordResponse.setSwapScore(l.getSwapScore());
                     } else {
-                        getBankRecordResponse.setTradeTypeDescription("银行收款");
+                        getBankRecordResponse.setTradeTypeDescription("余额宝收款");
                         AccountsInfoVO accountsInfo = accountsServiceClient.getAccountsInfo(l.getSourceUserId());
                         getBankRecordResponse.setTransferAccounts(String.valueOf(accountsInfo.getGameId()));
                     }
@@ -1948,11 +1948,11 @@ public class MobileInterfaceController {
 	        	}
         	}
         }
-        
+
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        for(int i = 0 ;i < loopIndex; i++) {  
+        for(int i = 0 ;i < loopIndex; i++) {
         	VipRankReceiveVO levelItem = levels.get(i);
         	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
@@ -1966,7 +1966,7 @@ public class MobileInterfaceController {
     		vo.setVipLevel(listItem.getVipLevel());
     		vo.setVipRankReward(listItem.getVipRankReward());
     		vo.setStatus(status);
-    		w3.add(vo);   
+    		w3.add(vo);
     		if(levelsLen != rewardListLen) {
 	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
 	        		break;
@@ -2300,8 +2300,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取余额宝收益、余额宝日、月、年利率
      *
