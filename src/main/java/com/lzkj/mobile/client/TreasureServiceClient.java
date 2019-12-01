@@ -204,5 +204,7 @@ public interface TreasureServiceClient {
 	@RequestMapping("/treasure/mobile/getUserYebIncome")
 	CommonPageVO<UserRecordInsureVO> getUserYebIncome(@RequestParam("userId") Integer userId,@RequestParam("date") Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 
+	@RequestMapping("/agentControl/getIndividualDatumStatus")
+	Boolean getIndividualDatumStatus(Integer agentId, Integer gameId);
 }
 

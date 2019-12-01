@@ -2495,4 +2495,21 @@ public class MobileInterfaceController {
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
+
+    /**
+     * 提现信息审核开关
+     */
+    @RequestMapping("/getIndividualDatumStatus")
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        if(agentId == null || agentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        if(gameId == null || gameId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+        globeResponse.setData(flag);
+        return globeResponse;
+    }
 }
