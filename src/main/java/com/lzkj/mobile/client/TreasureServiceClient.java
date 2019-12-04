@@ -206,5 +206,8 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/agentControl/getIndividualDatumStatus")
 	Boolean getIndividualDatumStatus(@RequestParam("agentId")Integer agentId,@RequestParam("gameId") Integer gameId);
+
+	@RequestMapping("/agentControl/IndividualDatum")
+	CommonPageVO<IndividualDatumVO> IndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId, @RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate, @RequestParam("status")Integer status, @RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize")Integer pageSize);
 }
 
