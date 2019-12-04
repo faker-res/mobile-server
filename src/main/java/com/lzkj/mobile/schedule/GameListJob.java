@@ -134,7 +134,7 @@ public class GameListJob implements ApplicationRunner {
 			JSONArray jArray = new JSONArray();
 	        jArray.add(map);
 	        String data = jArray.toString();
-	        log.info(agentId+"data"+data);
+//	        log.info(agentId+"data"+data);
 			InputStream input = new ByteArrayInputStream(data.getBytes("utf-8"));
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
