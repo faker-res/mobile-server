@@ -361,21 +361,21 @@ public class MobileInterfaceController {
                 getBankRecordResponse.setTargetGold(l.getTargetGold());
                 getBankRecordResponse.setTargetUserId(l.getTargetUserId());
                 if (l.getTradeType() == 1) {
-                    getBankRecordResponse.setTradeTypeDescription("银行存款");
+                    getBankRecordResponse.setTradeTypeDescription("余额宝存款");
                     getBankRecordResponse.setTransferAccounts("");
                 } else if (l.getTradeType() == 2) {
-                    getBankRecordResponse.setTradeTypeDescription("银行取款");
+                    getBankRecordResponse.setTradeTypeDescription("余额宝取款");
                     getBankRecordResponse.setTransferAccounts("");
                 } else {
                     if (l.getSourceUserId() == userId) {
                         BigDecimal swapScore = l.getSwapScore().negate();
                         l.setSwapScore(swapScore);
-                        getBankRecordResponse.setTradeTypeDescription("银行转账");
+                        getBankRecordResponse.setTradeTypeDescription("余额宝转账");
                         AccountsInfoVO accountsInfo = accountsServiceClient.getAccountsInfo(l.getTargetUserId());
                         getBankRecordResponse.setTransferAccounts(String.valueOf(accountsInfo.getGameId()));
                         getBankRecordResponse.setSwapScore(l.getSwapScore());
                     } else {
-                        getBankRecordResponse.setTradeTypeDescription("银行收款");
+                        getBankRecordResponse.setTradeTypeDescription("余额宝收款");
                         AccountsInfoVO accountsInfo = accountsServiceClient.getAccountsInfo(l.getSourceUserId());
                         getBankRecordResponse.setTransferAccounts(String.valueOf(accountsInfo.getGameId()));
                     }
@@ -1804,7 +1804,7 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
         List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
-
+        //新创建用户添加VIP等级奖励
         if(levels == null || levels.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i <= vipLevelCount; i++) {
@@ -1823,7 +1823,7 @@ public class MobileInterfaceController {
 			} catch (InterruptedException e) {
 			}
         }else if(levels.size() < vipLevelCount) {
-        	
+
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = levels.size() + 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
@@ -1841,7 +1841,7 @@ public class MobileInterfaceController {
 			} catch (InterruptedException e) {
 			}
         }
-        
+
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
@@ -1850,6 +1850,7 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w6 = new ArrayList<VipLevelRewardVO>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
+        //用户VIP等级   当前VIP积分 还差下一级需要多少积分
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
         	if(vipLevel.getVipIntegral().compareTo(vipConfig.get(size).getVipIntegral()) == 1) {
@@ -1893,11 +1894,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取天奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(day == null || day.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getDayReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1918,11 +1920,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取周奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(week == null || week.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getWeekReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1943,11 +1946,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取月奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
         	if(month == null || month.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getMonthReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
 		    }else {
@@ -1968,11 +1972,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取年奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(year == null || year.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getYearReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1990,16 +1995,17 @@ public class MobileInterfaceController {
 	        	}
         	}
         }
-        
+
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        for(int i = 0 ;i < loopIndex; i++) {  
+        //当前用户是否可以领取等级奖励
+        for(int i = 0 ;i < loopIndex; i++) {
         	VipRankReceiveVO levelItem = levels.get(i);
         	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false && listItem.getVipRankReward().compareTo(BigDecimal.ZERO) > 0) {
 				status = 0;
         	}
         	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == true) {
@@ -2008,7 +2014,7 @@ public class MobileInterfaceController {
     		vo.setVipLevel(listItem.getVipLevel());
     		vo.setVipRankReward(listItem.getVipRankReward());
     		vo.setStatus(status);
-    		w3.add(vo);   
+    		w3.add(vo);
     		if(levelsLen != rewardListLen) {
 	        	if(i == (levelsLen - 1) || i == (rewardListLen - 1)) {
 	        		break;
@@ -2021,6 +2027,7 @@ public class MobileInterfaceController {
         levelsLen = ls.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //洗码比例
         for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
@@ -2047,6 +2054,7 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //余额宝利率
         for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
@@ -2380,8 +2388,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取VIP奖励明细
      *
@@ -2394,15 +2402,15 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	Map<String, Object> data = new HashMap<>(); 
+    	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<UserRewardDetailVO> list = treasureServiceClient.getUserRewardDetail(userId,parentId,pageSize,pageIndex);
     	data.put("VipRewardDetail", list.getLists());
     	data.put("total", list.getPageCount());
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取余额宝明细
      *
@@ -2427,7 +2435,7 @@ public class MobileInterfaceController {
     		data.put("yebAccountChange", list.getLists());
     		data.put("total", list.getPageCount());
     	}
-    	return globeResponse;    	    	    
+    	return globeResponse;
     }
 
     @RequestMapping("/getActivityType")
@@ -2456,7 +2464,7 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
+
     /*
      * 红包雨
      */
@@ -2467,7 +2475,7 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId()); 
+    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
     			globeResponse.setData(vo);
     			return globeResponse;
     		}
@@ -2475,7 +2483,7 @@ public class MobileInterfaceController {
     	globeResponse.setData("");
     	return globeResponse;
     }
-    
+
     /*
      * 领取红包雨红包
      */
