@@ -1579,8 +1579,11 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/updateMerchantOrderId")
-    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId) {
-        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId);
+    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId, Integer orderStatus) {
+    	if(orderStatus == null) {
+    		orderStatus = 0;
+    	}
+        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId, orderStatus);
         return "ok";
     }
 
