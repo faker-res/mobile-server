@@ -1745,9 +1745,9 @@ public class MobileInterfaceController {
         Map<String, Object> data = new HashMap<>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
+        List<VipRankReceiveVO> levelss = platformServiceClient.getUserLevelReceive(userId);
         //新创建用户添加VIP等级奖励
-        if(levels == null || levels.size() == 0) {
+        if(levelss == null || levelss.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
@@ -1764,10 +1764,11 @@ public class MobileInterfaceController {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 			}
-        }else if(levels.size() < vipLevelCount) {
+
+        }else if(levelss.size() < vipLevelCount) {
 
         	List<VipRankReceiveVO> lists = new ArrayList<>();
-        	for (int i = levels.size() + 1; i <= vipLevelCount; i++) {
+        	for (int i = levelss.size() + 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
                 vo.setVipRank(i);
                 vo.setUserId(userId);
@@ -1823,7 +1824,7 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
-        //List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
+        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
         int levelsLen = levels.size();
         int rewardListLen = list.size();
         int loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
