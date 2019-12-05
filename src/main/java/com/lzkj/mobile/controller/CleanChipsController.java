@@ -56,7 +56,7 @@ public class CleanChipsController {
         GlobeResponse globeResponse = new GlobeResponse();
         if (true ==(Boolean) param.get("flag")) {
             Object score = param.get("score");
-            Object insureScore = param.get("insureScore");
+            Object insureScore = param.get("insurance");
             String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                     ", \"VipLevel\":" + vipLevel + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
             log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
