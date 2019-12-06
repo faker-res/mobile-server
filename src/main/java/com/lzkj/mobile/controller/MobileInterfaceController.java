@@ -2462,7 +2462,7 @@ public class MobileInterfaceController {
 
         IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
         if (pageVO == null) {
-            globeResponse.setData(true);//此用户未曾绑定银行卡
+            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
             return globeResponse;
         } else {
             globeResponse.setData(pageVO);

@@ -920,6 +920,15 @@ public class AgentSystemController {
                     data.put("TXYEBpasswordOpen", false);
                 }
             }
+
+            //余额宝密码开关
+            if (vo.getStatusName().equals(AgentSystemEnum.YEBPASSWORDOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("YEBpasswordOpen", true);
+                } else {
+                    data.put("YEBpasswordOpen", false);
+                }
+            }
             //如果总控没有维护,并且业主维护的时候
             if (vo.getStatusName().equals(AgentSystemEnum.VIPOpen.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
