@@ -105,7 +105,7 @@ public interface TreasureServiceClient {
 	GatewayInfo getUpdateAddress(@RequestParam("agentId") Integer agentId);
 
 	@RequestMapping("treasure/mobile/updateMerchantOrderId")
-	void updateMerchantOrderId(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("merchantOrderId") String merchantOrderId);
+	void updateMerchantOrderId(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("merchantOrderId") String merchantOrderId, @RequestParam("orderStatus") Integer orderStatus);
 
 	@RequestMapping("treasure/mobile/updatePassagewayResponse")
 	void updatePassagewayResponse(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("passagewayResponse") String passagewayResponse);
@@ -206,5 +206,11 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/agentControl/getIndividualDatumStatus")
 	Boolean getIndividualDatumStatus(@RequestParam("agentId")Integer agentId,@RequestParam("gameId") Integer gameId);
+
+	@RequestMapping("/agentControl/IndividualDatum")
+	CommonPageVO<IndividualDatumVO> IndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId, @RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate, @RequestParam("status")Integer status, @RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize")Integer pageSize);
+
+	@RequestMapping("/agentControl/getIndividualDatum")
+	IndividualDatumVO getIndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId);
 }
 

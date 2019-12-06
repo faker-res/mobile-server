@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,68 +60,6 @@ import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CleanChipsConfigVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.LuckyVO;
-import com.lzkj.mobile.vo.MemberRechargeVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PayTypeList;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.RedEnvelopeRainVO;
-import com.lzkj.mobile.vo.RedEnvelopeVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.TransactionTypeVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.UserRecordInsureVO;
-import com.lzkj.mobile.vo.UserRewardDetailVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VIPReceiveInfoVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.VideoTypeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VipRankReceiveVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
-import com.lzkj.mobile.vo.YebInterestRateVO;
-import com.lzkj.mobile.vo.YebScoreVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -1579,8 +1518,11 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/updateMerchantOrderId")
-    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId) {
-        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId);
+    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId, Integer orderStatus) {
+    	if(orderStatus == null) {
+    		orderStatus = 0;
+    	}
+        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId, orderStatus);
         return "ok";
     }
 
@@ -1803,9 +1745,9 @@ public class MobileInterfaceController {
         Map<String, Object> data = new HashMap<>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
-
-        if(levels == null || levels.size() == 0) {
+        List<VipRankReceiveVO> levelss = platformServiceClient.getUserLevelReceive(userId);
+        //新创建用户添加VIP等级奖励
+        if(levelss == null || levelss.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
@@ -1822,10 +1764,11 @@ public class MobileInterfaceController {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 			}
-        }else if(levels.size() < vipLevelCount) {
+
+        }else if(levelss.size() < vipLevelCount) {
 
         	List<VipRankReceiveVO> lists = new ArrayList<>();
-        	for (int i = levels.size() + 1; i <= vipLevelCount; i++) {
+        	for (int i = levelss.size() + 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
                 vo.setVipRank(i);
                 vo.setUserId(userId);
@@ -1850,6 +1793,7 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w6 = new ArrayList<VipLevelRewardVO>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
+        //用户VIP等级   当前VIP积分 还差下一级需要多少积分
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
         	if(vipLevel.getVipIntegral().compareTo(vipConfig.get(size).getVipIntegral()) == 1) {
@@ -1880,7 +1824,7 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
-        //List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
+        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
         int levelsLen = levels.size();
         int rewardListLen = list.size();
         int loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
@@ -1893,11 +1837,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取天奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(day == null || day.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getDayReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1918,11 +1863,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取周奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(week == null || week.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getWeekReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1943,11 +1889,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取月奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
         	if(month == null || month.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getMonthReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
 		    }else {
@@ -1968,11 +1915,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取年奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(year == null || year.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getYearReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1994,12 +1942,13 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取等级奖励
         for(int i = 0 ;i < loopIndex; i++) {
         	VipRankReceiveVO levelItem = levels.get(i);
         	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false && listItem.getVipRankReward().compareTo(BigDecimal.ZERO) > 0) {
 				status = 0;
         	}
         	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == true) {
@@ -2021,6 +1970,7 @@ public class MobileInterfaceController {
         levelsLen = ls.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //洗码比例
         for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
@@ -2047,6 +1997,7 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //余额宝利率
         for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
@@ -2508,8 +2459,21 @@ public class MobileInterfaceController {
         if(gameId == null || gameId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+
+        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
+        if (pageVO == null) {
+            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+            return globeResponse;
+        } else {
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+        if (flag) {
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
         globeResponse.setData(flag);
-        return globeResponse;
+        return globeResponse;*/
     }
 }
