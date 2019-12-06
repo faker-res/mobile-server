@@ -48,7 +48,7 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/promotion/getDirectQuery")
     List<QmDirectQueryVO> getDirectQuery(@RequestParam("userId") Integer userId,
-            @RequestParam("gameId") Integer gameId,@RequestParam("date") String date);
+            @RequestParam("gameId") Integer gameId,@RequestParam("date") String date,@RequestParam("page") int page);
 
 
     @RequestMapping("/agent/mobile/promotion/getAchieveDetail")
@@ -134,13 +134,13 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/getALLAgent")
     List<Integer> getALLAgent();
-    
+
     @RequestMapping("/agent/mobile/getRedEnvelopeRain")
     RedEnvelopeRainVO getRedEnvelopeRain(@RequestParam("parentId") Integer parentId,@RequestParam("activityId") Integer activityId);
-    
+
     @RequestMapping("/agent/mobile/userSingleRedEnvelopeCount")
     Integer userSingleRedEnvelopeCount(@RequestParam("userId") Integer userId, @RequestParam("parentId") Integer parentId, @RequestParam("eventId") Integer eventId);
-    
+
     @RequestMapping("/agent/mobile/getRedEnvelope")
     RedEnvelopeVO getRedEnvelope(@RequestParam("parentId") Integer parentId);
 
