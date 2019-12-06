@@ -1803,9 +1803,9 @@ public class MobileInterfaceController {
         Map<String, Object> data = new HashMap<>();
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
-
-        if(levels == null || levels.size() == 0) {
+        List<VipRankReceiveVO> levelss = platformServiceClient.getUserLevelReceive(userId);
+        //新创建用户添加VIP等级奖励
+        if(levelss == null || levelss.size() == 0) {
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
@@ -1822,10 +1822,11 @@ public class MobileInterfaceController {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 			}
-        }else if(levels.size() < vipLevelCount) {
+
+        }else if(levelss.size() < vipLevelCount) {
 
         	List<VipRankReceiveVO> lists = new ArrayList<>();
-        	for (int i = levels.size() + 1; i <= vipLevelCount; i++) {
+        	for (int i = levelss.size() + 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
                 vo.setVipRank(i);
                 vo.setUserId(userId);
@@ -1850,6 +1851,7 @@ public class MobileInterfaceController {
         List<VipLevelRewardVO> w6 = new ArrayList<VipLevelRewardVO>();
         VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
         List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
+        //用户VIP等级   当前VIP积分 还差下一级需要多少积分
         int size = vipConfig.size() - 1;
         for(int i = 0;i<vipConfig.size();i++) {
         	if(vipLevel.getVipIntegral().compareTo(vipConfig.get(size).getVipIntegral()) == 1) {
@@ -1880,7 +1882,7 @@ public class MobileInterfaceController {
         List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId,vipLevel.getVipLevel());
         List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId,vipLevel.getVipLevel());
-        //List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
+        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
         int levelsLen = levels.size();
         int rewardListLen = list.size();
         int loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
@@ -1893,11 +1895,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取天奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(day == null || day.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getDayReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1918,11 +1921,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取周奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(week == null || week.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getWeekReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1943,11 +1947,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取月奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
         	if(month == null || month.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getMonthReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
 		    }else {
@@ -1968,11 +1973,12 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取年奖励
         for(int i = 0 ;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
     		if(year == null || year.size() == 0) {
-            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
+            	if(vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getYearReward().compareTo(BigDecimal.ZERO) > 0) {
             		status = 0;
             	}
     		}else {
@@ -1994,12 +2000,13 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //当前用户是否可以领取等级奖励
         for(int i = 0 ;i < loopIndex; i++) {
         	VipRankReceiveVO levelItem = levels.get(i);
         	VipLevelRewardVO listItem = list.get(i);
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	int status = 1;
-        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false) {
+        	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false && listItem.getVipRankReward().compareTo(BigDecimal.ZERO) > 0) {
 				status = 0;
         	}
         	if(vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == true) {
@@ -2021,6 +2028,7 @@ public class MobileInterfaceController {
         levelsLen = ls.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //洗码比例
         for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
@@ -2047,6 +2055,7 @@ public class MobileInterfaceController {
         levelsLen = levels.size();
         rewardListLen = list.size();
         loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
+        //余额宝利率
         for(int i = 0;i<loopIndex;i++) {
         	VipLevelRewardVO vo = new VipLevelRewardVO();
         	if(vipLevel.getVipLevel() == 0) {
