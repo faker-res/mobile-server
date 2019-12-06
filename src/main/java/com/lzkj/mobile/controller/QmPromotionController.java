@@ -106,7 +106,7 @@ public class QmPromotionController {
      * code：0:所有，1：今日，2：昨日，3本周，4，本月
      */
     @RequestMapping("/directQuery")
-    private GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code) {
+    private GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code,int page) {
         String date = new String();
         switch (code) {
             case 0:
@@ -125,7 +125,7 @@ public class QmPromotionController {
                 date = startMonth();
                 break;
         }
-        List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId, gameId, date);
+        List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId, gameId, date,page);
         MyPopularizeVO myPopularizeVO = qmPromotionServiceClient.getTeamMember(userId);
         Map<String,Object> map =new HashMap<>();
         map.put("list",list);
