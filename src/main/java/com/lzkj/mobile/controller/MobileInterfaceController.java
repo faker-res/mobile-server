@@ -2459,17 +2459,21 @@ public class MobileInterfaceController {
         if(gameId == null || gameId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-        CommonPageVO<IndividualDatumVO> pageVO = treasureServiceClient.IndividualDatum(agentId,gameId,null,null,1,1,10);
-        if (pageVO.getLists().size()< 1 || pageVO == null) {
+
+        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
+        if (pageVO == null) {
             globeResponse.setData(true);//此用户未曾绑定银行卡
             return globeResponse;
+        } else {
+            globeResponse.setData(pageVO);
+            return globeResponse;
         }
+        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
         if (flag) {
-            globeResponse.setData(pageVO.getLists().get(0));
+            globeResponse.setData(pageVO);
             return globeResponse;
         }
         globeResponse.setData(flag);
-        return globeResponse;
+        return globeResponse;*/
     }
 }
