@@ -199,42 +199,6 @@ public class AgentSystemController {
         return globeResponse;
     }
 
-    /**
-     * 保底返佣设置
-     */
-    @RequestMapping("/editRatio")
-    private GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio) throws ParseException {
-
-        ratio = ratio.divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
-        //获取上级代理返佣比例
-        BigDecimal parentRation = accountsClient.queryParentRation(gameId);
-        if (parentRation == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "没有找到上级玩家");
-        }
-//        //当前保底值设置不能超过判定税收
-//        if(new BigDecimal(0.025).compareTo(ratio) == -1){
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "当前保底值设置不能超过绑定税收!");
-//        }
-        //验证返佣不允许大于上级代理
-        if (ratio.compareTo(parentRation) == 1 || ratio.compareTo(parentRation) == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "返佣比例不可超过或等同上级代理!");
-        }
-        //获取设置当前用户的返佣比例
-        BigDecimal userRation = accountsClient.queryRatioUserInfo(gameId);
-        if (userRation.compareTo(BigDecimal.ZERO) == 1) {
-            if (ratio.compareTo(userRation) == -1) {
-                //DecimalFormat df = new DecimalFormat("0.00%");
-                throw new GlobeException(SystemConstants.FAIL_CODE, "本次设置返佣比例不能小于原有返佣比例,原有的返佣比例为：" + userRation.multiply(new BigDecimal(10000)).stripTrailingZeros());
-            }
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-
-        accountsClient.editRatio(ratio, gameId);
-        globeResponse.setCode(SystemConstants.SUCCESS_CODE);
-        globeResponse.setMsg("保存成功");
-
-        return globeResponse;
-    }
 
     /**
      * 查询推广佣金

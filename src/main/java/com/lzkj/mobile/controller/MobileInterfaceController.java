@@ -1822,8 +1822,9 @@ public class MobileInterfaceController {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 			}
+
         }else if(levelss.size() < vipLevelCount) {
-        	
+
         	List<VipRankReceiveVO> lists = new ArrayList<>();
         	for (int i = levelss.size() + 1; i <= vipLevelCount; i++) {
                 VipRankReceiveVO vo = new VipRankReceiveVO();
@@ -1841,7 +1842,7 @@ public class MobileInterfaceController {
 			} catch (InterruptedException e) {
 			}
         }
-        
+
         List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
         List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
@@ -2388,8 +2389,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取VIP奖励明细
      *
@@ -2402,15 +2403,15 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	Map<String, Object> data = new HashMap<>(); 
+    	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<UserRewardDetailVO> list = treasureServiceClient.getUserRewardDetail(userId,parentId,pageSize,pageIndex);
     	data.put("VipRewardDetail", list.getLists());
     	data.put("total", list.getPageCount());
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取余额宝明细
      *
@@ -2435,7 +2436,7 @@ public class MobileInterfaceController {
     		data.put("yebAccountChange", list.getLists());
     		data.put("total", list.getPageCount());
     	}
-    	return globeResponse;    	    	    
+    	return globeResponse;
     }
 
     @RequestMapping("/getActivityType")
@@ -2464,7 +2465,7 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
+
     /*
      * 红包雨
      */
@@ -2475,7 +2476,7 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId()); 
+    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
     			globeResponse.setData(vo);
     			return globeResponse;
     		}
@@ -2483,7 +2484,7 @@ public class MobileInterfaceController {
     	globeResponse.setData("");
     	return globeResponse;
     }
-    
+
     /*
      * 领取红包雨红包
      */
@@ -2502,5 +2503,22 @@ public class MobileInterfaceController {
     		return globeResponse;
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
+    }
+
+    /**
+     * 提现信息审核开关
+     */
+    @RequestMapping("/getIndividualDatumStatus")
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        if(agentId == null || agentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        if(gameId == null || gameId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+        globeResponse.setData(flag);
+        return globeResponse;
     }
 }
