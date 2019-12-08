@@ -1,5 +1,6 @@
 package com.lzkj.mobile.controller;
 
+import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,9 @@ public class QmPromotionController {
 
     @Autowired
     private AgentServiceClient qmPromotionServiceClient;
+
+    @Autowired
+    private AccountsServiceClient accountsServiceClient;
 
 
     /**
@@ -106,7 +111,7 @@ public class QmPromotionController {
      * code：0:所有，1：今日，2：昨日，3本周，4，本月
      */
     @RequestMapping("/directQuery")
-    private GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code) {
+    private GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code,int page) {
         String date = new String();
         switch (code) {
             case 0:
@@ -125,7 +130,7 @@ public class QmPromotionController {
                 date = startMonth();
                 break;
         }
-        List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId, gameId, date);
+        List<QmDirectQueryVO> list = qmPromotionServiceClient.getDirectQuery(userId, gameId, date,page);
         MyPopularizeVO myPopularizeVO = qmPromotionServiceClient.getTeamMember(userId);
         Map<String,Object> map =new HashMap<>();
         map.put("list",list);
@@ -182,6 +187,54 @@ public class QmPromotionController {
         BigDecimal score = qmPromotionServiceClient.receiveCommission(userId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(score);
+        return globeResponse;
+    }
+
+    /**
+     * 获取该玩家的保底返佣
+     */
+     @RequestMapping("/getGuaranteedRatio")
+     private  GlobeResponse<Object> getGuaranteedRatio(Integer gameId)  {
+         BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+         globeResponse.setData(userRation.multiply(new BigDecimal(10000)));
+         return globeResponse;
+     }
+
+    /**
+     * 保底返佣设置
+     */
+    @RequestMapping("/editRatio")
+    private GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio) throws ParseException {
+
+        ratio = ratio.divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
+        //获取上级代理返佣比例
+        BigDecimal parentRation = accountsServiceClient.queryParentRation(gameId);
+        if (parentRation == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "没有找到上级玩家");
+        }
+//        //当前保底值设置不能超过判定税收
+//        if(new BigDecimal(0.025).compareTo(ratio) == -1){
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "当前保底值设置不能超过绑定税收!");
+//        }
+        //验证返佣不允许大于上级代理
+        if (ratio.compareTo(parentRation) == 1 || ratio.compareTo(parentRation) == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "返佣比例不可超过或等同上级代理!");
+        }
+        //获取设置当前用户的返佣比例
+        BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+        if (userRation.compareTo(BigDecimal.ZERO) == 1) {
+            if (ratio.compareTo(userRation) == -1) {
+                //DecimalFormat df = new DecimalFormat("0.00%");
+                throw new GlobeException(SystemConstants.FAIL_CODE, "本次设置返佣比例不能小于原有返佣比例,原有的返佣比例为：" + userRation.multiply(new BigDecimal(10000)).stripTrailingZeros());
+            }
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+
+        accountsServiceClient.editRatio(ratio, gameId);
+        globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+        globeResponse.setMsg("保存成功");
+
         return globeResponse;
     }
 }

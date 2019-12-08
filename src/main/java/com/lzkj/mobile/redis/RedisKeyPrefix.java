@@ -83,4 +83,8 @@ public class RedisKeyPrefix {
 	public static String getGameListStatus(Integer agentId) {
 		return MOBILE_SERVER + "getGameListStatus:" + agentId;
 	}
+	
+	public static String getPayPageLoadSubmitLockKey(int userId) {
+		return MOBILE_SERVER + "payPageLoadSubmitLockKey:" + userId;
+	}
 }

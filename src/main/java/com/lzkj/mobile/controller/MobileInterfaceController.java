@@ -1245,11 +1245,17 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-
+    	String key = RedisKeyPrefix.getPayPageLoadSubmitLockKey(userId);
+    	String lock = redisDao.get(key, String.class);
+    	if(!StringUtil.isEmpty(lock)) {
+        	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
+	    }
+    	redisDao.set(key, "lock");
+    	redisDao.expire(key, 3, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
@@ -1307,10 +1313,6 @@ public class MobileInterfaceController {
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
             return mag;
-
-
-
-
         }
     }
 
@@ -2459,18 +2461,22 @@ public class MobileInterfaceController {
         if(gameId == null || gameId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-        CommonPageVO<IndividualDatumVO> pageVO = treasureServiceClient.IndividualDatum(agentId,gameId,null,null,1,1,10);
-        if (pageVO.getLists().size()< 1 || pageVO == null) {
-            globeResponse.setData(true);//此用户未曾绑定银行卡
+
+        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
+        if (pageVO == null) {
+            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+            return globeResponse;
+        } else {
+            globeResponse.setData(pageVO);
             return globeResponse;
         }
+        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
         if (flag) {
-            globeResponse.setData(pageVO.getLists().get(0));
+            globeResponse.setData(pageVO);
             return globeResponse;
         }
         globeResponse.setData(flag);
-        return globeResponse;
+        return globeResponse;*/
     }
     
     /*
