@@ -1312,6 +1312,7 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
+            log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
             return mag;
         }
     }
