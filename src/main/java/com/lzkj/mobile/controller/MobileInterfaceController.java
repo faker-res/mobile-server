@@ -1310,13 +1310,13 @@ public class MobileInterfaceController {
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-    	String key = RedisKeyPrefix.getPayPageLoadSubmitLockKey(userId);
-    	String lock = redisDao.get(key, String.class);
-    	if(!StringUtil.isEmpty(lock)) {
-        	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
-	    }
-    	redisDao.set(key, "lock");
-    	redisDao.expire(key, 3, TimeUnit.SECONDS);
+//    	String key = RedisKeyPrefix.getPayPageLoadSubmitLockKey(userId);
+//    	String lock = redisDao.get(key, String.class);
+//    	if(!StringUtil.isEmpty(lock)) {
+//        	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
+//	    }
+//    	redisDao.set(key, "lock");
+//    	redisDao.expire(key, 3, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
