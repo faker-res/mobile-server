@@ -1306,11 +1306,17 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-
+    	String key = RedisKeyPrefix.getPayPageLoadSubmitLockKey(userId);
+    	String lock = redisDao.get(key, String.class);
+    	if(!StringUtil.isEmpty(lock)) {
+        	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
+	    }
+    	redisDao.set(key, "lock");
+    	redisDao.expire(key, 4, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
@@ -1367,11 +1373,8 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
+            redisDao.delete(key);
             return mag;
-
-
-
-
         }
     }
 
