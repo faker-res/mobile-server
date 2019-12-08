@@ -1255,7 +1255,7 @@ public class MobileInterfaceController {
         	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
 	    }
     	redisDao.set(key, "lock");
-    	redisDao.expire(key, 4, TimeUnit.SECONDS);
+    	redisDao.expire(key, 3, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
@@ -1312,7 +1312,6 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
-            redisDao.delete(key);
             return mag;
         }
     }
