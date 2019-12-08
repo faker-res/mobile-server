@@ -13,6 +13,7 @@ import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
 import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
+import com.lzkj.mobile.vo.ActivityRedEnvelopeVO;
 import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
 import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
@@ -160,4 +161,7 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getRedEnvelope")
+    List<ActivityRedEnvelopeVO> getRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 }

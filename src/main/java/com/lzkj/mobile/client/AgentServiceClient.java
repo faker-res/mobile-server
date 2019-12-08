@@ -146,4 +146,10 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/receiveRedEnvelopeRain")
     Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") String machineId, @RequestParam("ip") String ip);
+    
+    @RequestMapping("/agent/mobile/getUserRankings")
+    List<UserRankinsVO> getUserRankings(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeType")
+    List<RedEnvelopeConditionTypeVO> getRedEnvelopeType();
 }
