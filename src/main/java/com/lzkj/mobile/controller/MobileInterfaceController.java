@@ -2545,7 +2545,7 @@ public class MobileInterfaceController {
      * @param userId
      * @return
      */
-    @RequestMapping("/getDate")
+    @RequestMapping("/getDateTime")
     private GlobeResponse<Object> getDateTime() {
     	List<Map<String, String>> data =new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
@@ -2573,6 +2573,17 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(maps);
         return globeResponse;
+    }
+    
+    
+    @RequestMapping("/getRedEnvelopeRecord")
+    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
     }
     
 }

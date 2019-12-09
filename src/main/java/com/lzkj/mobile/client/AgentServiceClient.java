@@ -152,4 +152,7 @@ public interface AgentServiceClient {
     
     @RequestMapping("/agent/mobile/getRedEnvelopeType")
     List<RedEnvelopeConditionTypeVO> getRedEnvelopeType();
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeRecord")
+    List<RedEnvelopeRecordVO> getRedEnvelopeRecord(@RequestParam("userId") Integer userId);
 }
