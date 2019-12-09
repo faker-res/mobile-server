@@ -1306,11 +1306,17 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-
+//    	String key = RedisKeyPrefix.getPayPageLoadSubmitLockKey(userId);
+//    	String lock = redisDao.get(key, String.class);
+//    	if(!StringUtil.isEmpty(lock)) {
+//        	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
+//	    }
+//    	redisDao.set(key, "lock");
+//    	redisDao.expire(key, 3, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
@@ -1367,11 +1373,8 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
+            log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
             return mag;
-
-
-
-
         }
     }
 
@@ -2505,20 +2508,20 @@ public class MobileInterfaceController {
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
 
-    /**
-     * 提现信息审核开关
-     */
-    @RequestMapping("/getIndividualDatumStatus")
-    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        if(agentId == null || agentId == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        if(gameId == null || gameId == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-        globeResponse.setData(flag);
-        return globeResponse;
-    }
+//    /**
+//     * 提现信息审核开关
+//     */
+//    @RequestMapping("/getIndividualDatumStatus")
+//    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//        if(agentId == null || agentId == 0) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+//        }
+//        if(gameId == null || gameId == 0) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+//        }
+//        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+//        globeResponse.setData(flag);
+//        return globeResponse;
+//    }
 }
