@@ -1245,11 +1245,17 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-
+//    	String key = RedisKeyPrefix.getPayPageLoadSubmitLockKey(userId);
+//    	String lock = redisDao.get(key, String.class);
+//    	if(!StringUtil.isEmpty(lock)) {
+//        	throw new GlobeException(SystemConstants.FAIL_CODE, "正在连接银行，请稍等...");
+//	    }
+//    	redisDao.set(key, "lock");
+//    	redisDao.expire(key, 3, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
@@ -1306,11 +1312,8 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
+            log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
             return mag;
-
-
-
-
         }
     }
 
@@ -2476,4 +2479,111 @@ public class MobileInterfaceController {
         globeResponse.setData(flag);
         return globeResponse;*/
     }
+    
+    /*
+     * 获取红包
+     */
+    @RequestMapping("/getRedEnvelope")
+    public GlobeResponse<Object> getRedEnvelope(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /*
+     * 获取红包手气榜
+     */
+    @RequestMapping("/getUserRankings")
+    public GlobeResponse<Object> getUserRankings(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(userId,parentId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /*
+     * 获取红包类型
+     */
+    @RequestMapping("/getRedEnvelopeType")
+    public GlobeResponse<Object> getRedEnvelopeType() {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<RedEnvelopeConditionTypeVO> list = agentServiceClient.getRedEnvelopeType();
+    	RedEnvelopeConditionTypeVO vo = new RedEnvelopeConditionTypeVO();
+    	vo.setTypeId(0);
+    	vo.setTypeName("全部");
+    	list.add(vo);
+    	Collections.sort(list, Comparator.comparing(RedEnvelopeConditionTypeVO::getTypeId));
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
+    
+    /**
+     * 获取时间
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getDateTime")
+    private GlobeResponse<Object> getDateTime() {
+    	List<Map<String, String>> data =new ArrayList<>();
+        Map<String, String> map = new HashMap<String, String>();
+//        map.put("code", "0");
+//        map.put("name", "全部时间");
+//        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "1");
+        map.put("name", "今天");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "2");
+        map.put("name", "最近一周");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "3");
+        map.put("name", "最近一个月");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "4");
+        map.put("name", "最近三个月");
+        data.add(map);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("list",data);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(maps);
+        return globeResponse;
+    }
+    
+    
+    @RequestMapping("/getRedEnvelopeRecord")
+    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+    
 }
