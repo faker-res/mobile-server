@@ -15,9 +15,7 @@ public class ActivityRedEnvelopeVO {
 	
 	private BigDecimal ycz;
 	
-	private Integer status;			//0  可领取  1 活动是否结束  2  已领取  3 未达到赠送条件
-	
-	private Integer loginStatus;   //登录红包是否可领取
+	private Integer status;			//0  可领取  1 活动已结束  2  已领取  3 未达到赠送条件
 	
 	private Integer typeId;
 }

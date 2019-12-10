@@ -154,5 +154,8 @@ public interface AgentServiceClient {
     List<RedEnvelopeConditionTypeVO> getRedEnvelopeType();
     
     @RequestMapping("/agent/mobile/getRedEnvelopeRecord")
-    List<RedEnvelopeRecordVO> getRedEnvelopeRecord(@RequestParam("userId") Integer userId);
+    CommonPageVO<RedEnvelopeRecordVO> getRedEnvelopeRecord(@RequestParam("userId") Integer userId,@RequestParam("typeId") Integer typeId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+    
+    @RequestMapping("/agent/mobile/getRedEnvepoleYuStartTimeAndEndTime")
+    RedEnvepoleYuStartTimeAndEndTimeVO getRedEnvepoleYuStartTimeAndEndTime(@RequestParam("parentId") Integer parentId,@RequestParam("eventId") Integer eventId);
 }
