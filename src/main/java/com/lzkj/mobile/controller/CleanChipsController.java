@@ -49,7 +49,9 @@ public class CleanChipsController {
      */
     @RequestMapping("/washBet")
     private GlobeResponse<Object> washBet(Integer userId,Integer agentId,Integer vipLevel){
+        Boolean flag =false;
         if (vipLevel==0){
+            flag =true;
             vipLevel=1;
         }
         Map <String ,Object> param= platformServiceClient.washBet(userId,agentId,vipLevel);
@@ -57,6 +59,9 @@ public class CleanChipsController {
         if (true ==(Boolean) param.get("flag")) {
             Object score = param.get("score");
             Object insureScore = param.get("insurance");
+            if (flag){
+                vipLevel=0;
+            }
             String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                     ", \"VipLevel\":" + vipLevel + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
             log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
