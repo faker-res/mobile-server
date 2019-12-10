@@ -1245,7 +1245,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -2479,7 +2479,7 @@ public class MobileInterfaceController {
         globeResponse.setData(flag);
         return globeResponse;*/
     }
-    
+
     /*
      * 获取红包
      */
@@ -2498,8 +2498,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /*
      * 获取红包手气榜
      */
@@ -2518,8 +2518,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /*
      * 获取红包类型
      */
@@ -2537,15 +2537,15 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取时间
      *
      * @param userId
      * @return
      */
-    @RequestMapping("/getDate")
+    @RequestMapping("/getDateTime")
     private GlobeResponse<Object> getDateTime() {
     	List<Map<String, String>> data =new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
@@ -2574,5 +2574,16 @@ public class MobileInterfaceController {
         globeResponse.setData(maps);
         return globeResponse;
     }
-    
+
+
+//    @RequestMapping("/getRedEnvelopeRecord")
+//    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId) {
+//    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//    	Map<String, Object> data = new HashMap<>();
+//    	List<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId);
+//    	data.put("list", list);
+//    	globeResponse.setData(data);
+//    	return globeResponse;
+//    }
+
 }
