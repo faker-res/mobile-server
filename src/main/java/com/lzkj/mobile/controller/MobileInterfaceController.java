@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,68 +60,6 @@ import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CleanChipsConfigVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.LuckyVO;
-import com.lzkj.mobile.vo.MemberRechargeVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PayTypeList;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.RedEnvelopeRainVO;
-import com.lzkj.mobile.vo.RedEnvelopeVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.TransactionTypeVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.UserRecordInsureVO;
-import com.lzkj.mobile.vo.UserRewardDetailVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VIPReceiveInfoVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.VideoTypeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VipRankReceiveVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
-import com.lzkj.mobile.vo.YebInterestRateVO;
-import com.lzkj.mobile.vo.YebScoreVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -2507,21 +2446,38 @@ public class MobileInterfaceController {
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
+    /**
+     * 提现信息审核开关
+     */
+    @RequestMapping("/getIndividualDatumStatus")
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        if(agentId == null || agentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        if(gameId == null || gameId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
 
-//    /**
-//     * 提现信息审核开关
-//     */
-//    @RequestMapping("/getIndividualDatumStatus")
-//    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        if(agentId == null || agentId == 0) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-//        }
-//        if(gameId == null || gameId == 0) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-//        }
-//        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-//        globeResponse.setData(flag);
-//        return globeResponse;
-//    }
+        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
+        if (pageVO == null) {
+            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+            return globeResponse;
+        } else {
+            if (StringUtils.isBlank(pageVO.getBankNO())) {
+                globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+                return globeResponse;
+            }
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+        if (flag) {
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        globeResponse.setData(flag);
+        return globeResponse;*/
+    }
+
 }
