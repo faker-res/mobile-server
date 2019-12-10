@@ -2468,6 +2468,10 @@ public class MobileInterfaceController {
             globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
             return globeResponse;
         } else {
+            if (StringUtils.isBlank(pageVO.getBankNO())) {
+                globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+                return globeResponse;
+            }
             globeResponse.setData(pageVO);
             return globeResponse;
         }
