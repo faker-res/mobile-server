@@ -38,4 +38,11 @@ public interface NativeWebServiceClient {
 	
 	@RequestMapping("/nativeweb/manager/active/getActivityListByMobile")
 	CommonPageVO getActivityListByMobile(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory")Integer gameCategory,@RequestParam("pageIndex")Integer pageIndex);
+	
+	
+	@RequestMapping("nativeWeb/mobile/getNoticeTitile")
+	List<NewsVO> getNoticeTitile(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);	
+	
+	@RequestMapping("nativeWeb/mobile/getNoticeDetail")
+	public String getNoticeDetail(@RequestParam("newsId")Integer newsId);
 }
