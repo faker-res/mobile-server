@@ -468,8 +468,11 @@ public class MobileInterfaceController {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
+        long startMillis = System.currentTimeMillis();
+    	log.info("/adsNotice,参数agentId={}", agentId);
         GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
         globeResponse.setData(nativeWebServiceClient.getGameNotice(1, agentId));
+        log.info("/adsNotice,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
@@ -1245,7 +1248,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -2201,7 +2204,7 @@ public class MobileInterfaceController {
     	if(typeId.equals(10)) {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("平台资金切换");
+    			vo.setTypeName("游戏输赢");
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
     			if(l.get(i).getPresentScore().signum() == -1) {
@@ -2506,9 +2509,8 @@ public class MobileInterfaceController {
         globeResponse.setData(flag);
         return globeResponse;*/
     }
-    
-    /**
-     * 获取红包
+        
+    /* 获取红包
      * @param userId
      * @param parentId
      * @return
@@ -2592,8 +2594,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取时间
      * @return
@@ -2663,5 +2665,4 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
 }

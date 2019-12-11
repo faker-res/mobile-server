@@ -163,8 +163,10 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
 
+
     @RequestMapping("/accounts/mobile/getRedEnvelope")
     List<ActivityRedEnvelopeVO> getRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
+
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
     List<MailVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
