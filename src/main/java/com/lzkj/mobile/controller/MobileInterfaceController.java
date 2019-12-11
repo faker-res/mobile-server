@@ -2461,7 +2461,6 @@ public class MobileInterfaceController {
         if(gameId == null || gameId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
-
         IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
         if (pageVO == null) {
             globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
@@ -2482,5 +2481,24 @@ public class MobileInterfaceController {
         globeResponse.setData(flag);
         return globeResponse;*/
     }
-
+    
+    @RequestMapping("/getNoticeTitile")
+    private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
+        return globeResponse;
+    }
+    
+    @RequestMapping("/getNoticeDetail")
+    private GlobeResponse<String> getNoticeDetail(Integer newsId) {
+    	if (newsId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+    	globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
+    	return globeResponse;
+    }
 }
