@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import static com.lzkj.mobile.util.TimeUtil.GetNowDate;
 
 @RestController
@@ -32,7 +34,7 @@ public class RetrieveAccount {
     @Autowired
     private AccountsServiceClient accountsServiceClient;
 
-    @Autowired
+    @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
     @RequestMapping("/updatepwd")
