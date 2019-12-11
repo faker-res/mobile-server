@@ -468,8 +468,11 @@ public class MobileInterfaceController {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
+        long startMillis = System.currentTimeMillis();
+    	log.info("/adsNotice,参数agentId={}", agentId);
         GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
         globeResponse.setData(nativeWebServiceClient.getGameNotice(1, agentId));
+        log.info("/adsNotice,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
