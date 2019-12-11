@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -101,7 +102,7 @@ public class MobileInterfaceController {
     @Autowired
     private RedisDao redisDao;
 
-    @Autowired
+    @Resource(name="gameMongoTemplate")    
     private MongoTemplate mongoTemplate;
 
 
