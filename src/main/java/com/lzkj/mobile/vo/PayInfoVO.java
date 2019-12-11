@@ -31,4 +31,5 @@ public class PayInfoVO {
 
 	private AgentRebateConfigVO configVO;
 	private String remark;
+	private Boolean customizePay;
 }
