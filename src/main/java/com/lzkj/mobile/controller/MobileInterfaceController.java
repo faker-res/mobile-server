@@ -2551,15 +2551,9 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-<<<<<<< HEAD
     
     
     /**
-=======
-
-
-    /*
->>>>>>> refs/remotes/origin/local
      * 获取红包手气榜
      * @param userId
      * @param parentId
@@ -2580,15 +2574,9 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-<<<<<<< HEAD
     
     
     /**
-=======
-
-
-    /*
->>>>>>> refs/remotes/origin/local
      * 获取红包类型
      * @return
      */
@@ -2641,7 +2629,6 @@ public class MobileInterfaceController {
         globeResponse.setData(maps);
         return globeResponse;
     }
-<<<<<<< HEAD
     
     /**
      * 红包记录
@@ -2678,19 +2665,4 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-=======
-
-
-//    @RequestMapping("/getRedEnvelopeRecord")
-//    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId) {
-//    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//    	Map<String, Object> data = new HashMap<>();
-//    	List<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId);
-//    	data.put("list", list);
-//    	globeResponse.setData(data);
-//    	return globeResponse;
-//    }
-
->>>>>>> refs/remotes/origin/local
 }
