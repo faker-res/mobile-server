@@ -468,8 +468,11 @@ public class MobileInterfaceController {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
+        long startMillis = System.currentTimeMillis();
+    	log.info("/adsNotice,参数agentId={}", agentId);
         GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
         globeResponse.setData(nativeWebServiceClient.getGameNotice(1, agentId));
+        log.info("/adsNotice,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
@@ -1245,7 +1248,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -2506,9 +2509,8 @@ public class MobileInterfaceController {
         globeResponse.setData(flag);
         return globeResponse;*/
     }
-    
-    /**
-     * 获取红包
+        
+    /* 获取红包
      * @param userId
      * @param parentId
      * @return
@@ -2549,9 +2551,15 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
+<<<<<<< HEAD
     
     
     /**
+=======
+
+
+    /*
+>>>>>>> refs/remotes/origin/local
      * 获取红包手气榜
      * @param userId
      * @param parentId
@@ -2572,9 +2580,15 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
+<<<<<<< HEAD
     
     
     /**
+=======
+
+
+    /*
+>>>>>>> refs/remotes/origin/local
      * 获取红包类型
      * @return
      */
@@ -2592,8 +2606,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取时间
      * @return
@@ -2627,6 +2641,7 @@ public class MobileInterfaceController {
         globeResponse.setData(maps);
         return globeResponse;
     }
+<<<<<<< HEAD
     
     /**
      * 红包记录
@@ -2664,4 +2679,18 @@ public class MobileInterfaceController {
     	return globeResponse;
     }
     
+=======
+
+
+//    @RequestMapping("/getRedEnvelopeRecord")
+//    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId) {
+//    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//    	Map<String, Object> data = new HashMap<>();
+//    	List<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId);
+//    	data.put("list", list);
+//    	globeResponse.setData(data);
+//    	return globeResponse;
+//    }
+
+>>>>>>> refs/remotes/origin/local
 }
