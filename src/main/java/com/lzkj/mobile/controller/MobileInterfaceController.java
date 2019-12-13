@@ -2483,7 +2483,7 @@ public class MobileInterfaceController {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getId());
     		if(count < 1) {
 //    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
-    			String data = "{\"id\":\"" + v.getEventId() + "\"}";    			
+    			HashMap<String, Object> data = new  HashMap<>(); 			
     			data.put("id", v.getEventId());
     			globeResponse.setData(data);
     			return globeResponse;
