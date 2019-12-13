@@ -2510,6 +2510,7 @@ public class MobileInterfaceController {
     	String msg = param.get("msg").toString();
     	if(ret.intValue() == 0) {
     		globeResponse.setMsg("领取成功");
+    		globeResponse.setData(param.get("money"));
     		return globeResponse;
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
