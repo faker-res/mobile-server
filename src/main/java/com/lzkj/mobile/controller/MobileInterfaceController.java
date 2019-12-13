@@ -2538,7 +2538,7 @@ public class MobileInterfaceController {
 //    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
     			HashMap<String, Object> data = new  HashMap<>(); 			
     			data.put("id", v.getEventId());    			
-    			data.put("redAmount", 0);
+    			data.put("redAmount", 0.01);
     			globeResponse.setData(data);
     			return globeResponse;
     		}
