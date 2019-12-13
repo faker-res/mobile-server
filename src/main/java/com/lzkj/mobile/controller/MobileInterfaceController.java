@@ -102,7 +102,7 @@ public class MobileInterfaceController {
     @Autowired
     private RedisDao redisDao;
 
-    @Resource(name="gameMongoTemplate")    
+    @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
 
@@ -2051,7 +2051,7 @@ public class MobileInterfaceController {
         globeResponse.setData(userInfo);
         return globeResponse;
     }
-    
+
     /**
      * 修改用户个人信息
      * @param nickName
@@ -2200,23 +2200,6 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
-    	List<MemberRechargeVO> l = page.getLists();
-    	List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
-    	if(typeId.equals(10)) {
-    		for(int i = 0;i<l.size();i++) {
-    			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("游戏输赢");
-    			vo.setBalance(l.get(i).getBalance());
-    			vo.setCollectDate(l.get(i).getCollectDate());
-    			if(l.get(i).getPresentScore().signum() == -1) {
-    				vo.setExpenditureScore(l.get(i).getPresentScore().abs());
-    			}else {
-    				vo.setPresentScore(l.get(i).getPresentScore());
-    			}
-    			temp.add(vo);
-    			page.setLists(temp);
-    		}
-    	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
@@ -2509,7 +2492,7 @@ public class MobileInterfaceController {
         globeResponse.setData(flag);
         return globeResponse;*/
     }
-        
+
     /* 获取红包
      * @param userId
      * @param parentId
@@ -2551,8 +2534,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取红包手气榜
      * @param userId
@@ -2574,8 +2557,8 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
-    
+
+
     /**
      * 获取红包类型
      * @return
@@ -2629,7 +2612,7 @@ public class MobileInterfaceController {
         globeResponse.setData(maps);
         return globeResponse;
     }
-    
+
     /**
      * 红包记录
      * @param userId
@@ -2650,7 +2633,7 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
     	return globeResponse;
     }
-    
+
     /**
      * 活动规则
      * @param parentId
@@ -2665,7 +2648,7 @@ public class MobileInterfaceController {
     	globeResponse.setData(data);
 		return globeResponse;
     }
-    
+
     @RequestMapping("/getNoticeTitile")
     private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
         if (agentId == null) {
@@ -2675,7 +2658,7 @@ public class MobileInterfaceController {
         globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
         return globeResponse;
     }
-    
+
     @RequestMapping("/getNoticeDetail")
     private GlobeResponse<String> getNoticeDetail(Integer newsId) {
     	if (newsId == null) {

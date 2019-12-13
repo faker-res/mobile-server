@@ -78,4 +78,16 @@ public class TimeUtil {
         return sdf.format(startDate)+" 00:00:00";
     }
 
+    /**
+     *  获取今日时间，yyyy-MM-dd
+     * @return
+     */
+    public static String getTodayDate() {
+        String temp_str = "";
+        Date dt = new Date();
+        //最后的aa表示“上午”或“下午”    HH表示24小时制    如果换成hh表示12小时制
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        temp_str = sdf.format(dt);
+        return temp_str;
+    }
 }
