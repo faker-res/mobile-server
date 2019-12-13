@@ -1077,6 +1077,29 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    @RequestMapping("/addException")
+    public GlobeResponse<Object> addException(String file,String line,String message,String error,String errorMessage) {
+        GlobeResponse globeResponse = new GlobeResponse();
+        if (StringUtils.isBlank(file) || StringUtils.isBlank(line) || StringUtils.isBlank(message) || StringUtils.isBlank(error) || StringUtils.isBlank(errorMessage)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数不能为空");
+        }
+        GameException gameException = new GameException();
+        gameException.setErrorMessage(errorMessage);
+        gameException.setFile(file);
+        gameException.setFile(line);
+        gameException.setFile(message);
+        gameException.setFile(error);
+        Boolean flag = true;
+        try {
+            mongoTemplate.save(gameException,"Exception");
+        } catch (Exception e){
+            flag = false;
+        }
+
+        globeResponse.setData(flag);
+        return globeResponse;
+    }
+
     @PostMapping("/addGameRecord")
     public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
