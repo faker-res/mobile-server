@@ -877,7 +877,7 @@ public class AgentSystemController {
 
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
-                if (vo.getGoldGiftIconOpen() == 0) {
+                if (null == vo.getGoldGiftIconOpen()) {
                     data.put("ZCJMZSJBTBOpen", 0);
                     data.put("goldGiftCount", vo.getGoldGiftCount());
                 } else {
