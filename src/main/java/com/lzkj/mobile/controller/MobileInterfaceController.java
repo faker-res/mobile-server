@@ -162,7 +162,7 @@ public class MobileInterfaceController {
     @Autowired
     private RedisDao redisDao;
 
-    @Resource(name="gameMongoTemplate")    
+    @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
 
@@ -1309,7 +1309,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -2256,7 +2256,7 @@ public class MobileInterfaceController {
     	if(typeId.equals(10)) {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("游戏输赢");
+    			vo.setTypeName("平台资金切换");
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
     			if(l.get(i).getPresentScore().signum() == -1) {
@@ -2483,8 +2483,8 @@ public class MobileInterfaceController {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getId());
     		if(count < 1) {
 //    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
-    			HashMap<String, Object> data = new  HashMap<>(); 			
-    			data.put("id", v.getEventId());    			
+    			HashMap<String, Object> data = new  HashMap<>();
+    			data.put("id", v.getEventId());
     			data.put("redAmount", 0.01);
     			globeResponse.setData(data);
     			return globeResponse;
@@ -2531,7 +2531,7 @@ public class MobileInterfaceController {
 //        globeResponse.setData(flag);
 //        return globeResponse;
 //    }
-    
+
     @RequestMapping("/getNoticeTitile")
     private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
         if (agentId == null) {
@@ -2541,7 +2541,7 @@ public class MobileInterfaceController {
         globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
         return globeResponse;
     }
-    
+
     @RequestMapping("/getNoticeDetail")
     private GlobeResponse<String> getNoticeDetail(Integer newsId) {
     	if (newsId == null) {
