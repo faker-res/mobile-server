@@ -13,4 +13,6 @@ public class AgentSystemStatusInfoVO {
     private String statusTip;
     private String statusDescription;
     private short isShow;
+    private Integer goldGiftIconOpen;
+    private Integer goldGiftCount;
 }
