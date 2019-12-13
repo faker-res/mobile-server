@@ -2536,8 +2536,9 @@ public class MobileInterfaceController {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
 //    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
-    			String data = "{\"id\":\"" + v.getEventId() + "\"}";    			
-    			data.put("id", v.getEventId());
+    			HashMap<String, Object> data = new  HashMap<>(); 			
+    			data.put("id", v.getEventId());    			
+    			data.put("redAmount", 0.01);
     			globeResponse.setData(data);
     			return globeResponse;
     		}
@@ -2566,6 +2567,7 @@ public class MobileInterfaceController {
     	String msg = param.get("msg").toString();
     	if(ret.intValue() == 0) {
     		globeResponse.setMsg("领取成功");
+    		globeResponse.setData(param.get("money"));
     		return globeResponse;
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
