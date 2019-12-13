@@ -101,7 +101,6 @@ import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.ProblemConfigVO;
 import com.lzkj.mobile.vo.RecordInsurePageVO;
 import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.RedEnvelopeRainVO;
 import com.lzkj.mobile.vo.RedEnvelopeVO;
 import com.lzkj.mobile.vo.ScoreRankVO;
 import com.lzkj.mobile.vo.ShareDetailInfoVO;
@@ -2481,10 +2480,10 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	RedEnvelopeVO v = agentServiceClient.getRedEnvelope(parentId);
     	if(v != null) {
-    		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
+    		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getId());
     		if(count < 1) {
-    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
-    			globeResponse.setData(vo);
+//    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
+    			globeResponse.setData(v);
     			return globeResponse;
     		}
     	}
