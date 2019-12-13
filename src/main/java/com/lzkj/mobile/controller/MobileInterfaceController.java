@@ -2484,7 +2484,8 @@ public class MobileInterfaceController {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
 //    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
-    			globeResponse.setData(v);
+    			String data = "{\"id\":\"" + v.getEventId() + "\"}";
+    			globeResponse.setData(data);
     			return globeResponse;
     		}
     	}
