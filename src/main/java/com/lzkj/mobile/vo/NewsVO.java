@@ -51,4 +51,5 @@ public class NewsVO {
 
     private String LastModifyDate;
 
+    private int id;
 }

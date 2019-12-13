@@ -531,8 +531,11 @@ public class MobileInterfaceController {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
+        long startMillis = System.currentTimeMillis();
+    	log.info("/adsNotice,参数agentId={}", agentId);
         GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
         globeResponse.setData(nativeWebServiceClient.getGameNotice(1, agentId));
+        log.info("/adsNotice,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
 
@@ -2250,6 +2253,23 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
+    	List<MemberRechargeVO> l = page.getLists();
+    	List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
+    	if(typeId.equals(10)) {
+    		for(int i = 0;i<l.size();i++) {
+    			MemberRechargeVO vo = new MemberRechargeVO();
+    			vo.setTypeName("平台资金切换");
+    			vo.setBalance(l.get(i).getBalance());
+    			vo.setCollectDate(l.get(i).getCollectDate());
+    			if(l.get(i).getPresentScore().signum() == -1) {
+    				vo.setExpenditureScore(l.get(i).getPresentScore().abs());
+    			}else {
+    				vo.setPresentScore(l.get(i).getPresentScore());
+    			}
+    			temp.add(vo);
+    			page.setLists(temp);
+    		}
+    	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
@@ -2261,9 +2281,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取个人报表
+     *
      * @param userId
-     * @param kindType
-     * @param date
      * @return
      */
     @RequestMapping("/getPersonalReport")
@@ -2310,8 +2329,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取红包奖励
+     *
      * @param userId
-     * @param parentId
      * @return
      */
     @RequestMapping("/getRedEnvelopeReward")
@@ -2332,11 +2351,8 @@ public class MobileInterfaceController {
 
     /**
      * 领取红包奖励
+     *
      * @param userId
-     * @param score
-     * @param machineId
-     * @param typeId
-     * @param request
      * @return
      */
     @RequestMapping("/getReceivingRedEnvelope")
@@ -2496,21 +2512,56 @@ public class MobileInterfaceController {
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
+    /**
+     * 提现信息审核开关
+     */
+    @RequestMapping("/getIndividualDatumStatus")
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        if(agentId == null || agentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        if(gameId == null || gameId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
+        if (pageVO == null) {
+            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+            return globeResponse;
+        } else {
+            if (StringUtils.isBlank(pageVO.getBankNO())) {
+                globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+                return globeResponse;
+            }
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+        if (flag) {
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        globeResponse.setData(flag);
+        return globeResponse;*/
+    }
 
-//    /**
-//     * 提现信息审核开关
-//     */
-//    @RequestMapping("/getIndividualDatumStatus")
-//    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        if(agentId == null || agentId == 0) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-//        }
-//        if(gameId == null || gameId == 0) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-//        }
-//        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-//        globeResponse.setData(flag);
-//        return globeResponse;
-//    }
+    @RequestMapping("/getNoticeTitile")
+    private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
+        return globeResponse;
+    }
+
+    @RequestMapping("/getNoticeDetail")
+    private GlobeResponse<String> getNoticeDetail(Integer newsId) {
+    	if (newsId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+    	globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
+    	return globeResponse;
+    }
 }

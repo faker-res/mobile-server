@@ -1,7 +1,6 @@
 package com.lzkj.mobile.controller;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -882,6 +881,15 @@ public class AgentSystemController {
                     data.put("TXYEBpasswordOpen", true);
                 } else {
                     data.put("TXYEBpasswordOpen", false);
+                }
+            }
+
+            //余额宝密码开关
+            if (vo.getStatusName().equals(AgentSystemEnum.YEBPASSWORDOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("YEBpasswordOpen", true);
+                } else {
+                    data.put("YEBpasswordOpen", false);
                 }
             }
             //如果总控没有维护,并且业主维护的时候
