@@ -105,7 +105,7 @@ public interface TreasureServiceClient {
 	GatewayInfo getUpdateAddress(@RequestParam("agentId") Integer agentId);
 
 	@RequestMapping("treasure/mobile/updateMerchantOrderId")
-	void updateMerchantOrderId(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("merchantOrderId") String merchantOrderId);
+	void updateMerchantOrderId(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("merchantOrderId") String merchantOrderId, @RequestParam("orderStatus") Integer orderStatus);
 
 	@RequestMapping("treasure/mobile/updatePassagewayResponse")
 	void updatePassagewayResponse(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("passagewayResponse") String passagewayResponse);

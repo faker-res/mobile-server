@@ -61,10 +61,15 @@ public class MailController {
         if (ids == null || ids.size() == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数");
         }
-        List<MailVO> mailsVO = accountsServiceClient.openMail(ids);
+        Boolean flag = accountsServiceClient.openMail(ids);
+        if (!flag) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "读取邮件失败");
+        }
+        List<MailVO> mailsVO =accountsServiceClient.getOpenMailList(ids);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(mailsVO);
         return globeResponse;
+
     }
     /**
      * 删除邮件
