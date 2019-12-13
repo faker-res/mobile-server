@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -162,7 +164,7 @@ public class MobileInterfaceController {
     @Autowired
     private RedisDao redisDao;
 
-    @Autowired
+    @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
 
@@ -1306,7 +1308,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {    	    
+    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
     	if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -2248,23 +2250,6 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
-    	List<MemberRechargeVO> l = page.getLists();
-    	List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
-    	if(typeId.equals(10)) {
-    		for(int i = 0;i<l.size();i++) {
-    			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("平台资金切换");
-    			vo.setBalance(l.get(i).getBalance());
-    			vo.setCollectDate(l.get(i).getCollectDate());
-    			if(l.get(i).getPresentScore().signum() == -1) {
-    				vo.setExpenditureScore(l.get(i).getPresentScore().abs());
-    			}else {
-    				vo.setPresentScore(l.get(i).getPresentScore());
-    			}
-    			temp.add(vo);
-    			page.setLists(temp);
-    		}
-    	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
@@ -2276,8 +2261,9 @@ public class MobileInterfaceController {
 
     /**
      * 获取个人报表
-     *
      * @param userId
+     * @param kindType
+     * @param date
      * @return
      */
     @RequestMapping("/getPersonalReport")
@@ -2324,8 +2310,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取红包奖励
-     *
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getRedEnvelopeReward")
@@ -2346,8 +2332,11 @@ public class MobileInterfaceController {
 
     /**
      * 领取红包奖励
-     *
      * @param userId
+     * @param score
+     * @param machineId
+     * @param typeId
+     * @param request
      * @return
      */
     @RequestMapping("/getReceivingRedEnvelope")
