@@ -2535,7 +2535,7 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-    			count = agentServiceClient.hasFreeRedEnvelope(v.getId(), parentId);
+    			count = agentServiceClient.hasFreeRedEnvelope(v.getEventId(), parentId);
     			if(count > 0) {
 	    			HashMap<String, Object> data = new  HashMap<>();
 	    			data.put("id", v.getEventId());
