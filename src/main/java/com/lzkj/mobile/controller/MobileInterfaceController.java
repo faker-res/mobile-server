@@ -2223,23 +2223,6 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId,date,pageSize,pageIndex);
-    	List<MemberRechargeVO> l = page.getLists();
-    	List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
-    	if(typeId.equals(10)) {
-    		for(int i = 0;i<l.size();i++) {
-    			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("平台资金切换");
-    			vo.setBalance(l.get(i).getBalance());
-    			vo.setCollectDate(l.get(i).getCollectDate());
-    			if(l.get(i).getPresentScore().signum() == -1) {
-    				vo.setExpenditureScore(l.get(i).getPresentScore().abs());
-    			}else {
-    				vo.setPresentScore(l.get(i).getPresentScore());
-    			}
-    			temp.add(vo);
-    			page.setLists(temp);
-    		}
-    	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
