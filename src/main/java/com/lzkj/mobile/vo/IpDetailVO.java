@@ -1,12 +1,12 @@
 package com.lzkj.mobile.vo;
 
-//import org.springframework.data.mongodb.core.index.Indexed;
-//import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
 @Data
-//@Document
+@Document
 public class IpDetailVO implements java.io.Serializable {
 	/**
 	 * 
@@ -15,10 +15,10 @@ public class IpDetailVO implements java.io.Serializable {
 	private String ip;
 	private String ip2;
 	
-//	@Indexed(background=true)
+	@Indexed(background=true)
 	private long ipNumber;
 	
-//	@Indexed(background=true)
+	@Indexed(background=true)
 	private long ipNumber2;
 	
 	private String remark1;
