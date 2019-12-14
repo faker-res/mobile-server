@@ -146,15 +146,13 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/getRebateInfo")
-    private GlobeResponse getRebateInfo(Integer agentId) {
+    private GlobeResponse getRebateInfo(Integer agentId,Integer userId) {
         if(agentId == null){
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        AgentRebateConfigVO list = platformServiceClient.getRebateInfo(agentId);
-        list.setCompenyRebate(list.getCompenyRebate().multiply(new BigDecimal(100)));
-        list.setSilverRebate(list.getSilverRebate().multiply(new BigDecimal(100)));
-        globeResponse.setData(list);
+        AgentRebateConfigVO agentRebateConfigVO = treasureServiceClient.getRebateInfo(agentId,userId);
+        globeResponse.setData(agentRebateConfigVO);
         return globeResponse;
     }
 }
