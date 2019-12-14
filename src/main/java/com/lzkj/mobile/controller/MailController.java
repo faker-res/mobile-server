@@ -85,7 +85,7 @@ public class MailController {
         globeResponse.setData(flag);
         return globeResponse;
     }
-    
+
     /**
      * 统计用户未读邮件数
      */
