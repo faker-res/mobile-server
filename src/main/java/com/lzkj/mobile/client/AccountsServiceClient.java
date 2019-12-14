@@ -177,4 +177,5 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
     Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
 
+    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
 }

@@ -2783,4 +2783,17 @@ public class MobileInterfaceController {
     	globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
     	return globeResponse;
     }
+
+    @RequestMapping("/saveBankCardRawData")
+    private GlobeResponse<String> saveBankCardRawData(Integer userId,Integer agentId,String bankNo,String bankName,String compellation,String bankAddress) {
+        if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+        Boolean flag = accountsServiceClient.saveBankCardRawData(userId,agentId,bankNo,bankName,compellation,bankAddress);
+        if (!flag) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "保存失败");
+        }
+        return globeResponse;
+    }
 }
