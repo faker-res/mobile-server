@@ -23,8 +23,6 @@ public interface PlatformServiceClient {
 	@RequestMapping("/platform/mobile/getWhitelist")
 	int getWhitelist(@RequestParam("registerMachine") String registerMachine);
 
-    @RequestMapping("/platform/mobile/getRebateInfo")
-    AgentRebateConfigVO getRebateInfo(@RequestParam("agentId") Integer agentId);
 
     //查询用户反馈意见
 	@RequestMapping("/platform/mobile/getFeedbackInfo")

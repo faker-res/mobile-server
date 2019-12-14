@@ -212,5 +212,9 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/agentControl/getIndividualDatum")
 	IndividualDatumVO getIndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId);
+
+
+	@RequestMapping("/treasure/mobile/getRebateInfo")
+	AgentRebateConfigVO getRebateInfo(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
 }
 
