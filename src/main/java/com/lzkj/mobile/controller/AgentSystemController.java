@@ -376,6 +376,16 @@ public class AgentSystemController {
                 }
             }
 
+            //注册界面赠送金币图标开关
+            if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("ZCJMZSJBTBOpen", true);
+                    data.put("goldGiftCount", vo.getGoldGiftCount());
+                } else {
+                    data.put("ZCJMZSJBTBOpen", false);
+                }
+            }
+
             //提现时输入余额宝密码开关
             if (vo.getStatusName().equals(AgentSystemEnum.TXYEBPASSWORDOPEN.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
