@@ -877,11 +877,11 @@ public class AgentSystemController {
 
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
-                if (vo.getGoldGiftIconOpen() == 0) {
-                    data.put("ZCJMZSJBTBOpen", 0);
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("ZCJMZSJBTBOpen", true);
                     data.put("goldGiftCount", vo.getGoldGiftCount());
                 } else {
-                    data.put("ZCJMZSJBTBOpen", 1);
+                    data.put("ZCJMZSJBTBOpen", false);
                 }
             }
 
