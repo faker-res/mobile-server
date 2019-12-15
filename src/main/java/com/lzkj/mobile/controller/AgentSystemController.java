@@ -357,10 +357,13 @@ public class AgentSystemController {
                     switch (vo.getOptionButton()) {
                         case 0:
                             data.put("optionButton", 0);//不选
+                            break;
                         case 1:
                             data.put("optionButton", 1);//账号
+                            break;
                         case 2:
                             data.put("optionButton", 2);//手机号
+                            break;
                         case 3:
                             data.put("optionButton", 3);//双选
                             break;
@@ -879,10 +882,13 @@ public class AgentSystemController {
                     switch (vo.getOptionButton()) {
                         case 0:
                             data.put("optionButton", 0);//不选
+                            break;
                         case 1:
                             data.put("optionButton", 1);//账号
+                            break;
                         case 2:
                             data.put("optionButton", 2);//手机号
+                            break;
                         case 3:
                             data.put("optionButton", 3);//双选
                             break;
