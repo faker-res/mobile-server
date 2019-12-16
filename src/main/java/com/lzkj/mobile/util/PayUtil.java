@@ -13,11 +13,11 @@ public class PayUtil {
 //        int num2 = 6;
         String stringBuffer = new String();
         stringBuffer += prefix;
+        stringBuffer +=userId.toString();
         stringBuffer += GetDateTimeLongString();
 //        if (stringBuffer.length() + num2 > num) {
 //            num2 = num - stringBuffer.length();
 //        }
-        stringBuffer +=userId.toString();
        // stringBuffer += CreateRandom(num2, 1, 0, 0, 0, "");
         return stringBuffer;
     }
