@@ -1324,7 +1324,7 @@ public class MobileInterfaceController {
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
         OnLineOrderVO onLineOrderVO = new OnLineOrderVO();
-        onLineOrderVO.setOrderId(GetOrderIDByPrefix("e"));  //订单标识
+        onLineOrderVO.setOrderId(GetOrderIDByPrefix("e",userId));  //订单标识 时间+userId
         onLineOrderVO.setOperUserId(userId);                // 操作用户
         onLineOrderVO.setAccounts(account);                 //充值用户
         onLineOrderVO.setOrderAmount(amount);               //订单金额
