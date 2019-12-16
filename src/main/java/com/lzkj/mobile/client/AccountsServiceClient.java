@@ -4,29 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.lzkj.mobile.vo.AccReportVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.AccountsLevelVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.MailVO;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.RedEnvepoleRulesVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.UserCodeDetailsVO;
-import com.lzkj.mobile.vo.UserInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
 
 @FeignClient(name = "accounts-service")
 public interface AccountsServiceClient {
@@ -177,4 +159,9 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
     Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
 
+    @RequestMapping("/accounts/mobile/saveBankCardRawData")
+    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
+
+    @RequestMapping("/accounts/mobile/getBankCardRawData")
+    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 }
