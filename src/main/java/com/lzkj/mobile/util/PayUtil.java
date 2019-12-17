@@ -8,16 +8,18 @@ import java.util.Random;
 
 public class PayUtil {
 
-    public static String GetOrderIDByPrefix(String prefix) {
-        int num = 32;
-        int num2 = 6;
+    public static String GetOrderIDByPrefix(String prefix,Integer userId) {
+//        int num = 32;
+//        int num2 = 6;
         String stringBuffer = new String();
         stringBuffer += prefix;
+        stringBuffer +=userId.toString();
         stringBuffer += GetDateTimeLongString();
-        if (stringBuffer.length() + num2 > num) {
-            num2 = num - stringBuffer.length();
-        }
-        stringBuffer += CreateRandom(num2, 1, 0, 0, 0, "");
+//        if (stringBuffer.length() + num2 > num) {
+//            num2 = num - stringBuffer.length();
+//        }
+
+       // stringBuffer += CreateRandom(num2, 1, 0, 0, 0, "");
         return stringBuffer;
     }
 
@@ -63,7 +65,7 @@ public class PayUtil {
 
     public static void main(String[] args) {
         System.out.println("GetDateTimeLongString:" + GetDateTimeLongString());
-        System.out.println("encrypData:" + GetOrderIDByPrefix("e"));
+       // System.out.println("encrypData:" + GetOrderIDByPrefix("e"));
     }
 
 }

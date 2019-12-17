@@ -63,6 +63,7 @@ import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
+import com.lzkj.mobile.vo.ActivityRedEnvelopeVO;
 import com.lzkj.mobile.vo.AgentAccVO;
 import com.lzkj.mobile.vo.AgentInfoVO;
 import com.lzkj.mobile.vo.AgentIsIosVO;
@@ -76,6 +77,7 @@ import com.lzkj.mobile.vo.CleanChipsConfigVO;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.ConfigInfo;
 import com.lzkj.mobile.vo.CustomerServiceConfigVO;
+import com.lzkj.mobile.vo.GameException;
 import com.lzkj.mobile.vo.GameFeedbackVO;
 import com.lzkj.mobile.vo.GameListVO;
 import com.lzkj.mobile.vo.GamePropertyType;
@@ -84,6 +86,7 @@ import com.lzkj.mobile.vo.GetBankRecordVO;
 import com.lzkj.mobile.vo.GlobalSpreadInfo;
 import com.lzkj.mobile.vo.GlobeResponse;
 import com.lzkj.mobile.vo.IndividualDatumVO;
+import com.lzkj.mobile.vo.LoginRedEnvepoleStatusVO;
 import com.lzkj.mobile.vo.LotteryConfigVO;
 import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
 import com.lzkj.mobile.vo.LuckyVO;
@@ -102,7 +105,11 @@ import com.lzkj.mobile.vo.PersonalReportVO;
 import com.lzkj.mobile.vo.ProblemConfigVO;
 import com.lzkj.mobile.vo.RecordInsurePageVO;
 import com.lzkj.mobile.vo.RecordInsureVO;
+import com.lzkj.mobile.vo.RedEnvelopeConditionTypeVO;
+import com.lzkj.mobile.vo.RedEnvelopeRecordVO;
 import com.lzkj.mobile.vo.RedEnvelopeVO;
+import com.lzkj.mobile.vo.RedEnvepoleRulesVO;
+import com.lzkj.mobile.vo.RedEnvepoleYuStartTimeAndEndTimeVO;
 import com.lzkj.mobile.vo.ScoreRankVO;
 import com.lzkj.mobile.vo.ShareDetailInfoVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
@@ -110,6 +117,7 @@ import com.lzkj.mobile.vo.TpayOwnerInfoVO;
 import com.lzkj.mobile.vo.TransactionTypeVO;
 import com.lzkj.mobile.vo.UserGameScoreInfoVO;
 import com.lzkj.mobile.vo.UserInformationVO;
+import com.lzkj.mobile.vo.UserRankinsVO;
 import com.lzkj.mobile.vo.UserRecordInsureVO;
 import com.lzkj.mobile.vo.UserRewardDetailVO;
 import com.lzkj.mobile.vo.UserScoreRankVO;
@@ -608,7 +616,7 @@ public class MobileInterfaceController {
      * @param phone
      * @param type
      * @return sendMode = 1 为完美短信发送   2 为3D短信发送    3-4 都为众鑫短信   5 为188短信   6 为天朝短信   7 为至尊短信
-     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元
+     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元   15 百家
      */
     @RequestMapping("/getCode")
     private GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
@@ -740,7 +748,7 @@ public class MobileInterfaceController {
             log.info("短信发送失败：" + resTxt);
         }
 
-        if (sendMode == 4 || sendMode == 8 || sendMode == 12 || sendMode == 13 || sendMode == 14) {
+        if (sendMode == 4 || sendMode == 8 || sendMode == 12 || sendMode == 13 || sendMode == 14 || sendMode == 15) {
             try {
                 SendSmsResponse response = singleALYSend(phone, vCode, sendMode);
                 log.info("阿里云短信接口返回的数据----------------");
@@ -868,6 +876,10 @@ public class MobileInterfaceController {
             accessKeyId = "LTAI4FsUERw7ZHDiEbJJV2X5";
             accessKeySecret = "v0mNaai7xXdETrpVnPkrsHba8Iwkpa";
         }
+        if (sendMode == 15) {//百家
+            accessKeyId = "LTAI4Fd2z6p96UJ9AhzvLVbM";
+            accessKeySecret = "cBJMTLt3doAFReIsf9MNx5O1FGqea7";
+        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -918,6 +930,14 @@ public class MobileInterfaceController {
             request.setSignName("开元");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_178766749");
+            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
+        }
+        if (sendMode == 15) {//开元
+            //必填:短信签名-可在短信控制台中找到
+            request.setSignName("百I家");
+            //必填:短信模板-可在短信控制台中找到
+            request.setTemplateCode("SMS_180046998");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
@@ -1138,6 +1158,29 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    @RequestMapping("/addException")
+    public GlobeResponse<Object> addException(String file,String line,String message,String error,String errorMessage) {
+        GlobeResponse globeResponse = new GlobeResponse();
+        if (StringUtils.isBlank(file) || StringUtils.isBlank(line) || StringUtils.isBlank(message) || StringUtils.isBlank(error) || StringUtils.isBlank(errorMessage)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数不能为空");
+        }
+        GameException gameException = new GameException();
+        gameException.setErrorMessage(errorMessage);
+        gameException.setFile(file);
+        gameException.setFile(line);
+        gameException.setFile(message);
+        gameException.setFile(error);
+        Boolean flag = true;
+        try {
+            mongoTemplate.save(gameException,"Exception");
+        } catch (Exception e){
+            flag = false;
+        }
+
+        globeResponse.setData(flag);
+        return globeResponse;
+    }
+
     @PostMapping("/addGameRecord")
     public GlobeResponse<Object> addGameRecord(@RequestBody JSONObject record) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
@@ -1325,7 +1368,7 @@ public class MobileInterfaceController {
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
         OnLineOrderVO onLineOrderVO = new OnLineOrderVO();
-        onLineOrderVO.setOrderId(GetOrderIDByPrefix("e"));  //订单标识
+        onLineOrderVO.setOrderId(GetOrderIDByPrefix("e",userId));  //订单标识 时间+userId
         onLineOrderVO.setOperUserId(userId);                // 操作用户
         onLineOrderVO.setAccounts(account);                 //充值用户
         onLineOrderVO.setOrderAmount(amount);               //订单金额
@@ -1586,8 +1629,11 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/updateMerchantOrderId")
-    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId) {
-        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId);
+    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId, Integer orderStatus) {
+    	if(orderStatus == null) {
+    		orderStatus = 0;
+    	}
+        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId, orderStatus);
         return "ok";
     }
 
@@ -1798,8 +1844,8 @@ public class MobileInterfaceController {
 
     /**
      * 查询玩家VIP等级
-     *
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getUserVipLevel")
@@ -2109,9 +2155,11 @@ public class MobileInterfaceController {
         globeResponse.setData(userInfo);
         return globeResponse;
     }
+
     /**
      * 修改用户个人信息
-     *
+     * @param nickName
+     * @param gender
      * @param userId
      * @return
      */
@@ -2126,12 +2174,14 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    /**
-     * 修改用户个人信息
-     *
-     * @param userId
-     * @return
-     */
+   /**
+    * 修改用户个人信息
+    * @param mobilePhone
+    * @param qq
+    * @param eMail
+    * @param userId
+    * @return
+    */
     @RequestMapping("/updateUserContactInfo")
     private GlobeResponse<Object> updateUserContactInfo(String mobilePhone,String qq,String eMail,Integer userId) {
         if (userId == null) {
@@ -2146,8 +2196,6 @@ public class MobileInterfaceController {
 
     /**
      * 获取所有平台
-     *
-     * @param userId
      * @return
      */
     @RequestMapping("/getVideoType")
@@ -2171,8 +2219,6 @@ public class MobileInterfaceController {
 
     /**
      * 获取时间
-     *
-     * @param userId
      * @return
      */
     @RequestMapping("/getDate")
@@ -2203,8 +2249,12 @@ public class MobileInterfaceController {
 
     /**
      * 获取投注记录
-     *
+     * @param kindType
+     * @param date
+     * @param kindId
      * @param userId
+     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @RequestMapping("/getChannelGameUserBetAndScore")
@@ -2224,7 +2274,6 @@ public class MobileInterfaceController {
     /**
      * 获取所有交易类型
      *
-     * @param userId
      * @return
      */
     @RequestMapping("/getTransactionType")
@@ -2240,8 +2289,11 @@ public class MobileInterfaceController {
 
     /**
      * 获取账户明细
-     *
      * @param userId
+     * @param typeId
+     * @param date
+     * @param pageSize
+     * @param pageIndex
      * @return
      */
     @RequestMapping("/getAccountDetails")
@@ -2280,8 +2332,9 @@ public class MobileInterfaceController {
 
     /**
      * 获取个人报表
-     *
      * @param userId
+     * @param kindType
+     * @param date
      * @return
      */
     @RequestMapping("/getPersonalReport")
@@ -2328,8 +2381,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取红包奖励
-     *
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getRedEnvelopeReward")
@@ -2350,8 +2403,11 @@ public class MobileInterfaceController {
 
     /**
      * 领取红包奖励
-     *
      * @param userId
+     * @param score
+     * @param machineId
+     * @param typeId
+     * @param request
      * @return
      */
     @RequestMapping("/getReceivingRedEnvelope")
@@ -2375,8 +2431,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取余额宝收益、余额宝日、月、年利率
-     *
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getYebScore")
@@ -2400,8 +2456,10 @@ public class MobileInterfaceController {
 
     /**
      * 获取VIP奖励明细
-     *
      * @param userId
+     * @param parentId
+     * @param pageSize
+     * @param pageIndex
      * @return
      */
     @RequestMapping("/getUserRewardDetail")
@@ -2421,8 +2479,11 @@ public class MobileInterfaceController {
 
     /**
      * 获取余额宝明细
-     *
      * @param userId
+     * @param date
+     * @param pageSize
+     * @param pageIndex
+     * @param typeId
      * @return
      */
     @RequestMapping("/getUserYebInfo")
@@ -2473,8 +2534,11 @@ public class MobileInterfaceController {
     	return globeResponse;
     }
 
-    /*
+    /**
      * 红包雨
+     * @param parentId
+     * @param userId
+     * @return
      */
     @RequestMapping("/getRedEnvelopeRain")
     public GlobeResponse<Object> getRedEnvelopeRain(Integer parentId,Integer userId) {
@@ -2483,20 +2547,27 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-//    			RedEnvelopeRainVO vo = agentServiceClient.getRedEnvelopeRain(parentId,v.getEventId());
-    			HashMap<String, Object> data = new  HashMap<>(); 			
-    			data.put("id", v.getEventId());    			
-    			data.put("redAmount", 0.01);
-    			globeResponse.setData(data);
-    			return globeResponse;
+    			count = agentServiceClient.hasFreeRedEnvelope(v.getEventId(), parentId);
+    			if(count > 0) {
+	    			HashMap<String, Object> data = new  HashMap<>();
+	    			data.put("id", v.getEventId());
+	    			data.put("redAmount", 0.01);
+	    			globeResponse.setData(data);
+	    			return globeResponse;
+    			}
     		}
     	}
     	globeResponse.setData("");
     	return globeResponse;
     }
 
-    /*
+    /**
      * 领取红包雨红包
+     * @param request
+     * @param id
+     * @param userId
+     * @param machineId
+     * @return
      */
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
@@ -2515,6 +2586,7 @@ public class MobileInterfaceController {
     	}
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
+
     /**
      * 提现信息审核开关
      */
@@ -2546,6 +2618,162 @@ public class MobileInterfaceController {
         }
         globeResponse.setData(flag);
         return globeResponse;*/
+    }
+
+    /* 获取红包
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/getRedEnvelope")
+    public GlobeResponse<Object> getRedEnvelope(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);
+    	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);
+    	RedEnvelopeVO v = agentServiceClient.getRedEnvelope(parentId);   //是否有红包雨活动
+    	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
+    	if(v != null) {
+    		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
+    		redVO.setStatus(0);
+    	}else {
+    		redVO.setStatus(1);
+    	}
+    	LoginRedEnvepoleStatusVO vo = new LoginRedEnvepoleStatusVO();
+    	if(count > 0) {
+    		vo.setLoginRedEnvepoleStatus(1);
+    	}else {
+    		vo.setLoginRedEnvepoleStatus(0);
+    	}
+    	List<LoginRedEnvepoleStatusVO> l = new ArrayList<LoginRedEnvepoleStatusVO>();
+    	l.add(vo);
+    	List<RedEnvepoleYuStartTimeAndEndTimeVO> le = new ArrayList<RedEnvepoleYuStartTimeAndEndTimeVO>();
+    	le.add(redVO);
+    	data.put("OthersRedEnvepoleList", list);
+    	data.put("LoginRedEnvepoleStatus", l);
+    	data.put("RedEnvelopeRain", le);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+
+    /**
+     * 获取红包手气榜
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/getUserRankings")
+    public GlobeResponse<Object> getUserRankings(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(userId,parentId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+
+    /**
+     * 获取红包类型
+     * @return
+     */
+    @RequestMapping("/getRedEnvelopeType")
+    public GlobeResponse<Object> getRedEnvelopeType() {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<RedEnvelopeConditionTypeVO> list = agentServiceClient.getRedEnvelopeType();
+    	RedEnvelopeConditionTypeVO vo = new RedEnvelopeConditionTypeVO();
+    	vo.setTypeId(0);
+    	vo.setTypeName("全部");
+    	list.add(vo);
+    	Collections.sort(list, Comparator.comparing(RedEnvelopeConditionTypeVO::getTypeId));
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+
+    /**
+     * 获取时间
+     * @return
+     */
+    @RequestMapping("/getDateTime")
+    private GlobeResponse<Object> getDateTime() {
+    	List<Map<String, String>> data =new ArrayList<>();
+        Map<String, String> map = new HashMap<String, String>();
+//        map.put("code", "0");
+//        map.put("name", "全部时间");
+//        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "1");
+        map.put("name", "今天");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "2");
+        map.put("name", "最近一周");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "3");
+        map.put("name", "最近一个月");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "4");
+        map.put("name", "最近三个月");
+        data.add(map);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("list",data);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(maps);
+        return globeResponse;
+    }
+
+    /**
+     * 红包记录
+     * @param userId
+     * @param typeId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/getRedEnvelopeRecord")
+    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId,Integer typeId,Integer pageIndex,Integer pageSize) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	CommonPageVO<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId,typeId,pageIndex,pageSize);
+    	if(list != null) {
+    		data.put("list", list.getLists());
+    		data.put("total",list.getPageCount());
+    	}
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+    /**
+     * 活动规则
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/getRedEnvepoleRules")
+    public GlobeResponse<Object> getRedEnvepoleRules(Integer parentId) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	RedEnvepoleRulesVO vo = accountsServiceClient.getRedEnvepoleRules(parentId);
+    	Map<String, Object> data = new HashMap<>();
+    	data.put("rules",vo);
+    	globeResponse.setData(data);
+		return globeResponse;
     }
 
     @RequestMapping("/getNoticeTitile")

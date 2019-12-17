@@ -13,12 +13,14 @@ import com.lzkj.mobile.vo.AccReportVO;
 import com.lzkj.mobile.vo.AccountsInfoVO;
 import com.lzkj.mobile.vo.AccountsLevelVO;
 import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
+import com.lzkj.mobile.vo.ActivityRedEnvelopeVO;
 import com.lzkj.mobile.vo.ApplyRecordPageVo;
 import com.lzkj.mobile.vo.BindPhoneVO;
 import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.MailVO;
 import com.lzkj.mobile.vo.PersonalReportVO;
+import com.lzkj.mobile.vo.RedEnvepoleRulesVO;
 import com.lzkj.mobile.vo.SystemStatusInfoVO;
 import com.lzkj.mobile.vo.UserCodeDetailsVO;
 import com.lzkj.mobile.vo.UserInfoVO;
@@ -161,13 +163,16 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
 
+    @RequestMapping("/accounts/mobile/getRedEnvelope")
+    List<ActivityRedEnvelopeVO> getRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
     List<MailVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
-
-
+    
+    @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
+    RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);
+    
     @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
     Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
-
 }
