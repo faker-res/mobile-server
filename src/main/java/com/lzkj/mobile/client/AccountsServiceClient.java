@@ -145,7 +145,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
 
-
     @RequestMapping("/accounts/mobile/getRedEnvelope")
     List<ActivityRedEnvelopeVO> getRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 
@@ -159,9 +158,11 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
     Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
 
+
     @RequestMapping("/accounts/mobile/saveBankCardRawData")
     Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
 
     @RequestMapping("/accounts/mobile/getBankCardRawData")
     IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+
 }
