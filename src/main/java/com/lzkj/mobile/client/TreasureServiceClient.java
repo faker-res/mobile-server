@@ -216,5 +216,20 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/treasure/mobile/getRebateInfo")
 	AgentRebateConfigVO getRebateInfo(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+
+	// -------------------幸运注单 start-----------------------
+	@RequestMapping("/agentControl/getLuckyOrderInfoList")
+	CommonPageVO<LuckyOrderInfoVO> getLuckyOrderInfoList(
+			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
+			@RequestParam("prizeState")Integer prizeState,@RequestParam("applyState")Integer applyState,
+			@RequestParam("agentId")Integer agentId,@RequestParam("userId")Integer userId,
+			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate);
+
+	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
+	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
+
+	@RequestMapping("/agentControl/applyLuckyOrderInfo")
+	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
+	// -------------------幸运注单 end-----------------------
 }
 
