@@ -46,15 +46,15 @@ public interface AccountsServiceClient {
 
     //修改用户保底佣金
     @RequestMapping("accounts/mobile/editRatio")
-    Boolean editRatio(@RequestParam("qmRation") BigDecimal qmRation, @RequestParam("gameId") Integer gameId);
+    Boolean editRatio(@RequestParam("qmRation") BigDecimal qmRation, @RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryParentRation")
-    BigDecimal queryParentRation(@RequestParam("gameId") Integer gameId);
+    BigDecimal queryParentRation(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
 
-    //查询当前用户上级代理佣金
+    //查询当前用户代理佣金
     @RequestMapping("accounts/mobile/queryRatioUserInfo")
-    BigDecimal queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+    BigDecimal queryRatioUserInfo(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryRegisterMobile")
@@ -152,10 +152,10 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
     List<MailVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
-    
+
     @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
     RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);
-    
+
     @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
     Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
 
