@@ -6,6 +6,7 @@ import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.LuckyOrderConfigVO;
 import com.lzkj.mobile.vo.LuckyOrderInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,10 +30,51 @@ public class LuckyOrderController {
     private TreasureServiceClient treasureServiceClient;
 
     /**
+     * 查询幸运注单配置
+     */
+    /*@RequestMapping("/getLuckyOrderConfigList")
+    public GlobeResponse<Object>  getLuckyOrderConfigList(Integer pageIndex,Integer pageSize,Integer kindId,Integer kindType,
+                                              BigDecimal betAmount,Integer joinTimeLimit,Integer numberMatchType,
+                                              Integer awardType,Integer agentId){
+        if( pageIndex == null || pageSize == null || agentId==null ){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        kindId = (kindId==null?0:kindId);
+        kindType = (kindType==null?0:kindType);
+        betAmount = (betAmount==null?BigDecimal.ZERO:betAmount);
+        joinTimeLimit = (joinTimeLimit==null?0:joinTimeLimit);
+        numberMatchType = (numberMatchType==null?0:numberMatchType);
+        awardType = (awardType==null?0:awardType);
+        CommonPageVO<LuckyOrderConfigVO> list = treasureServiceClient.getLuckyOrderConfigList( pageIndex,pageSize,
+                kindId, kindType,betAmount,joinTimeLimit,numberMatchType,awardType,agentId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", list.getLists());
+        data.put("total", list.getPageCount());
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }*/
+
+    /**
+     * 根据业主查询配置
+     * @return
+     */
+    @RequestMapping("/getLuckyOrderConfig")
+    public GlobeResponse<Object> getLuckyOrderConfig(Integer agentId){
+        LuckyOrderConfigVO vo = treasureServiceClient.getLuckyOrderConfig(agentId);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(vo);
+        return globeResponse;
+    }
+
+
+    /**
      * 查询幸运注单
      */
     @RequestMapping("/getLuckyOrderInfoList")
-    public GlobeResponse<Object> getLuckyOrderInfoList(Integer pageIndex,Integer pageSize,Integer prizeState,Integer applyState,String startDate,String endDate,Integer userId){
+    public GlobeResponse<Object> getLuckyOrderInfoList(Integer pageIndex,Integer pageSize,Integer prizeState,Integer applyState,
+                                                       String startDate,String endDate,Integer userId,
+                                                       Integer kindId, Integer kindType,Integer gameId){
         if( pageIndex == null || pageSize == null || userId==null ){
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -38,12 +82,21 @@ public class LuckyOrderController {
         applyState = (applyState==null?0:applyState);
         startDate = (startDate==null?"":startDate);
         endDate = (endDate==null?"":endDate);
+        kindId = (kindId==null?0:kindId);
+        kindType = (kindType==null?0:kindType);
+        gameId = (gameId==null?0:gameId);
 
         CommonPageVO<LuckyOrderInfoVO> list = treasureServiceClient.getLuckyOrderInfoList(pageIndex, pageSize,
-                prizeState,  applyState,0, userId, startDate, endDate);
+                prizeState,  applyState,0, userId, startDate, endDate,kindId,kindType,gameId);
         Map<String, Object> data = new HashMap<>();
-        data.put("list", list.getLists());
-        data.put("total", list.getPageCount());
+        if(list==null){
+            data.put("list", new ArrayList());
+            data.put("total", 0);
+        }else{
+            data.put("list", list.getLists());
+            data.put("total", list.getPageCount());
+        }
+
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
