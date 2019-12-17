@@ -616,7 +616,7 @@ public class MobileInterfaceController {
      * @param phone
      * @param type
      * @return sendMode = 1 为完美短信发送   2 为3D短信发送    3-4 都为众鑫短信   5 为188短信   6 为天朝短信   7 为至尊短信
-     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元
+     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元   15 百家
      */
     @RequestMapping("/getCode")
     private GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
@@ -748,7 +748,7 @@ public class MobileInterfaceController {
             log.info("短信发送失败：" + resTxt);
         }
 
-        if (sendMode == 4 || sendMode == 8 || sendMode == 12 || sendMode == 13 || sendMode == 14) {
+        if (sendMode == 4 || sendMode == 8 || sendMode == 12 || sendMode == 13 || sendMode == 14 || sendMode == 15) {
             try {
                 SendSmsResponse response = singleALYSend(phone, vCode, sendMode);
                 log.info("阿里云短信接口返回的数据----------------");
@@ -876,6 +876,10 @@ public class MobileInterfaceController {
             accessKeyId = "LTAI4FsUERw7ZHDiEbJJV2X5";
             accessKeySecret = "v0mNaai7xXdETrpVnPkrsHba8Iwkpa";
         }
+        if (sendMode == 15) {//百家
+            accessKeyId = "LTAI4Fd2z6p96UJ9AhzvLVbM";
+            accessKeySecret = "cBJMTLt3doAFReIsf9MNx5O1FGqea7";
+        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -926,6 +930,14 @@ public class MobileInterfaceController {
             request.setSignName("开元");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_178766749");
+            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
+        }
+        if (sendMode == 15) {//开元
+            //必填:短信签名-可在短信控制台中找到
+            request.setSignName("百I家");
+            //必填:短信模板-可在短信控制台中找到
+            request.setTemplateCode("SMS_180046998");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
@@ -1159,8 +1171,8 @@ public class MobileInterfaceController {
         gameException.setError(error);
         gameException.setErrorMessage(errorMessage);
         gameException.setFile(file);
-        gameException.setFile(line);
-        gameException.setFile(message);
+        gameException.setLine(line);
+        gameException.setMessage(message);
         gameException.setHttpSend(httpSend);
         gameException.setScene(scene);
         gameException.setSocketMainCode(socketMainCode);
@@ -1367,7 +1379,9 @@ public class MobileInterfaceController {
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
         OnLineOrderVO onLineOrderVO = new OnLineOrderVO();
-        onLineOrderVO.setOrderId(GetOrderIDByPrefix("e",userId));  //订单标识
+
+        onLineOrderVO.setOrderId(GetOrderIDByPrefix("e",userId));  //订单标识 时间+userId
+
         onLineOrderVO.setOperUserId(userId);                // 操作用户
         onLineOrderVO.setAccounts(account);                 //充值用户
         onLineOrderVO.setOrderAmount(amount);               //订单金额

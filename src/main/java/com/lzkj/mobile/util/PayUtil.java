@@ -18,6 +18,7 @@ public class PayUtil {
 //        if (stringBuffer.length() + num2 > num) {
 //            num2 = num - stringBuffer.length();
 //        }
+
        // stringBuffer += CreateRandom(num2, 1, 0, 0, 0, "");
         return stringBuffer;
     }
