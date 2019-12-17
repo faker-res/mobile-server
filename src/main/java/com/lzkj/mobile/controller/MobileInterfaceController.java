@@ -1159,8 +1159,8 @@ public class MobileInterfaceController {
         gameException.setError(error);
         gameException.setErrorMessage(errorMessage);
         gameException.setFile(file);
-        gameException.setFile(line);
-        gameException.setFile(message);
+        gameException.setLine(line);
+        gameException.setMessage(message);
         gameException.setHttpSend(httpSend);
         gameException.setScene(scene);
         gameException.setSocketMainCode(socketMainCode);
