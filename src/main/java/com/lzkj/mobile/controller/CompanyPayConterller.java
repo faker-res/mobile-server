@@ -1,12 +1,15 @@
 package com.lzkj.mobile.controller;
 
-import com.lzkj.mobile.client.PlatformServiceClient;
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/companypay")
 public class CompanyPayConterller {
@@ -22,42 +26,44 @@ public class CompanyPayConterller {
     @Autowired
     private TreasureServiceClient treasureServiceClient;
 
+
     @Autowired
-    private PlatformServiceClient platformServiceClient;
+    private RedisTemplate<String, String> redisTemplate;
 
     /**
      * 公司充值信息
+     *
      * @return
      */
     @RequestMapping("/getCompanyPay")
     private GlobeResponse<Object> getCompanyPay(Integer agentId) {
-        if(agentId == null){
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         List<Object> list = treasureServiceClient.getCompanyPay(agentId);
 
-        List<PayTypeList> lists= new ArrayList<>();
-        if(list != null){
-            list.forEach(type->{
+        List<PayTypeList> lists = new ArrayList<>();
+        if (list != null) {
+            list.forEach(type -> {
                 PayTypeList typeList = new PayTypeList();
-                if("AliPay".equals(type)){
+                if ("AliPay".equals(type)) {
                     typeList.setId(0);
                     typeList.setPayType((String) type);
                 }
-                if("WeChatPay".equals(type)){
+                if ("WeChatPay".equals(type)) {
                     typeList.setId(1);
                     typeList.setPayType((String) type);
                 }
-                if("BankPay".equals(type)){
+                if ("BankPay".equals(type)) {
                     typeList.setId(2);
                     typeList.setPayType((String) type);
                 }
-                if("CloudPay".equals(type)){
+                if ("CloudPay".equals(type)) {
                     typeList.setId(3);
                     typeList.setPayType((String) type);
                 }
-                if("redPwd".equals(type)){
+                if ("redPwd".equals(type)) {
                     typeList.setId(4);
                     typeList.setPayType((String) type);
                 }
@@ -70,15 +76,16 @@ public class CompanyPayConterller {
 
     /**
      * 充值层级信息
+     *
      * @return
      */
     @RequestMapping("/getCompanyPayType")
     private GlobeResponse<Object> getCompanyPayType(Integer agentId, String payType) {
-        if(agentId == null || StringUtils.isBlank(payType)){
+        if (agentId == null || StringUtils.isBlank(payType)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<CompanyPayVO> list = treasureServiceClient.getCompanyPayType(agentId,payType);
+        List<CompanyPayVO> list = treasureServiceClient.getCompanyPayType(agentId, payType);
         globeResponse.setData(list);
         return globeResponse;
     }
@@ -91,7 +98,7 @@ public class CompanyPayConterller {
      */
     @RequestMapping("/getCompanyRecord")
     private GlobeResponse<Object> getCompanyRecord(Integer userId) {
-        if(userId ==null ){
+        if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
 
@@ -103,6 +110,7 @@ public class CompanyPayConterller {
 
     /**
      * 生成公司充值订单
+     *
      * @param agentId
      * @param userId
      * @param gameId
@@ -113,29 +121,39 @@ public class CompanyPayConterller {
      */
     @RequestMapping("/insertRecord")
     private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
-                                       String remarks, String account, String paymentAccount, String paymentName){
-        if(agentId == null || userId == null || gameId == null  || payId == null || orderAmount==BigDecimal.ZERO){
+                                       String remarks, String account, String paymentAccount, String paymentName) {
+        if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        Map map = treasureServiceClient.insertRecord(agentId,userId,gameId,payId,orderAmount,remarks,account,paymentAccount,paymentName);
-        Integer ret = (Integer) map.get("ret");
-        String strErrorDescribe = (String) map.get("strErrorDescribe");
-        String mag = "";
-        if (ret == 1) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
+        RedisLock redisLock = new RedisLock(RedisKeyPrefix.payLock(""+userId+orderAmount), redisTemplate, 10);
+        Boolean hasLock = redisLock.tryLock();
+        if (!hasLock) {
+            log.error("公司支付没有下单成功,", userId);
+            throw new GlobeException(SystemConstants.FAIL_CODE, "下单失败，请稍后重试");
         }
-        if (ret == 2) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
-        }
-        if (ret == 3) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
-        }
-        if (ret == 4) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
+        try {
+            Map map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account, paymentAccount, paymentName);
+            Integer ret = (Integer) map.get("ret");
+            String strErrorDescribe = (String) map.get("strErrorDescribe");
+            String mag = "";
+            if (ret == 1) {
+                mag = strErrorDescribe;
+                throw new GlobeException(SystemConstants.FAIL_CODE, mag);
+            }
+            if (ret == 2) {
+                mag = strErrorDescribe;
+                throw new GlobeException(SystemConstants.FAIL_CODE, mag);
+            }
+            if (ret == 3) {
+                mag = strErrorDescribe;
+                throw new GlobeException(SystemConstants.FAIL_CODE, mag);
+            }
+            if (ret == 4) {
+                mag = strErrorDescribe;
+                throw new GlobeException(SystemConstants.FAIL_CODE, mag);
+            }
+        }finally {
+            redisLock.unlock();
         }
         GlobeResponse globeResponse = new GlobeResponse();
         return globeResponse;
@@ -143,15 +161,16 @@ public class CompanyPayConterller {
 
     /**
      * 获取公司与银商充值返现数据
+     *
      * @return
      */
     @RequestMapping("/getRebateInfo")
-    private GlobeResponse getRebateInfo(Integer agentId,Integer userId) {
-        if(agentId == null){
+    private GlobeResponse getRebateInfo(Integer agentId, Integer userId) {
+        if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        AgentRebateConfigVO agentRebateConfigVO = treasureServiceClient.getRebateInfo(agentId,userId);
+        AgentRebateConfigVO agentRebateConfigVO = treasureServiceClient.getRebateInfo(agentId, userId);
         globeResponse.setData(agentRebateConfigVO);
         return globeResponse;
     }
