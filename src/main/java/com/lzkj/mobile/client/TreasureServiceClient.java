@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.vo.*;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -212,5 +213,10 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/agentControl/getIndividualDatum")
 	IndividualDatumVO getIndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId);
+
+
+	@RequestMapping("/treasure/mobile/getRebateInfo")
+	AgentRebateConfigVO getRebateInfo(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+
 }
 
