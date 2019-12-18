@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.vo.*;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -218,12 +219,23 @@ public interface TreasureServiceClient {
 	AgentRebateConfigVO getRebateInfo(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
 
 	// -------------------幸运注单 start-----------------------
+	/*@RequestMapping("/agentControl/getLuckyOrderConfigList")
+	CommonPageVO<LuckyOrderConfigVO> getLuckyOrderConfigList(
+			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
+			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,
+			@RequestParam("betAmount")BigDecimal betAmount,@RequestParam("joinTimeLimit")Integer joinTimeLimit,
+			@RequestParam("numberMatchType")Integer numberMatchType,@RequestParam("awardType")Integer awardType,
+			@RequestParam("agentId")Integer agentId);*/
+	@RequestMapping("/agentControl/getLuckyOrderConfig")
+	LuckyOrderConfigVO getLuckyOrderConfig(@RequestParam("agentId")Integer agentId);
+
 	@RequestMapping("/agentControl/getLuckyOrderInfoList")
 	CommonPageVO<LuckyOrderInfoVO> getLuckyOrderInfoList(
 			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
 			@RequestParam("prizeState")Integer prizeState,@RequestParam("applyState")Integer applyState,
 			@RequestParam("agentId")Integer agentId,@RequestParam("userId")Integer userId,
-			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate);
+			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,
+			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,@RequestParam("gameId")Integer gameId);
 
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
 	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
