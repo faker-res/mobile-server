@@ -90,10 +90,10 @@ public class RedisKeyPrefix {
 
 	/**
 	 * 公司支付上锁
-	 * @param userId
+	 * @param key
 	 * @return
 	 */
-	public static String payLock(Integer userId){
-		return MOBILE_SERVER+"payLock:"+userId;
+	public static String payLock(String key){
+		return MOBILE_SERVER+"payLock:"+key;
 	}
 }

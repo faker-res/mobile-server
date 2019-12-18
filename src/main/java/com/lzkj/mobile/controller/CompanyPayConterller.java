@@ -125,7 +125,7 @@ public class CompanyPayConterller {
         if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        RedisLock redisLock = new RedisLock(RedisKeyPrefix.payLock(userId), redisTemplate, 10);
+        RedisLock redisLock = new RedisLock(RedisKeyPrefix.payLock(""+userId+orderAmount), redisTemplate, 10);
         Boolean hasLock = redisLock.tryLock();
         if (!hasLock) {
             log.error("公司支付没有下单成功,", userId);
