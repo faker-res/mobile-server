@@ -739,7 +739,8 @@ public class AgentSystemController {
             userCodeDetailsVO.setNeedAmount(BigDecimal.valueOf(0));
             userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
             globeResponse.setData(userCodeDetailsVO);
-
+            //打码类型名称
+            userCodeDetailsVO.setAccountName("");
             return globeResponse;
         }
         globeResponse.setData(param);
