@@ -1090,17 +1090,28 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/addException")
-    public GlobeResponse<Object> addException(String file,String line,String message,String error,String errorMessage) {
+    public GlobeResponse<Object> addException(String time,String yeZhu,String error, String errorMessage,String file,String line,String message,String httpSend,String scene,String socketMainCode, String socketSubCode
+    ,String eventName, String newHandle,String kindId , String platform) {
         GlobeResponse globeResponse = new GlobeResponse();
-        if (StringUtils.isBlank(file) || StringUtils.isBlank(line) || StringUtils.isBlank(message) || StringUtils.isBlank(error) || StringUtils.isBlank(errorMessage)) {
+       /* if () {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数不能为空");
-        }
+        }*/
         GameException gameException = new GameException();
+        gameException.setTime(time);
+        gameException.setYeZhu(yeZhu);
+        gameException.setError(error);
         gameException.setErrorMessage(errorMessage);
         gameException.setFile(file);
-        gameException.setFile(line);
-        gameException.setFile(message);
-        gameException.setFile(error);
+        gameException.setLine(line);
+        gameException.setMessage(message);
+        gameException.setHttpSend(httpSend);
+        gameException.setScene(scene);
+        gameException.setSocketMainCode(socketMainCode);
+        gameException.setSocketSubCode(socketSubCode);
+        gameException.setEventName(eventName);
+        gameException.setNewHandle(newHandle);
+        gameException.setKindId(kindId);
+        gameException.setPlatform(platform);
         Boolean flag = true;
         try {
             mongoTemplate.save(gameException,"Exception");
