@@ -723,12 +723,20 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
+        //玩家打码量详情
         UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId, agentId);
         if (param == null) {
             UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
+            //是否可提现
             userCodeDetailsVO.setStatus(1);
+            //需求打码量
             userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
+            //实际打码量
             userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
+            //打码类型
+            userCodeDetailsVO.setAccountType(0);
+            //未完成打码量
+            userCodeDetailsVO.setNeedAmount(BigDecimal.valueOf(0));
             userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
             globeResponse.setData(userCodeDetailsVO);
 
