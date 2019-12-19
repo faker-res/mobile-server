@@ -43,5 +43,5 @@ public interface NativeWebServiceClient {
 
 
 	@RequestMapping("/nativeweb/manager/active/getYuebaoDescription")
-    List<YebDescriptionVO> getYuebaoDescription(@RequestParam("agentId")Integer agentId);
+    YebDescriptionVO getYuebaoDescription(@RequestParam("agentId")Integer agentId);
 }

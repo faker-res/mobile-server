@@ -2767,18 +2767,14 @@ public class MobileInterfaceController {
      * 余额宝说明查询
      */
     @RequestMapping("/getYuebaoDescription")
-    public GlobeResponse<List<YebDescriptionVO>> getYuebaoDescription(Integer agentId)  {
+    public GlobeResponse<YebDescriptionVO> getYuebaoDescription(Integer agentId)  {
         if (agentId == null ) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        List<YebDescriptionVO> list = nativeWebServiceClient.getYuebaoDescription(agentId);
-        GlobeResponse<List<YebDescriptionVO>> globeResponse = new GlobeResponse<>();
-        if (list != null && list.size() > 0) {
+        YebDescriptionVO list = nativeWebServiceClient.getYuebaoDescription(agentId);
+        GlobeResponse<YebDescriptionVO> globeResponse = new GlobeResponse<>();
             globeResponse.setData(list);
             return globeResponse;
-        }
 
-        globeResponse.setData(new ArrayList<>());
-        return globeResponse;
     }
 }
