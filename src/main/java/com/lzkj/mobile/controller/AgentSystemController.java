@@ -724,7 +724,7 @@ public class AgentSystemController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
         //玩家打码量详情
-        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId, agentId);
+        List<UserCodeDetailsVO> param = this.accountsClient.cashFlowDetails(userId, agentId);
         if (param == null) {
             UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
             //是否可提现
