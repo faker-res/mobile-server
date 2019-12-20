@@ -30,6 +30,23 @@ public interface NativeWebServiceClient {
     @RequestMapping("/nativeWeb/mobile/getShowImgUrl")
     String getShowImgUrl(@RequestParam("agentId") Integer agentId);
 
+	@RequestMapping("/nativeweb/manager/active/getActivityType")
+	List<ActivityTypeVO> getActivityType();
+
+	@RequestMapping("/nativeweb/manager/active/getActivityListByMobile")
+	CommonPageVO getActivityListByMobile(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory")Integer gameCategory,@RequestParam("pageIndex")Integer pageIndex);
+
+
+	@RequestMapping("nativeWeb/mobile/getNoticeTitile")
+	List<NewsVO> getNoticeTitile(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);
+
+	@RequestMapping("nativeWeb/mobile/getNoticeDetail")
+	public String getNoticeDetail(@RequestParam("newsId")Integer newsId);
+
+
+	@RequestMapping("/nativeweb/manager/active/getYuebaoDescription")
+    YebDescriptionVO getYuebaoDescription(@RequestParam("agentId")Integer agentId);
+
     @RequestMapping("/nativeweb/manager/active/getActivityType")
     List<ActivityTypeVO> getActivityType();
 

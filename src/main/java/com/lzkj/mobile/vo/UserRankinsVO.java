@@ -11,5 +11,5 @@ public class UserRankinsVO {
 	
 	private String typeName;
 	
-	private BigDecimal redAmount;
+	private BigDecimal presentScore;
 }

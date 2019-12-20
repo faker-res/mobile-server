@@ -4,12 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LuckyOrderConfigVO;
-import com.lzkj.mobile.vo.LuckyOrderInfoVO;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.redis.RedisLock;
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +29,9 @@ import java.util.Map;
 public class LuckyOrderController {
     @Autowired
     private TreasureServiceClient treasureServiceClient;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     /**
      * 查询幸运注单配置
@@ -62,6 +66,19 @@ public class LuckyOrderController {
     @RequestMapping("/getLuckyOrderConfig")
     public GlobeResponse<Object> getLuckyOrderConfig(Integer agentId){
         LuckyOrderConfigVO vo = treasureServiceClient.getLuckyOrderConfig(agentId);
+        // 只给客户端返回可用的配置
+        if( vo == null || !(new Integer(1)).equals(vo.getEnableState()) ){
+            vo = new LuckyOrderConfigVO();
+        }else {
+            List<LuckyOrderConfigItemVO> allItems = (vo.getItemList()==null?new ArrayList<>():vo.getItemList());
+            List<LuckyOrderConfigItemVO> enableItems = new ArrayList<>();
+            for(LuckyOrderConfigItemVO item : allItems){
+                if( (new Integer(1)).equals(item.getEnableState()) ){
+                    enableItems.add(item);
+                }
+            }
+            vo.setItemList(enableItems);
+        }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(vo);
         return globeResponse;
@@ -108,11 +125,17 @@ public class LuckyOrderController {
     @RequestMapping("/receiveLuckyOrderInfo")
     public GlobeResponse<Object> receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo){
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        RedisLock redisLock = null;
         try{
+            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_"+vo.getUserId()), redisTemplate, 10);
+            Boolean hasLock = redisLock.tryLock();
+            if (!hasLock) {
+                throw new GlobeException(SystemConstants.FAIL_CODE, "请求太频繁，请稍后重试");
+            }
             Boolean success = treasureServiceClient.receiveLuckyOrderInfo(vo);
             if(!success){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
-                globeResponse.setMsg("操作失败：未找到符合条件的数据");
+                globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
                 globeResponse.setMsg("保存成功");
@@ -120,6 +143,10 @@ public class LuckyOrderController {
         }catch (Exception e){
             globeResponse.setCode(SystemConstants.FAIL_CODE);
             globeResponse.setMsg(e.getMessage());
+        }finally {
+            if( redisLock != null ){
+                redisLock.unlock();
+            }
         }
         return globeResponse;
     }
@@ -134,7 +161,7 @@ public class LuckyOrderController {
             Boolean success = treasureServiceClient.applyLuckyOrderInfo(vo);
             if(!success){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
-                globeResponse.setMsg("操作失败：未找到符合条件的数据");
+                globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
                 globeResponse.setMsg("保存成功");

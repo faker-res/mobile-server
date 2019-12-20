@@ -116,4 +116,9 @@ public class LuckyOrderInfoVO {
      * 参与次数限制(来自配置)
      */
     private Integer joinTimeLimit;
+
+    /**
+     * 开奖结果（对应RecordDrawScore.Score）
+     */
+    private BigDecimal resultScore;
 }

@@ -6,4 +6,5 @@ import lombok.Data;
 public class RedEnvelopeVO {
 	private Integer id;
 	private Integer eventId;
+	private Integer limitedNumber;
 }
