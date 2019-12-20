@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class RedEnvepoleYuStartTimeAndEndTimeVO {
 
-	private String dayStartTime;
-	private String dayEndTime;
+	private Long dayStartTime;
+	private Long dayEndTime;
 	private Integer status;
 }

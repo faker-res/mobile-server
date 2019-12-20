@@ -2,15 +2,10 @@ package com.lzkj.mobile.client;
 
 import java.util.List;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.lzkj.mobile.vo.ActivityTypeVO;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.NewsVO;
 
 @FeignClient(name = "nativeweb-service")
 public interface NativeWebServiceClient {
@@ -45,4 +40,8 @@ public interface NativeWebServiceClient {
 	
 	@RequestMapping("nativeWeb/mobile/getNoticeDetail")
 	public String getNoticeDetail(@RequestParam("newsId")Integer newsId);
+
+
+	@RequestMapping("/nativeweb/manager/active/getYuebaoDescription")
+    YebDescriptionVO getYuebaoDescription(@RequestParam("agentId")Integer agentId);
 }
