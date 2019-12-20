@@ -160,5 +160,5 @@ public interface AgentServiceClient {
     RedEnvepoleYuStartTimeAndEndTimeVO getRedEnvepoleYuStartTimeAndEndTime(@RequestParam("parentId") Integer parentId,@RequestParam("eventId") Integer eventId);
 
     @RequestMapping("/agent/mobile/hasFreeRedEnvelope")
-    Integer hasFreeRedEnvelope(@RequestParam("eventId") Integer eventId, @RequestParam("parentId") Integer parentId);
+    Integer todayRedEnvelopeRainCount(@RequestParam("eventId") Integer eventId, @RequestParam("parentId") Integer parentId);
 }

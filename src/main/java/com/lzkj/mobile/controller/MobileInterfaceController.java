@@ -2491,8 +2491,8 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-    			count = agentServiceClient.hasFreeRedEnvelope(v.getEventId(), parentId);
-    			if(count > 0) {
+    			count = agentServiceClient.todayRedEnvelopeRainCount(v.getEventId(), parentId);
+    			if(count < v.getLimitedNumber()) {
 	    			HashMap<String, Object> data = new  HashMap<>();
 	    			data.put("id", v.getEventId());
 	    			data.put("redAmount", 0.01);
@@ -2586,6 +2586,8 @@ public class MobileInterfaceController {
     	if(v != null) {
     		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
     		redVO.setStatus(0);
+    		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
+    		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
     	}else {
     		redVO.setStatus(1);
     	}
