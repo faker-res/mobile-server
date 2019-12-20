@@ -2393,7 +2393,7 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 获取红包奖励
+     * 旧版获取红包奖励
      * @param userId
      * @param parentId
      * @return
@@ -2415,7 +2415,7 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 领取红包奖励
+     * 旧版领取红包奖励
      * @param userId
      * @param score
      * @param machineId
@@ -2633,7 +2633,7 @@ public class MobileInterfaceController {
         return globeResponse;*/
     }
 
-    /* 获取红包
+    /* 新版获取红包
      * @param userId
      * @param parentId
      * @return
@@ -2648,8 +2648,8 @@ public class MobileInterfaceController {
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);
-    	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);
+    	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
+    	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //获取登录红包状态
     	RedEnvelopeVO v = agentServiceClient.getRedEnvelope(parentId);   //是否有红包雨活动
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
     	if(v != null) {
@@ -2668,13 +2668,40 @@ public class MobileInterfaceController {
     	l.add(vo);
     	List<RedEnvepoleYuStartTimeAndEndTimeVO> le = new ArrayList<RedEnvepoleYuStartTimeAndEndTimeVO>();
     	le.add(redVO);
-    	data.put("OthersRedEnvepoleList", list);
-    	data.put("LoginRedEnvepoleStatus", l);
-    	data.put("RedEnvelopeRain", le);
+    	data.put("OthersRedEnvepoleList", list);  //每日充值红包 累计充值红包  每日打码量红包  累计打码量红包  在这个这里
+    	data.put("LoginRedEnvepoleStatus", l);  //登录红包  这个只是获取登录红包是否已被领取
+    	data.put("RedEnvelopeRain", le);        //红包雨
     	globeResponse.setData(data);
     	return globeResponse;
     }
 
+    
+    /**
+     * 新版领取红包奖励
+     * @param userId
+     * @param score
+     * @param machineId
+     * @param typeId
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getReceivingRedEnvelopes")
+    private GlobeResponse<Object> getReceivingRedEnvelopes(Integer userId,BigDecimal score,String machineId,Integer typeId,Integer activityId,HttpServletRequest request) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	String ip = getIpAddress(request);
+    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);  //activityId
+    	switch (ret) {
+		case -1:
+			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
+		}
+    	data.put("code", ret);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
 
     /**
      * 获取红包手气榜

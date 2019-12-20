@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ActivityRedEnvelopeVO {
 
-	private Integer activityId;
+	private Integer activityId;   //活动ID   领取的时候  把这个带过来
 	
 	private BigDecimal amount;
 	
