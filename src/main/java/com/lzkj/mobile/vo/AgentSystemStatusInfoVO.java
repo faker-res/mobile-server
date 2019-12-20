@@ -13,6 +13,6 @@ public class AgentSystemStatusInfoVO {
     private String statusTip;
     private String statusDescription;
     private short isShow;
-    private Integer goldGiftIconOpen;
-    private Integer goldGiftCount;
+    private Integer goldGiftCount;//展示赠送金币数量
+    private Integer optionButton;//0-不选；1-账号；2-手机号；3-账号和手机号；默认0
 }
