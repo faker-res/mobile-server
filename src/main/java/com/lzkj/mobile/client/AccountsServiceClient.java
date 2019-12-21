@@ -165,4 +165,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getBankCardRawData")
     IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
+    @RequestMapping("/accounts/mobile/winAndLoseDetail")
+    List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 }
