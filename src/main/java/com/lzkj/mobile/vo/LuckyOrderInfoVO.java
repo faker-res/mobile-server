@@ -121,4 +121,9 @@ public class LuckyOrderInfoVO {
      * 开奖结果（对应RecordDrawScore.Score）
      */
     private BigDecimal resultScore;
+
+    /**
+     * 游戏时间（开始）
+     */
+    private Date gameStartTime;
 }
