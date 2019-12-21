@@ -898,7 +898,7 @@ public class AgentSystemController {
                     data.put("RegisterAccountOpen", false);
                 }
             }
-
+            log.info("open ------>{}",vo);
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
