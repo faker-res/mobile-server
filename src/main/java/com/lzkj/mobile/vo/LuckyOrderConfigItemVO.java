@@ -18,10 +18,7 @@ public class LuckyOrderConfigItemVO {
      * 幸运注单号码
      */
     private Integer orderNumber;
-    /**
-     * 奖励类型：1固定金额，2投注金额倍数，3打码金额倍数
-     */
-    private Integer awardType;
+
     /**
      * 奖金（当AwardType为固定金额时适用）
      */

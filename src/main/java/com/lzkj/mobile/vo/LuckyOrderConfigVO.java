@@ -56,4 +56,9 @@ public class LuckyOrderConfigVO {
      * 配置游戏类型（数据库用），格式：  #1-1,2,3#2-0#   横线前面是类型，后面是游戏，0表示全部
      */
     private String kindTypeStr;
+
+    /**
+     * 奖励类型：1固定金额，2投注金额倍数，3打码金额倍数
+     */
+    private Integer awardType;
 }
