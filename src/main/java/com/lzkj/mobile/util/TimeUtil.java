@@ -3,8 +3,11 @@ package com.lzkj.mobile.util;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class TimeUtil {
@@ -89,5 +92,30 @@ public class TimeUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         temp_str = sdf.format(dt);
         return temp_str;
+    }
+    
+    /**
+     * 得到当天的开始和结束时间
+     * 得到当前周的周一开始时间和当前周的周末的结束时间
+     * 已周一开始周日结束
+     * @return
+     */
+    public static  List<String> getFormatDate(){
+    	List<String> list = new ArrayList<String>();
+	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+	    Calendar cld = Calendar.getInstance(Locale.CHINA);
+	    //当前时间
+	    cld.setTimeInMillis(System.currentTimeMillis());
+	    list.add(df.format(cld.getTime()) + " 00:00:00");
+	    list.add(df.format(cld.getTime()) + " 23:59:59");
+	    //以周一为首日
+	    cld.setFirstDayOfWeek(Calendar.MONDAY);
+	    //周一
+	    cld.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	    list.add(df.format(cld.getTime()) + " 00:00:00");
+	    //周日
+	    cld.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+	    list.add(df.format(cld.getTime()) + "23:59:59");
+	    return list;
     }
 }

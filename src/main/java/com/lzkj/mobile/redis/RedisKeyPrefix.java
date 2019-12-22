@@ -63,28 +63,37 @@ public class RedisKeyPrefix {
 	public static String getCloudShieldConfigurationInfos(Integer agentId) {
 		return MOBILE_SERVER + "getCloudShieldConfigurationInfos:" + agentId;
 	}
-	
+
 	public static String getQrCode(Integer agentId) {
 		return MOBILE_SERVER + "getgetQrCode:" + agentId;
 	}
-	
+
 	public static String getLuckyIsOpen(Integer agentId) {
 		return MOBILE_SERVER + "getLuckyIsOpen:" + agentId;
 	}
-	
+
 	public static String getAgentGameListByGameTypeItemKeyStatus(Integer agentId) {
 		return MOBILE_SERVER + "gettAgentGameListByGameTypeItemKeyStatus:" + agentId;
 	}
-	
+
 	public static String getAgentGameByGameTypeItemKeyStatus(Integer agentId) {
 		return MOBILE_SERVER + "getAgentGameByGameTypeItemKeyStatus:" + agentId;
 	}
-	
+
 	public static String getGameListStatus(Integer agentId) {
 		return MOBILE_SERVER + "getGameListStatus:" + agentId;
 	}
-	
+
 	public static String getPayPageLoadSubmitLockKey(int userId) {
 		return MOBILE_SERVER + "payPageLoadSubmitLockKey:" + userId;
+	}
+
+	/**
+	 * 公司支付上锁
+	 * @param key
+	 * @return
+	 */
+	public static String payLock(String key){
+		return MOBILE_SERVER+"payLock:"+key;
 	}
 }

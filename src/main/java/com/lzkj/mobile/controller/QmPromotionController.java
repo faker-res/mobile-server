@@ -195,21 +195,22 @@ public class QmPromotionController {
      */
      @RequestMapping("/getGuaranteedRatio")
      private  GlobeResponse<Object> getGuaranteedRatio(Integer gameId)  {
-         BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+         //默认棋牌配置
+         BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId,3);
          GlobeResponse<Object> globeResponse = new GlobeResponse<>();
          globeResponse.setData(userRation.multiply(new BigDecimal(10000)));
          return globeResponse;
      }
 
     /**
-     * 保底返佣设置
+     * 保底返佣设置,根据kindType 获取返佣配置
      */
     @RequestMapping("/editRatio")
-    private GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio) throws ParseException {
+    private GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio,int kindType) throws ParseException {
 
         ratio = ratio.divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
         //获取上级代理返佣比例
-        BigDecimal parentRation = accountsServiceClient.queryParentRation(gameId);
+        BigDecimal parentRation = accountsServiceClient.queryParentRation(gameId,kindType);
         if (parentRation == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "没有找到上级玩家");
         }
@@ -222,7 +223,7 @@ public class QmPromotionController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "返佣比例不可超过或等同上级代理!");
         }
         //获取设置当前用户的返佣比例
-        BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+        BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId,kindType);
         if (userRation.compareTo(BigDecimal.ZERO) == 1) {
             if (ratio.compareTo(userRation) == -1) {
                 //DecimalFormat df = new DecimalFormat("0.00%");
@@ -231,7 +232,7 @@ public class QmPromotionController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
 
-        accountsServiceClient.editRatio(ratio, gameId);
+        accountsServiceClient.editRatio(ratio, gameId,kindType);
         globeResponse.setCode(SystemConstants.SUCCESS_CODE);
         globeResponse.setMsg("保存成功");
 
