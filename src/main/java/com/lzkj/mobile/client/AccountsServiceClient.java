@@ -45,8 +45,8 @@ public interface AccountsServiceClient {
     Map<String, Object> updatePassword(@RequestParam("phone") String phone, @RequestParam("password") String password, @RequestParam("agentId") Integer agentId);
 
     //修改用户保底佣金
-    @RequestMapping("accounts/mobile/editRatio")
-    Boolean editRatio(@RequestParam("qmRation") BigDecimal qmRation, @RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
+    @RequestMapping("/accounts/mobile/editRatio")
+    Boolean editRatio(@RequestBody List<GuaranteedRebatesVO> rebatesVO);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryParentRation")

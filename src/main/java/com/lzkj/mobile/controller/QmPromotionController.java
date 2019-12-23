@@ -1,5 +1,7 @@
 package com.lzkj.mobile.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
@@ -206,33 +208,51 @@ public class QmPromotionController {
      * 保底返佣设置,根据kindType 获取返佣配置
      */
     @RequestMapping("/editRatio")
-    private GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio,int kindType) throws ParseException {
-
-        ratio = ratio.divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
-        //获取上级代理返佣比例
-        BigDecimal parentRation = accountsServiceClient.queryParentRation(gameId,kindType);
-        if (parentRation == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "没有找到上级玩家");
+    private GlobeResponse<Object> editRatio(String rebatesVO) throws ParseException {
+        JSONArray jsonArray = JSONArray.parseArray(rebatesVO);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        List<GuaranteedRebatesVO> objects = new ArrayList<>();
+        for (Object vo : jsonArray) {
+            GuaranteedRebatesVO guaranteedRebatesVO = new GuaranteedRebatesVO();
+            JSONObject dJson = JSONObject.parseObject(vo.toString());
+            guaranteedRebatesVO.setGameId(dJson.getInteger("gameId"));
+            guaranteedRebatesVO.setKindType(dJson.getInteger("kindType"));
+            guaranteedRebatesVO.setRatio(dJson.getBigDecimal("ratio"));
+            objects.add(guaranteedRebatesVO);
         }
+        if (objects != null && objects.size() > 0) {
+            for (GuaranteedRebatesVO vo : objects) {
+               BigDecimal ratio = vo.getRatio().divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
+                //获取上级代理返佣比例
+                BigDecimal parentRation = accountsServiceClient.queryParentRation(vo.getGameId(),vo.getKindType() );
+                if (parentRation == null) {
+                    throw new GlobeException(SystemConstants.FAIL_CODE, vo.getKindType() + "没有找到上级玩家");
+                }
 //        //当前保底值设置不能超过判定税收
 //        if(new BigDecimal(0.025).compareTo(ratio) == -1){
 //            throw new GlobeException(SystemConstants.FAIL_CODE, "当前保底值设置不能超过绑定税收!");
 //        }
-        //验证返佣不允许大于上级代理
-        if (ratio.compareTo(parentRation) == 1 || ratio.compareTo(parentRation) == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "返佣比例不可超过或等同上级代理!");
-        }
-        //获取设置当前用户的返佣比例
-        BigDecimal userRation = accountsServiceClient.queryRatioUserInfoType(gameId,kindType);
-        if (userRation.compareTo(BigDecimal.ZERO) == 1) {
-            if (ratio.compareTo(userRation) == -1) {
-                //DecimalFormat df = new DecimalFormat("0.00%");
-                throw new GlobeException(SystemConstants.FAIL_CODE, "本次设置返佣比例不能小于原有返佣比例,原有的返佣比例为：" + userRation.multiply(new BigDecimal(10000)).stripTrailingZeros());
+                //验证返佣不允许大于上级代理
+                if (ratio.compareTo(parentRation) == 1 || ratio.compareTo(parentRation) == 0) {
+                    throw new GlobeException(SystemConstants.FAIL_CODE, vo.getKindType() + "返佣比例不可超过或等同上级代理!");
+                }
+                //获取设置当前用户的返佣比例
+                BigDecimal userRation = accountsServiceClient.queryRatioUserInfoType(vo.getGameId(),vo.getKindType());
+                if (userRation.compareTo(BigDecimal.ZERO) == 1) {
+                    if (ratio.compareTo(userRation) == -1) {
+                        //DecimalFormat df = new DecimalFormat("0.00%");
+                        throw new GlobeException(SystemConstants.FAIL_CODE, vo.getKindType() + "本次设置返佣比例不能小于原有返佣比例,原有的返佣比例为：" + userRation.multiply(new BigDecimal(10000)).stripTrailingZeros());
+                    }
+                }
+                vo.setRatio(ratio);
             }
         }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-
-        accountsServiceClient.editRatio(ratio, gameId,kindType);
+           Boolean falg = accountsServiceClient.editRatio(objects);
+           if (!falg) {
+               globeResponse.setCode(SystemConstants.FAIL_CODE);
+               globeResponse.setMsg("保存失败");
+               return globeResponse;
+           }
         globeResponse.setCode(SystemConstants.SUCCESS_CODE);
         globeResponse.setMsg("保存成功");
 
