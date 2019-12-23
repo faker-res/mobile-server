@@ -53,8 +53,11 @@ public interface AccountsServiceClient {
     BigDecimal queryParentRation(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
 
     //查询当前用户代理佣金
-    @RequestMapping("accounts/mobile/queryRatioUserInfo")
-    BigDecimal queryRatioUserInfo(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
+    @RequestMapping("/accounts/mobile/queryRatioUserInfo")
+    AccountsQmRatioVO queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+
+    @RequestMapping("/accounts/mobile/queryRatioUserInfoType")
+    BigDecimal queryRatioUserInfoType(@RequestParam("gameId")Integer gameId, @RequestParam("kindType")int kindType);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryRegisterMobile")
