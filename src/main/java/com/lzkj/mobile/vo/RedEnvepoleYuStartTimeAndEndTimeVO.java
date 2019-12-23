@@ -8,4 +8,5 @@ public class RedEnvepoleYuStartTimeAndEndTimeVO {
 	private Long dayStartTime;
 	private Long dayEndTime;
 	private Integer status;
+	private Integer activityId;
 }

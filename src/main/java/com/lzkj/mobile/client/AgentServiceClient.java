@@ -148,13 +148,13 @@ public interface AgentServiceClient {
     Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") String machineId, @RequestParam("ip") String ip);
     
     @RequestMapping("/agent/mobile/getUserRankings")
-    List<UserRankinsVO> getUserRankings(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
+    List<UserRankinsVO> getUserRankings(@RequestParam("parentId") Integer parentId);
     
     @RequestMapping("/agent/mobile/getRedEnvelopeType")
     List<RedEnvelopeConditionTypeVO> getRedEnvelopeType();
     
     @RequestMapping("/agent/mobile/getRedEnvelopeRecord")
-    CommonPageVO<RedEnvelopeRecordVO> getRedEnvelopeRecord(@RequestParam("userId") Integer userId,@RequestParam("typeId") Integer typeId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+    CommonPageVO<RedEnvelopeRecordVO> getRedEnvelopeRecord(@RequestParam("userId") Integer userId,@RequestParam("typeId") Integer typeId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize,@RequestParam("date") Integer date);
     
     @RequestMapping("/agent/mobile/getRedEnvepoleYuStartTimeAndEndTime")
     RedEnvepoleYuStartTimeAndEndTimeVO getRedEnvepoleYuStartTimeAndEndTime(@RequestParam("parentId") Integer parentId,@RequestParam("eventId") Integer eventId);
