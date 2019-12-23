@@ -196,10 +196,10 @@ public class QmPromotionController {
      * 获取该玩家的保底返佣
      */
      @RequestMapping("/getGuaranteedRatio")
-     private  GlobeResponse<AccountsQmRatioVO> getGuaranteedRatio(Integer gameId)  {
+     private  GlobeResponse  getGuaranteedRatio(Integer gameId)  {
          //默认棋牌配置
-         AccountsQmRatioVO userRation = accountsServiceClient.queryRatioUserInfo(gameId);
-         GlobeResponse<AccountsQmRatioVO> globeResponse = new GlobeResponse<>();
+         Map<Object,Object>  userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+         GlobeResponse  globeResponse = new GlobeResponse<>();
          globeResponse.setData(userRation);
          return globeResponse;
      }
@@ -273,4 +273,5 @@ public class QmPromotionController {
         globeResponse.setMsg("保存成功");
         return globeResponse;
     }
+
 }
