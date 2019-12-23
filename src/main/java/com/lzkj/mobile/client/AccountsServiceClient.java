@@ -46,7 +46,7 @@ public interface AccountsServiceClient {
 
     //修改用户保底佣金
     @RequestMapping("/accounts/mobile/editRatio")
-    Boolean editRatio(@RequestParam("qmRation") List<GuaranteedRebatesVO> rebatesVO);
+    Boolean editRatio(@RequestBody List<GuaranteedRebatesVO> rebatesVO);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryParentRation")
