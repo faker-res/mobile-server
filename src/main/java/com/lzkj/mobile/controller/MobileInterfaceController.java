@@ -2354,23 +2354,23 @@ public class MobileInterfaceController {
      * @param request
      * @return
      */
-    @RequestMapping("/getReceivingRedEnvelope")
-    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
-    	if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	Map<String, Object> data = new HashMap<>();
-    	String ip = getIpAddress(request);
-    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
-    	switch (ret) {
-		case -1:
-			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
-		}
-    	data.put("code", ret);
-    	globeResponse.setData(data);
-    	return globeResponse;
-    }
+//    @RequestMapping("/getReceivingRedEnvelope")
+//    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
+//    	if (userId == null) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+//        }
+//    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//    	Map<String, Object> data = new HashMap<>();
+//    	String ip = getIpAddress(request);
+//    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
+//    	switch (ret) {
+//		case -1:
+//			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
+//		}
+//    	data.put("code", ret);
+//    	globeResponse.setData(data);
+//    	return globeResponse;
+//    }
 
 
     /**
@@ -2588,6 +2588,7 @@ public class MobileInterfaceController {
     		redVO.setStatus(0);
     		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
     		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+    		redVO.setActivityId(v.getEventId());
     	}else {
     		redVO.setStatus(1);
     	}
@@ -2626,7 +2627,7 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	String ip = getIpAddress(request);
-    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);  //activityId
+    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId,activityId);  //activityId
     	switch (ret) {
 		case -1:
 			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
@@ -2643,16 +2644,13 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserRankings")
-    public GlobeResponse<Object> getUserRankings(Integer userId,Integer parentId) {
-    	if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
+    public GlobeResponse<Object> getUserRankings(Integer parentId) {
     	if (parentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(userId,parentId);
+    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(parentId);
     	data.put("list", list);
     	globeResponse.setData(data);
     	return globeResponse;
@@ -2722,10 +2720,10 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getRedEnvelopeRecord")
-    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId,Integer typeId,Integer pageIndex,Integer pageSize) {
+    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId,Integer typeId,Integer pageIndex,Integer pageSize,Integer date) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	CommonPageVO<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId,typeId,pageIndex,pageSize);
+    	CommonPageVO<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId,typeId,pageIndex,pageSize,date);
     	if(list != null) {
     		data.put("list", list.getLists());
     		data.put("total",list.getPageCount());
