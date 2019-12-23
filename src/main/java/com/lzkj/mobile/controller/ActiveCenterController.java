@@ -28,7 +28,7 @@ public class ActiveCenterController {
     @RequestMapping("/userApply")
     private GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount) {
         if (activeId == 0 || userId == 0 || amount == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请先登录");
         }
         Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount);
         GlobeResponse globeResponse = new GlobeResponse();
