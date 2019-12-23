@@ -130,7 +130,9 @@ public class LuckyOrderController {
             redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_"+vo.getUserId()), redisTemplate, 10);
             Boolean hasLock = redisLock.tryLock();
             if (!hasLock) {
-                throw new GlobeException(SystemConstants.FAIL_CODE, "请求太频繁，请稍后重试");
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
+                return globeResponse;
             }
             Boolean success = treasureServiceClient.receiveLuckyOrderInfo(vo);
             if(!success){
