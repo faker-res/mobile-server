@@ -242,6 +242,11 @@ public interface TreasureServiceClient {
 
 	@RequestMapping("/agentControl/applyLuckyOrderInfo")
 	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
-	// -------------------幸运注单 end-----------------------
+
+    // -------------------幸运注单 end-----------------------
+    @RequestMapping("/treasure/mobile/winAndLose")
+    TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+
+
 }
 
