@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,11 +27,11 @@ public class ActiveCenterController {
      * 玩家手动申请活动
      */
     @RequestMapping("/userApply")
-    private GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount) {
+    private GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount, Integer agentId,String memo) {
         if (activeId == 0 || userId == 0 || amount == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请先登录");
         }
-        Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount);
+        Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount,agentId,memo);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(param);
         return globeResponse;
@@ -46,8 +47,11 @@ public class ActiveCenterController {
         }
 
         CommonPageVO<ActivityRecordVO> pageVO =  nativeWebServiceClient.getApplyList(userId,pageIndex,pageSize);
+        Map<String,Object> param = new HashMap<>();
+        param.put("list",pageVO.getLists());
+        param.put("record",pageVO.getRecordCount());
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(pageVO.getLists());
+        globeResponse.setData(param);
         return globeResponse;
     }
 

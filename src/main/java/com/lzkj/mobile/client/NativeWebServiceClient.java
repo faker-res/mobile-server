@@ -48,7 +48,8 @@ public interface NativeWebServiceClient {
 
 
     @RequestMapping("nativeWeb/mobile/userApply")
-    Map<String, Object> userApply(@RequestParam("userId") Integer userId, @RequestParam("activeId") Integer activeId, @RequestParam("amount") BigDecimal amount);
+    Map<String, Object> userApply(@RequestParam("userId") Integer userId, @RequestParam("activeId") Integer activeId,
+                                  @RequestParam("amount") BigDecimal amount,@RequestParam("agentId")Integer agentId,@RequestParam("memo")String memo);
 
     @RequestMapping("nativeWeb/mobile/getApplyList")
     CommonPageVO<ActivityRecordVO> getApplyList(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize);
