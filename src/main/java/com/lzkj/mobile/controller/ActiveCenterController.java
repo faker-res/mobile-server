@@ -26,11 +26,11 @@ public class ActiveCenterController {
      * 玩家手动申请活动
      */
     @RequestMapping("/userApply")
-    private GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount) {
+    private GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount, Integer agentId,String memo) {
         if (activeId == 0 || userId == 0 || amount == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "请先登录");
         }
-        Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount);
+        Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount,agentId,memo);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(param);
         return globeResponse;
