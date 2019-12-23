@@ -194,11 +194,11 @@ public class QmPromotionController {
      * 获取该玩家的保底返佣
      */
      @RequestMapping("/getGuaranteedRatio")
-     private  GlobeResponse<Object> getGuaranteedRatio(Integer gameId)  {
+     private  GlobeResponse<AccountsQmRatioVO> getGuaranteedRatio(Integer gameId)  {
          //默认棋牌配置
-         BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId,3);
-         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-         globeResponse.setData(userRation.multiply(new BigDecimal(10000)));
+         AccountsQmRatioVO userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+         GlobeResponse<AccountsQmRatioVO> globeResponse = new GlobeResponse<>();
+         globeResponse.setData(userRation);
          return globeResponse;
      }
 
@@ -223,7 +223,7 @@ public class QmPromotionController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "返佣比例不可超过或等同上级代理!");
         }
         //获取设置当前用户的返佣比例
-        BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId,kindType);
+        BigDecimal userRation = accountsServiceClient.queryRatioUserInfoType(gameId,kindType);
         if (userRation.compareTo(BigDecimal.ZERO) == 1) {
             if (ratio.compareTo(userRation) == -1) {
                 //DecimalFormat df = new DecimalFormat("0.00%");

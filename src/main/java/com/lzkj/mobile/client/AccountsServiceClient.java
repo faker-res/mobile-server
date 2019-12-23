@@ -53,8 +53,11 @@ public interface AccountsServiceClient {
     BigDecimal queryParentRation(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
 
     //查询当前用户代理佣金
-    @RequestMapping("accounts/mobile/queryRatioUserInfo")
-    BigDecimal queryRatioUserInfo(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
+    @RequestMapping("/accounts/mobile/queryRatioUserInfo")
+    AccountsQmRatioVO queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+
+    @RequestMapping("/accounts/mobile/queryRatioUserInfoType")
+    BigDecimal queryRatioUserInfoType(@RequestParam("gameId")Integer gameId, @RequestParam("kindType")int kindType);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryRegisterMobile")
@@ -165,6 +168,10 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getBankCardRawData")
     IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
+<<<<<<< HEAD
+
+=======
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+>>>>>>> 3f9321cc0b3809009b4c8b87bc930cb5eedf7b8c
 }
