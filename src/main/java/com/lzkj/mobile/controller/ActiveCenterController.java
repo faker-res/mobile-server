@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -46,8 +47,11 @@ public class ActiveCenterController {
         }
 
         CommonPageVO<ActivityRecordVO> pageVO =  nativeWebServiceClient.getApplyList(userId,pageIndex,pageSize);
+        Map<String,Object> param = new HashMap<>();
+        param.put("list",pageVO.getLists());
+        param.put("record",pageVO.getRecordCount());
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(pageVO.getLists());
+        globeResponse.setData(param);
         return globeResponse;
     }
 
