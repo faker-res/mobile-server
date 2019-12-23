@@ -168,10 +168,7 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getBankCardRawData")
     IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
-<<<<<<< HEAD
-
-=======
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
->>>>>>> 3f9321cc0b3809009b4c8b87bc930cb5eedf7b8c
+
 }
