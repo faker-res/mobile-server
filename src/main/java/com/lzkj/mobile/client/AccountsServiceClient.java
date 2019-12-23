@@ -54,7 +54,7 @@ public interface AccountsServiceClient {
 
     //查询当前用户代理佣金
     @RequestMapping("/accounts/mobile/queryRatioUserInfo")
-    AccountsQmRatioVO queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+    Map<Object,Object>  queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
 
     @RequestMapping("/accounts/mobile/queryRatioUserInfoType")
     BigDecimal queryRatioUserInfoType(@RequestParam("gameId")Integer gameId, @RequestParam("kindType")int kindType);
