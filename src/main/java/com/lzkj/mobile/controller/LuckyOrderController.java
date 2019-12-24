@@ -111,7 +111,7 @@ public class LuckyOrderController {
             data.put("total", 0);
         }else{
             data.put("list", list.getLists());
-            data.put("total", list.getPageCount());
+            data.put("total", list.getRecordCount());
         }
 
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
