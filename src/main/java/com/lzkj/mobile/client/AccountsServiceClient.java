@@ -160,6 +160,9 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
     Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getUserLoginRedEnvelopeIsOpen")
+    Integer getUserLoginRedEnvelopeIsOpen(@RequestParam("parentId") Integer parentId);
 
 
     @RequestMapping("/accounts/mobile/saveBankCardRawData")
