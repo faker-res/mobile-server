@@ -2580,40 +2580,51 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
-    	Integer isOpen = accountsServiceClient.getUserLoginRedEnvelopeIsOpen(parentId);    //获取登录红包状态
-    	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //查询用户是否领取过登录红包
+    	Integer sf = accountsServiceClient.getUserLoginRedEnvelope(parentId);   //查询业主是否配置登录红包
+    	Integer hby = accountsServiceClient.getUserRedEnvelopeRain(parentId);   //查询业主是否配置红包雨
     	RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
-    	if(v != null) {
-    		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
-        	if(v1 != null) {
-        		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
-        		if(count1 < 1) {
-        			count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
-        			if(count1 < v1.getLimitedNumber()) {
-        				redVO.setRedAmount(1);
-        			}
-        		}
+    	if(hby > 0) {
+    		if(v != null) {
+        		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
+            	if(v1 != null) {
+            		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
+            		if(count1 < 1) {
+            			count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
+            			if(count1 < v1.getLimitedNumber()) {
+            				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
+            			}
+            		}
+            	}else {
+            		redVO.setRedAmount(0);  
+            	}
+        		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
+        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
+        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
+        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+        		redVO.setActivityId(v.getEventId());
         	}else {
-        		redVO.setRedAmount(0);
+        		redVO.setStatus(1);   //活动已结束
         	}
-    		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
-    		redVO.setStatus(0);
-    		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
-    		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
-    		redVO.setActivityId(v.getEventId());
     	}else {
-    		redVO.setStatus(1);
+    		redVO.setStatus(4);    //状态为4  客户端不展示红包雨
     	}
+    	
     	LoginRedEnvepoleStatusVO vo = new LoginRedEnvepoleStatusVO();
-    	if(isOpen > 0) {
-    		if(count > 0) {
-        		vo.setLoginRedEnvepoleStatus(1);
+    	if(sf > 0) {
+    		Integer isOpen = accountsServiceClient.getUserLoginRedEnvelopeIsOpen(parentId);    //获取登录红包状态
+        	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //查询用户是否领取过登录红包
+        	if(isOpen > 0) {
+        		if(count > 0) {
+            		vo.setLoginRedEnvepoleStatus(1);	//已领取
+            	}else {
+            		vo.setLoginRedEnvepoleStatus(0);  //可领取
+            	}
         	}else {
-        		vo.setLoginRedEnvepoleStatus(0);
+        		vo.setLoginRedEnvepoleStatus(2);	//活动已结束
         	}
     	}else {
-    		vo.setLoginRedEnvepoleStatus(1);
+    		vo.setLoginRedEnvepoleStatus(4);    //状态为4  客户端不展示登录红包
     	}
     	List<LoginRedEnvepoleStatusVO> l = new ArrayList<LoginRedEnvepoleStatusVO>();
     	l.add(vo);
