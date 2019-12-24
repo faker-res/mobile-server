@@ -2581,7 +2581,7 @@ public class MobileInterfaceController {
     	Map<String, Object> data = new HashMap<>();
     	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
     	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //获取登录红包状态
-    	RedEnvelopeVO v = agentServiceClient.getRedEnvelope(parentId);   //是否有红包雨活动
+    	RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
     	if(v != null) {
     		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
