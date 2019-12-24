@@ -45,16 +45,19 @@ public interface AccountsServiceClient {
     Map<String, Object> updatePassword(@RequestParam("phone") String phone, @RequestParam("password") String password, @RequestParam("agentId") Integer agentId);
 
     //修改用户保底佣金
-    @RequestMapping("accounts/mobile/editRatio")
-    Boolean editRatio(@RequestParam("qmRation") BigDecimal qmRation, @RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
+    @RequestMapping("/accounts/mobile/editRatio")
+    Boolean editRatio(@RequestBody List<GuaranteedRebatesVO> rebatesVO);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryParentRation")
     BigDecimal queryParentRation(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
 
     //查询当前用户代理佣金
-    @RequestMapping("accounts/mobile/queryRatioUserInfo")
-    BigDecimal queryRatioUserInfo(@RequestParam("gameId") Integer gameId,@RequestParam("kindType") int kindType);
+    @RequestMapping("/accounts/mobile/queryRatioUserInfo")
+    Map<Object,Object>  queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+
+    @RequestMapping("/accounts/mobile/queryRatioUserInfoType")
+    BigDecimal queryRatioUserInfoType(@RequestParam("gameId")Integer gameId, @RequestParam("kindType")int kindType);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryRegisterMobile")
@@ -140,7 +143,7 @@ public interface AccountsServiceClient {
     List<ActivityRedEnvelopeRewardVO> getRedEnvelopeReward(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 
     @RequestMapping("/accounts/mobile/getReceivingRedEnvelope")
-    Integer getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId);
+    Integer getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId,@RequestParam("activityId") Integer activityId);
 
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
@@ -167,4 +170,5 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+
 }
