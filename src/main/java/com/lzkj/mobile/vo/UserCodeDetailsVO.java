@@ -4,9 +4,13 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * 玩家打码量详情
+ */
 @Data
 public class UserCodeDetailsVO {
     private Integer userId;
+    //业主号
     private Integer agentId;
     private Integer userLevel;
     /**时间*/
