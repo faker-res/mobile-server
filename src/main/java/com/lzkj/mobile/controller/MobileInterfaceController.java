@@ -2354,23 +2354,23 @@ public class MobileInterfaceController {
      * @param request
      * @return
      */
-    @RequestMapping("/getReceivingRedEnvelope")
-    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
-    	if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	Map<String, Object> data = new HashMap<>();
-    	String ip = getIpAddress(request);
-    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
-    	switch (ret) {
-		case -1:
-			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
-		}
-    	data.put("code", ret);
-    	globeResponse.setData(data);
-    	return globeResponse;
-    }
+//    @RequestMapping("/getReceivingRedEnvelope")
+//    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
+//    	if (userId == null) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+//        }
+//    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//    	Map<String, Object> data = new HashMap<>();
+//    	String ip = getIpAddress(request);
+//    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
+//    	switch (ret) {
+//		case -1:
+//			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
+//		}
+//    	data.put("code", ret);
+//    	globeResponse.setData(data);
+//    	return globeResponse;
+//    }
 
 
     /**
@@ -2580,22 +2580,40 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
-    	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //获取登录红包状态
-    	RedEnvelopeVO v = agentServiceClient.getRedEnvelope(parentId);   //是否有红包雨活动
+    	Integer isOpen = accountsServiceClient.getUserLoginRedEnvelopeIsOpen(parentId);    //获取登录红包状态
+    	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //查询用户是否领取过登录红包
+    	RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
     	if(v != null) {
+    		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
+        	if(v1 != null) {
+        		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
+        		if(count1 < 1) {
+        			count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
+        			if(count1 < v1.getLimitedNumber()) {
+        				redVO.setRedAmount(1);
+        			}
+        		}
+        	}else {
+        		redVO.setRedAmount(0);
+        	}
     		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
     		redVO.setStatus(0);
     		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
     		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+    		redVO.setActivityId(v.getEventId());
     	}else {
     		redVO.setStatus(1);
     	}
     	LoginRedEnvepoleStatusVO vo = new LoginRedEnvepoleStatusVO();
-    	if(count > 0) {
-    		vo.setLoginRedEnvepoleStatus(1);
+    	if(isOpen > 0) {
+    		if(count > 0) {
+        		vo.setLoginRedEnvepoleStatus(1);
+        	}else {
+        		vo.setLoginRedEnvepoleStatus(0);
+        	}
     	}else {
-    		vo.setLoginRedEnvepoleStatus(0);
+    		vo.setLoginRedEnvepoleStatus(1);
     	}
     	List<LoginRedEnvepoleStatusVO> l = new ArrayList<LoginRedEnvepoleStatusVO>();
     	l.add(vo);
@@ -2626,7 +2644,7 @@ public class MobileInterfaceController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
     	String ip = getIpAddress(request);
-    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);  //activityId
+    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId,activityId);  //activityId
     	switch (ret) {
 		case -1:
 			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
@@ -2643,16 +2661,13 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserRankings")
-    public GlobeResponse<Object> getUserRankings(Integer userId,Integer parentId) {
-    	if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
+    public GlobeResponse<Object> getUserRankings(Integer parentId) {
     	if (parentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(userId,parentId);
+    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(parentId);
     	data.put("list", list);
     	globeResponse.setData(data);
     	return globeResponse;
@@ -2722,10 +2737,10 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getRedEnvelopeRecord")
-    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId,Integer typeId,Integer pageIndex,Integer pageSize) {
+    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId,Integer typeId,Integer pageIndex,Integer pageSize,Integer date) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	Map<String, Object> data = new HashMap<>();
-    	CommonPageVO<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId,typeId,pageIndex,pageSize);
+    	CommonPageVO<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId,typeId,pageIndex,pageSize,date);
     	if(list != null) {
     		data.put("list", list.getLists());
     		data.put("total",list.getPageCount());
