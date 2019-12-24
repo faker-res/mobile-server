@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 public class UserCodeDetailsVO {
     private Integer userId;
-    //业主号
+    /**业主号*/
     private Integer agentId;
     private Integer userLevel;
     /**时间*/
