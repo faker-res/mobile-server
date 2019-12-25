@@ -1031,6 +1031,31 @@ public class MobileInterfaceController {
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
         List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
+        if (companyList != null && companyList.size()>0) {
+            companyList.forEach(type -> {
+                if ("AliPay".equals(type.getPayType())) {
+                    type.setId(0);
+                }
+                if ("WeChatPay".equals(type.getPayType())) {
+                    type.setId(1);
+                }
+                if ("BankPay".equals(type.getPayType())) {
+                    type.setId(2);
+                }
+                if ("CloudPay".equals(type.getPayType())) {
+                    type.setId(3);
+                }
+                if ("QQPay".equals(type.getPayType())) {
+                    type.setId(4);
+                }
+                if ("JinDongPay".equals(type.getPayType())) {
+                    type.setId(5);
+                }
+                if("redPwd".equals(type.getPayType())){
+                    type.setId(6);
+                }
+            });
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("payList", payList);
         data.put("compayList", companyList);
@@ -2568,7 +2593,7 @@ public class MobileInterfaceController {
             			}
             		}
             	}else {
-            		redVO.setRedAmount(0);  
+            		redVO.setRedAmount(0);
             	}
         		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
         		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
@@ -2581,7 +2606,7 @@ public class MobileInterfaceController {
     	}else {
     		redVO.setStatus(4);    //状态为4  客户端不展示红包雨
     	}
-    	
+
     	LoginRedEnvepoleStatusVO vo = new LoginRedEnvepoleStatusVO();
     	if(sf > 0) {
     		Integer isOpen = accountsServiceClient.getUserLoginRedEnvelopeIsOpen(parentId);    //获取登录红包状态
