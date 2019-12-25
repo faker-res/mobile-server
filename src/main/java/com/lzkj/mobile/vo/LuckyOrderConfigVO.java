@@ -21,14 +21,6 @@ public class LuckyOrderConfigVO {
      */
     private Integer enableState;
     /**
-     * 游戏分类
-     */
-    private Integer kindType;
-    /**
-     * 游戏id
-     */
-    private Integer kindId	;
-    /**
      * 号码匹配方式：1末尾连续，2随机连续
      */
     private Integer numberMatchType	;
