@@ -31,6 +31,12 @@ public interface TreasureServiceClient {
 	@RequestMapping("treasure/mobile/getInsureTradeRecord")
 	RecordInsurePageVO getInsureTradeRecord(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize, @RequestParam("userId") Integer userId);
 
+	/**
+	 * 获取支付商列表(第三方)
+	 * @param userId
+	 * @param agentId
+	 * @return
+	 */
 	@RequestMapping("treasure/mobile/getPayList")
 	Map<String, List<PayInfoVO>> getPayList(@RequestParam("userId") Integer userId,@RequestParam("agentId") Integer agentId);
 
@@ -79,7 +85,7 @@ public interface TreasureServiceClient {
 	 * @return
 	 */
 	@RequestMapping("treasure/mobile/getCompanyPay")
-	List<Object> getCompanyPay(@RequestParam("agentId") Integer agentId);
+	List<CompanyPayVO> getCompanyPay(@RequestParam("agentId") Integer agentId);
 
 	/**
 	 * 获取公司支付类型
