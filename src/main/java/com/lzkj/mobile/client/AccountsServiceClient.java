@@ -163,7 +163,12 @@ public interface AccountsServiceClient {
     
     @RequestMapping("/accounts/mobile/getUserLoginRedEnvelopeIsOpen")
     Integer getUserLoginRedEnvelopeIsOpen(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/accounts/mobile/getUserLoginRedEnvelope")
+    Integer getUserLoginRedEnvelope(@RequestParam("parentId") Integer parentId);
 
+    @RequestMapping("/accounts/mobile/getUserRedEnvelopeRain")
+    Integer getUserRedEnvelopeRain(@RequestParam("parentId") Integer parentId);
 
     @RequestMapping("/accounts/mobile/saveBankCardRawData")
     Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
