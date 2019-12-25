@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class RedEnvepoleRulesVO {
 
-	private String redEnvepoleRulse;
+	private String redEnvelopeRules;
 }
