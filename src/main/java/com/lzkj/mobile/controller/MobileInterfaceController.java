@@ -2593,6 +2593,7 @@ public class MobileInterfaceController {
             			count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
             			if(count1 < v1.getLimitedNumber()) {
             				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
+            				redVO.setStatus(2);      //红包雨可领取状态
             			}
             		}
             	}else {
