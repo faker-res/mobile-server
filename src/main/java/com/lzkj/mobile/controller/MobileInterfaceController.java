@@ -1065,6 +1065,12 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    /**
+     * 获取充值列表
+     * @param userId
+     * @param agentId
+     * @return
+     */
     @RequestMapping("/getPayList")
     private GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
     	long startMillis = System.currentTimeMillis();
