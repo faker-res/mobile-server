@@ -310,7 +310,7 @@ public class AgentSystemController {
         //获取业主配置
         redisKey = RedisKeyPrefix.getAgentSystemStatusInfoKey(agentId);
         List<AgentSystemStatusInfoVO> agentSystemList;
-        List agentSystemMapList = redisService.get(redisKey, List.class);
+        List agentSystemMapList =  agentClient.getBindMobileSendInfo(agentId);
         if (null == agentSystemMapList) {
             agentSystemList = agentClient.getBindMobileSendInfo(agentId);
             redisService.set(redisKey, agentSystemList);
@@ -824,11 +824,11 @@ public class AgentSystemController {
         //获取业主配置
         redisKey = RedisKeyPrefix.getAgentSystemStatusInfoKey(agentId);
         List<AgentSystemStatusInfoVO> agentSystemList;
-        List agentSystemMapList = redisService.get(redisKey, List.class);
+        List agentSystemMapList = agentClient.getBindMobileSendInfo(agentId);
         if (null == agentSystemMapList) {
             agentSystemList = agentClient.getBindMobileSendInfo(agentId);
             redisService.set(redisKey, agentSystemList);
-            redisService.expire(redisKey, 2, TimeUnit.HOURS);
+            redisService.expire(redisKey, 1, TimeUnit.MINUTES);
         } else {
             agentSystemList = new ArrayList<>();
             for (Object item : agentSystemMapList) {
