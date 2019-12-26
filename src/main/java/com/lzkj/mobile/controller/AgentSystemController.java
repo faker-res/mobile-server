@@ -378,8 +378,8 @@ public class AgentSystemController {
 
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
-                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
-                    data.put("ZCJMZSJBTBOpen", true);
+//                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+//                    data.put("ZCJMZSJBTBOpen", true);
                     data.put("goldGiftCount", vo.getGoldGiftCount());
                     switch (vo.getOptionButton()) {
                         case 0:
@@ -395,9 +395,9 @@ public class AgentSystemController {
                             data.put("optionButton", 3);//双选
                             break;
                     }
-                } else {
-                    data.put("ZCJMZSJBTBOpen", false);
-                }
+//                } else {
+//                    data.put("ZCJMZSJBTBOpen", false);
+//                }
             }
 
             //提现时输入余额宝密码开关
@@ -911,8 +911,8 @@ public class AgentSystemController {
             log.info("open ------>{}",vo);
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
-                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
-                    data.put("ZCJMZSJBTBOpen", true);
+//                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+//                    data.put("ZCJMZSJBTBOpen", true);
                     data.put("goldGiftCount", vo.getGoldGiftCount());
                     switch (vo.getOptionButton()) {
                         case 0:
@@ -928,9 +928,9 @@ public class AgentSystemController {
                             data.put("optionButton", 3);//双选
                             break;
                     }
-                } else {
-                    data.put("ZCJMZSJBTBOpen", false);
-                }
+//                } else {
+//                    data.put("ZCJMZSJBTBOpen", false);
+//                }
             }
 
             //提现时输入余额宝密码开关
