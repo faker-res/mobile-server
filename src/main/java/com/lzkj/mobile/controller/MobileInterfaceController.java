@@ -867,10 +867,6 @@ public class MobileInterfaceController {
             accessKeyId = "LTAI4FsUERw7ZHDiEbJJV2X5";
             accessKeySecret = "v0mNaai7xXdETrpVnPkrsHba8Iwkpa";
         }
-        if (sendMode == 15) {//百家
-            accessKeyId = "LTAI4Fd2z6p96UJ9AhzvLVbM";
-            accessKeySecret = "cBJMTLt3doAFReIsf9MNx5O1FGqea7";
-        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -921,14 +917,6 @@ public class MobileInterfaceController {
             request.setSignName("开元");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_178766749");
-            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
-        }
-        if (sendMode == 15) {//开元
-            //必填:短信签名-可在短信控制台中找到
-            request.setSignName("百家");
-            //必填:短信模板-可在短信控制台中找到
-            request.setTemplateCode("SMS_180046998");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
@@ -2157,6 +2145,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取所有平台
+     *
+     * @param userId
      * @return
      */
     @RequestMapping("/getVideoType")
@@ -2180,6 +2170,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取时间
+     *
+     * @param userId
      * @return
      */
     @RequestMapping("/getDate")
@@ -2210,12 +2202,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取投注记录
-     * @param kindType
-     * @param date
-     * @param kindId
+     *
      * @param userId
-     * @param pageIndex
-     * @param pageSize
      * @return
      */
     @RequestMapping("/getChannelGameUserBetAndScore")
@@ -2251,11 +2239,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取账户明细
+     *
      * @param userId
-     * @param typeId
-     * @param date
-     * @param pageSize
-     * @param pageIndex
      * @return
      */
     @RequestMapping("/getAccountDetails")
@@ -2294,9 +2279,8 @@ public class MobileInterfaceController {
 
     /**
      * 获取个人报表
+     *
      * @param userId
-     * @param kindType
-     * @param date
      * @return
      */
     @RequestMapping("/getPersonalReport")
