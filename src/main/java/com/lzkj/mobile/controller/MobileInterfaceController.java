@@ -2582,6 +2582,12 @@ public class MobileInterfaceController {
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
     	if(hby > 0) {
     		if(v != null) {
+    			redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
+        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
+        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
+        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+        		//redVO.setActivityId(v.getEventId());
+        		
         		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
             	if(v1 != null) {
             		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
@@ -2596,11 +2602,7 @@ public class MobileInterfaceController {
             	}else {
             		redVO.setRedAmount(0);
             	}
-        		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
-        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
-        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
-        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
-        		//redVO.setActivityId(v.getEventId());
+        		
         	}else {
         		redVO.setStatus(1);   //活动已结束
         	}
