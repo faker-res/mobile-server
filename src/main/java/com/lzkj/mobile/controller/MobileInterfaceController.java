@@ -2590,6 +2590,7 @@ public class MobileInterfaceController {
             			if(count1 < v1.getLimitedNumber()) {
             				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
             				redVO.setStatus(2);      //红包雨可领取状态
+            				redVO.setActivityId(v1.getEventId());
             			}
             		}
             	}else {
