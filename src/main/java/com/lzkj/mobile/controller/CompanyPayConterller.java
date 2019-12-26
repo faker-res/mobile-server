@@ -5,7 +5,10 @@ import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
-import com.lzkj.mobile.vo.*;
+import com.lzkj.mobile.vo.AgentCompanyRecordVO;
+import com.lzkj.mobile.vo.AgentRebateConfigVO;
+import com.lzkj.mobile.vo.CompanyPayVO;
+import com.lzkj.mobile.vo.GlobeResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,49 +32,49 @@ public class CompanyPayConterller {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    /**
-     * 公司充值信息
-     *
-     * @return
-     */
-    @RequestMapping("/getCompanyPay")
-    private GlobeResponse<Object> getCompanyPay(Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<Object> list = treasureServiceClient.getCompanyPay(agentId);
-
-        List<PayTypeList> lists = new ArrayList<>();
-        if (list != null) {
-            list.forEach(type -> {
-                PayTypeList typeList = new PayTypeList();
-                if ("AliPay".equals(type)) {
-                    typeList.setId(0);
-                    typeList.setPayType((String) type);
-                }
-                if ("WeChatPay".equals(type)) {
-                    typeList.setId(1);
-                    typeList.setPayType((String) type);
-                }
-                if ("BankPay".equals(type)) {
-                    typeList.setId(2);
-                    typeList.setPayType((String) type);
-                }
-                if ("CloudPay".equals(type)) {
-                    typeList.setId(3);
-                    typeList.setPayType((String) type);
-                }
-                if ("redPwd".equals(type)) {
-                    typeList.setId(4);
-                    typeList.setPayType((String) type);
-                }
-                lists.add(typeList);
-            });
-        }
-        globeResponse.setData(lists);
-        return globeResponse;
-    }
+//    /**
+//     * 公司充值信息
+//     *
+//     * @return
+//     */
+//    @RequestMapping("/getCompanyPay")
+//    private GlobeResponse<Object> getCompanyPay(Integer agentId) {
+//        if (agentId == null) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+//        }
+//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//        List<Object> list = treasureServiceClient.getCompanyPay(agentId);
+//
+//        List<PayTypeList> lists = new ArrayList<>();
+//        if (list != null) {
+//            list.forEach(type -> {
+//                PayTypeList typeList = new PayTypeList();
+//                if ("AliPay".equals(type)) {
+//                    typeList.setId(0);
+//                    typeList.setPayType((String) type);
+//                }
+//                if ("WeChatPay".equals(type)) {
+//                    typeList.setId(1);
+//                    typeList.setPayType((String) type);
+//                }
+//                if ("BankPay".equals(type)) {
+//                    typeList.setId(2);
+//                    typeList.setPayType((String) type);
+//                }
+//                if ("CloudPay".equals(type)) {
+//                    typeList.setId(3);
+//                    typeList.setPayType((String) type);
+//                }
+//                if ("redPwd".equals(type)) {
+//                    typeList.setId(4);
+//                    typeList.setPayType((String) type);
+//                }
+//                lists.add(typeList);
+//            });
+//        }
+//        globeResponse.setData(lists);
+//        return globeResponse;
+//    }
 
     /**
      * 充值层级信息
