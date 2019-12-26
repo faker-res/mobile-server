@@ -2767,12 +2767,11 @@ public class MobileInterfaceController {
     public GlobeResponse<Object> getRedEnvepoleRules(Integer parentId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	RedEnvepoleRulesVO vo = accountsServiceClient.getRedEnvepoleRules(parentId);
-    	String rules = "";
     	if(vo != null) {
-    		rules = vo.getRedEnvelopeRules().replace("<p>", "").replace("</p>", "");
+    		vo.setRedEnvelopeRules(vo.getRedEnvelopeRules().replace("<p>", "").replace("</p>", ""));
     	}
     	Map<String, Object> data = new HashMap<>();
-    	data.put("rules",rules);
+    	data.put("rules",vo);
     	globeResponse.setData(data);
 		return globeResponse;
     }
