@@ -69,6 +69,7 @@ public class MailController {
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(mailsVO);
         return globeResponse;
+
     }
     /**
      * 删除邮件
@@ -84,7 +85,7 @@ public class MailController {
         globeResponse.setData(flag);
         return globeResponse;
     }
-    
+
     /**
      * 统计用户未读邮件数
      */

@@ -135,10 +135,10 @@ public interface PlatformServiceClient {
 	List<SystemStatusInfoVO> getSystemOpen(@RequestParam("parentId")Integer parentId);
 
 	@RequestMapping("/platform/mobile/getAgentGameListByGameTypeItem")
-    public List<PlatformVO>  getAgentGameListByGameTypeItem(@RequestParam("agentId")Integer agentId);
+	List<PlatformVO>  getAgentGameListByGameTypeItem(@RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/platform/mobile/getAgentGameByGameTypeItem")
-    public List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
+	List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/platform/mobile/getYebInterestRate")
     List<YebInterestRateVO> getYebInterestRate(@RequestParam("parentId")Integer parentId);
