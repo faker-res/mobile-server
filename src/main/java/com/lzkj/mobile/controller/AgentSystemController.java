@@ -314,7 +314,7 @@ public class AgentSystemController {
         if (null == agentSystemMapList) {
             agentSystemList = agentClient.getBindMobileSendInfo(agentId);
             redisService.set(redisKey, agentSystemList);
-            redisService.expire(redisKey, 2, TimeUnit.HOURS);
+            redisService.expire(redisKey, 1, TimeUnit.MINUTES);
         } else {
             agentSystemList = new ArrayList<>();
             for (Object item : agentSystemMapList) {
@@ -838,7 +838,7 @@ public class AgentSystemController {
         if (null == agentSystemMapList) {
             agentSystemList = agentClient.getBindMobileSendInfo(agentId);
             redisService.set(redisKey, agentSystemList);
-            redisService.expire(redisKey, 2, TimeUnit.HOURS);
+            redisService.expire(redisKey, 1, TimeUnit.MINUTES);
         } else {
             agentSystemList = new ArrayList<>();
             for (Object item : agentSystemMapList) {
