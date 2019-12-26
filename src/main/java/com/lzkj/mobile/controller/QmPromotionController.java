@@ -196,11 +196,28 @@ public class QmPromotionController {
      * 获取该玩家的保底返佣
      */
      @RequestMapping("/getGuaranteedRatio")
-     private  GlobeResponse  getGuaranteedRatio(Integer gameId)  {
-         //默认棋牌配置
-         Map<Object,Object>  userRation = accountsServiceClient.queryRatioUserInfo(gameId);
-         GlobeResponse  globeResponse = new GlobeResponse<>();
-         globeResponse.setData(userRation);
+     private  GlobeResponse  getGuaranteedRatio(Integer gameId,Integer typeId,Integer agentId)  {
+         GlobeResponse globeResponse = new GlobeResponse<>();
+         if (typeId == null || typeId == 0) {
+             throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数!");
+         }else {
+             if (typeId == 1) {
+                 if (gameId == null || gameId == 0) {
+                     throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数!");
+                 }
+                 //默认棋牌配置
+                 Map<Object, Object> userRation = accountsServiceClient.queryRatioUserInfo(gameId);
+                 globeResponse.setData(userRation);
+                 return globeResponse;
+             } else if (typeId == 2) {
+                 if (agentId == null || agentId == 0) {
+                     throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数!");
+                 }
+                 List<ZzSysRatioVO> list = qmPromotionServiceClient.getZzSysConfig(agentId);
+                 globeResponse.setData(list);
+                 return globeResponse;
+             }
+         }
          return globeResponse;
      }
 
