@@ -2618,7 +2618,9 @@ public class MobileInterfaceController {
         		if(count > 0) {
             		vo.setLoginRedEnvepoleStatus(1);	//已领取
             	}else {
+            		BigDecimal amount = accountsServiceClient.getLoginRedEnvelopeAmoutByParentId(parentId);
             		vo.setLoginRedEnvepoleStatus(0);  //可领取
+            		vo.setRedAmount(amount);		//登录红包金额
             	}
         	}else {
         		vo.setLoginRedEnvepoleStatus(2);	//活动已结束
