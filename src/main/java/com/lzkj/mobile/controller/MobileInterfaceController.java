@@ -58,6 +58,7 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
+import com.lzkj.mobile.util.ShortUrlGenerator;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
@@ -2557,6 +2558,27 @@ public class MobileInterfaceController {
         }
     	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
     	globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
+    	return globeResponse;
+    }
+    
+    @RequestMapping("/getShareUrl")
+    private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
+    	if (g == null || p == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();    	
+    	String shareJumpLinkKey = RedisKeyPrefix.shareJumpLinkKey();
+    	String shareUrl = redisDao.get(shareJumpLinkKey, String.class);
+    	if(StringUtil.isEmpty(shareUrl)) {
+    		globeResponse.setData("");    		
+    	} else {
+    		String shortParam = ShortUrlGenerator.ShortText("g=" + g + "&p=" + p);
+    		JSONObject j = new JSONObject();
+    		j.put("p", p);
+    		j.put("g", g);
+    		redisDao.set(RedisKeyPrefix.getShareParamKey(shortParam), j);
+    		globeResponse.setData(shareUrl + "/" + shortParam);
+    	}
     	return globeResponse;
     }
 }
