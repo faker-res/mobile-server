@@ -30,6 +30,10 @@ public class CompanyPayConterller {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
     /**
      * 公司充值信息
      *
