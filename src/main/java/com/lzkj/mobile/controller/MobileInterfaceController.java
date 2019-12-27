@@ -2769,9 +2769,6 @@ public class MobileInterfaceController {
     public GlobeResponse<Object> getRedEnvepoleRules(Integer parentId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
     	RedEnvepoleRulesVO vo = accountsServiceClient.getRedEnvepoleRules(parentId);
-    	if(vo != null) {
-    		vo.setRedEnvelopeRules(vo.getRedEnvelopeRules().replace("<p>", "").replace("</p>", ""));
-    	}
     	Map<String, Object> data = new HashMap<>();
     	data.put("rules",vo);
     	globeResponse.setData(data);
