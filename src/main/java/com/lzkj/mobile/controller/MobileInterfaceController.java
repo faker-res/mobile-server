@@ -2586,7 +2586,7 @@ public class MobileInterfaceController {
         		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
         		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
         		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
-        		//redVO.setActivityId(v.getEventId());
+        		redVO.setActivityId(v.getEventId());
         		
         		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
             	if(v1 != null) {
