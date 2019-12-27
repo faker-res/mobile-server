@@ -253,6 +253,5 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/winAndLose")
     TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 
-
 }
 

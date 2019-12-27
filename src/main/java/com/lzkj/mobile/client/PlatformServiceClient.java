@@ -151,3 +151,4 @@ public interface PlatformServiceClient {
     Object getTaskReward(@RequestParam("userId")Integer userId,@RequestParam("taskId")Integer taskId,@RequestParam("password")String password,
     		@RequestParam("machinIe")String machinIe,@RequestParam("ip")String ip);
 }
+

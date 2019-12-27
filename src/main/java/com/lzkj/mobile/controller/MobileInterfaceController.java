@@ -59,6 +59,7 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
+import com.lzkj.mobile.util.ShortUrlGenerator;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
 
@@ -807,10 +808,6 @@ public class MobileInterfaceController {
             accessKeyId = "LTAI4FsUERw7ZHDiEbJJV2X5";
             accessKeySecret = "v0mNaai7xXdETrpVnPkrsHba8Iwkpa";
         }
-        if (sendMode == 15) {//百家
-            accessKeyId = "LTAI4Fd2z6p96UJ9AhzvLVbM";
-            accessKeySecret = "cBJMTLt3doAFReIsf9MNx5O1FGqea7";
-        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -861,14 +858,6 @@ public class MobileInterfaceController {
             request.setSignName("开元");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_178766749");
-            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
-        }
-        if (sendMode == 15) {//开元
-            //必填:短信签名-可在短信控制台中找到
-            request.setSignName("百I家");
-            //必填:短信模板-可在短信控制台中找到
-            request.setTemplateCode("SMS_180046998");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
@@ -2832,6 +2821,26 @@ public class MobileInterfaceController {
         GlobeResponse<YebDescriptionVO> globeResponse = new GlobeResponse<>();
             globeResponse.setData(list);
             return globeResponse;
-
+    }
+    
+    @RequestMapping("/getShareUrl")
+    private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
+    	if (g == null || p == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();    	
+    	String shareJumpLinkKey = RedisKeyPrefix.shareJumpLinkKey();
+    	String shareUrl = redisDao.get(shareJumpLinkKey, String.class);
+    	if(StringUtil.isEmpty(shareUrl)) {
+    		globeResponse.setData("");    		
+    	} else {
+    		String shortParam = ShortUrlGenerator.ShortText("g=" + g + "&p=" + p);
+    		JSONObject j = new JSONObject();
+    		j.put("p", p);
+    		j.put("g", g);
+    		redisDao.set(RedisKeyPrefix.getShareParamKey(shortParam), j);
+    		globeResponse.setData(shareUrl + "/" + shortParam);
+    	}
+    	return globeResponse;
     }
 }
