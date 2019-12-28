@@ -41,12 +41,12 @@ public class ActiveCenterController {
      * 查看玩家申请的记录
      */
     @RequestMapping("/getApplyList")
-    private GlobeResponse getApplyList(Integer userId, Integer pageIndex, Integer pageSize) {
+    private GlobeResponse getApplyList(Integer userId, Integer pageIndex, Integer pageSize,Integer kindType) {
         if (pageIndex == 0 || userId == 0 || pageSize == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
 
-        CommonPageVO<ActivityRecordVO> pageVO =  nativeWebServiceClient.getApplyList(userId,pageIndex,pageSize);
+        CommonPageVO<ActivityRecordVO> pageVO =  nativeWebServiceClient.getApplyList(userId,pageIndex,pageSize,kindType);
         Map<String,Object> param = new HashMap<>();
         param.put("list",pageVO.getLists());
         param.put("record",pageVO.getRecordCount());
