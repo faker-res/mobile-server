@@ -23,8 +23,8 @@ public enum AgentSystemEnum {
     TXYEBPASSWORDOPEN("TXYEBpasswordOpen","提现时输入余额宝密码开关"),
     REGISTERACCOUNTOPEN("RegisterAccountOpen","注册帐号开关"),
     YEBPASSWORDOPEN("YEBpasswordOpen","余额宝密码开关"),
-    ZCJMZSJBTBOPEN("ZCJMZSJBTBOpen", "注册界面赠送金币图标开关");
-
+    ZCJMZSJBTBOPEN("ZCJMZSJBTBOpen", "注册界面赠送金币图标开关"),
+	REDEVENLOPE("RedEnvelopeIsOpen","开启红包功能");
     private String name;
 
     private String describe;

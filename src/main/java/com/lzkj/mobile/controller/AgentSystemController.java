@@ -995,6 +995,14 @@ public class AgentSystemController {
                     data.put("sjzcopen", false);
                 }
             }
+            
+            if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("redEnvelope", true);
+                } else {
+                    data.put("redEnvelope", false);
+                }
+            }
         }
         //获取房间信息
         redisKey = RedisKeyPrefix.getMobileKindList();
