@@ -96,4 +96,12 @@ public class RedisKeyPrefix {
 	public static String payLock(String key){
 		return MOBILE_SERVER+"payLock:"+key;
 	}
+	
+	public static String shareJumpLinkKey() {
+		return "MANAGER:PromoteDomainUrl";
+	}
+	
+	public static String getShareParamKey(String param) {
+		return "ShareParam:" + param;
+	}
 }
