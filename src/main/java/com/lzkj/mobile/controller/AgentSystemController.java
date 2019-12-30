@@ -451,6 +451,15 @@ public class AgentSystemController {
                     data.put("sjzcopen", false);
                 }
             }
+
+            //红包开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("redEnvelope", true);
+                } else {
+                    data.put("redEnvelope", false);
+                }
+            }
         }
         //获取房间信息
         redisKey = RedisKeyPrefix.getMobileKindList();
@@ -883,7 +892,7 @@ public class AgentSystemController {
                     data.put("RegisterAccountOpen", false);
                 }
             }
-            log.info("open ------>{}",vo);
+
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
 //                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
@@ -995,7 +1004,8 @@ public class AgentSystemController {
                     data.put("sjzcopen", false);
                 }
             }
-            
+
+            //红包开关
             if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                     data.put("redEnvelope", true);
