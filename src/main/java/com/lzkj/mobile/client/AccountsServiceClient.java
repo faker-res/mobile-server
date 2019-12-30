@@ -164,6 +164,9 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getUserLoginRedEnvelopeIsOpen")
     Integer getUserLoginRedEnvelopeIsOpen(@RequestParam("parentId") Integer parentId);
     
+    @RequestMapping("/accounts/mobile/getLoginRedEnvelopeAmoutByParentId")
+    BigDecimal getLoginRedEnvelopeAmoutByParentId(@RequestParam("parentId") Integer parentId);
+    
     @RequestMapping("/accounts/mobile/getUserLoginRedEnvelope")
     Integer getUserLoginRedEnvelope(@RequestParam("parentId") Integer parentId);
 

@@ -221,34 +221,49 @@ public class QmPromotionController {
             JSONObject dJson = JSONObject.parseObject(vo.toString());
             guaranteedRebatesVO.setGameId(dJson.getInteger("gameId"));
             guaranteedRebatesVO.setKindType(dJson.getInteger("kindType"));
-            guaranteedRebatesVO.setRatio(dJson.getBigDecimal("ratio"));
+            guaranteedRebatesVO.setRatio(dJson.getBigDecimal("ratio").divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN));
             objects.add(guaranteedRebatesVO);
         }
         if (objects != null && objects.size() > 0) {
             for (GuaranteedRebatesVO vo : objects) {
-               BigDecimal ratio = vo.getRatio().divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
+                //获取上级代理返佣比例
+                String name = null;
+                switch (vo.getKindType()) {
+                    case 3:
+                        name = "棋牌"; break;
+                    case 4:
+                        name = "捕鱼"; break;
+                    case 2:
+                        name = "电子"; break;
+                    case 1:
+                        name = "视讯"; break;
+                    case 6:
+                        name = "彩票"; break;
+                    case 5:
+                        name = "体育"; break;
+                }
+
                 //获取上级代理返佣比例
                 BigDecimal parentRation = accountsServiceClient.queryParentRation(vo.getGameId(),vo.getKindType() );
                 if (parentRation == null) {
-                    throw new GlobeException(SystemConstants.FAIL_CODE, vo.getKindType() + "没有找到上级玩家");
+                    throw new GlobeException(SystemConstants.FAIL_CODE, name + "没有找到上级玩家");
                 }
 //        //当前保底值设置不能超过判定税收
 //        if(new BigDecimal(0.025).compareTo(ratio) == -1){
 //            throw new GlobeException(SystemConstants.FAIL_CODE, "当前保底值设置不能超过绑定税收!");
 //        }
                 //验证返佣不允许大于上级代理
-                if (ratio.compareTo(parentRation) == 1 || ratio.compareTo(parentRation) == 0) {
-                    throw new GlobeException(SystemConstants.FAIL_CODE, vo.getKindType() + "返佣比例不可超过或等同上级代理!");
+                if (vo.getRatio().compareTo(parentRation) == 1 || vo.getRatio().compareTo(parentRation) == 0) {
+                    throw new GlobeException(SystemConstants.FAIL_CODE, name + "返佣比例不可超过或等同上级代理!");
                 }
                 //获取设置当前用户的返佣比例
                 BigDecimal userRation = accountsServiceClient.queryRatioUserInfoType(vo.getGameId(),vo.getKindType());
                 if (userRation.compareTo(BigDecimal.ZERO) == 1) {
-                    if (ratio.compareTo(userRation) == -1) {
+                    if (vo.getRatio().compareTo(userRation) == -1) {
                         //DecimalFormat df = new DecimalFormat("0.00%");
-                        throw new GlobeException(SystemConstants.FAIL_CODE, vo.getKindType() + "本次设置返佣比例不能小于原有返佣比例,原有的返佣比例为：" + userRation.multiply(new BigDecimal(10000)).stripTrailingZeros());
+                        throw new GlobeException(SystemConstants.FAIL_CODE, name + "本次设置返佣比例不能小于原有返佣比例,原有的返佣比例为：" + userRation.multiply(new BigDecimal(10000)).stripTrailingZeros());
                     }
                 }
-                vo.setRatio(ratio);
             }
         }
            Boolean falg = accountsServiceClient.editRatio(objects);

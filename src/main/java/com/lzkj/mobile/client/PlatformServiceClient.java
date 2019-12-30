@@ -141,4 +141,14 @@ public interface PlatformServiceClient {
     @RequestMapping("/platform/mobile/getYebInterestRate")
     List<YebInterestRateVO> getYebInterestRate(@RequestParam("parentId")Integer parentId);
 
+    @RequestMapping("/platform/mobile/getTaskDetails")
+    TaskVO getTaskDetails(@RequestParam("taskId")Integer taskId);
+    
+    @RequestMapping("/platform/mobile/getTaskinfoByUserId")
+    List<AccountsTask> getTaskinfoByUserId(@RequestParam("userId")Integer userId,@RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/platform/mobile/getTaskReward")
+    Object getTaskReward(@RequestParam("userId")Integer userId,@RequestParam("taskId")Integer taskId,@RequestParam("password")String password,
+    		@RequestParam("machinIe")String machinIe,@RequestParam("ip")String ip);
 }
+

@@ -41,8 +41,7 @@ public interface NativeWebServiceClient {
 	List<NewsVO> getNoticeTitile(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);
 
 	@RequestMapping("nativeWeb/mobile/getNoticeDetail")
-	 String getNoticeDetail(@RequestParam("newsId")Integer newsId);
-
+	public String getNoticeDetail(@RequestParam("newsId")Integer newsId);
 
 	@RequestMapping("/nativeweb/manager/active/getYuebaoDescription")
     YebDescriptionVO getYuebaoDescription(@RequestParam("agentId")Integer agentId);
@@ -53,5 +52,6 @@ public interface NativeWebServiceClient {
                                   @RequestParam("amount") BigDecimal amount,@RequestParam("agentId")Integer agentId,@RequestParam("memo")String memo);
 
     @RequestMapping("nativeWeb/mobile/getApplyList")
-    CommonPageVO<ActivityRecordVO> getApplyList(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize);
+    CommonPageVO<ActivityRecordVO> getApplyList(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") Integer pageIndex,
+                                                @RequestParam("pageSize") Integer pageSize,@RequestParam("kindType")Integer kindType);
 }

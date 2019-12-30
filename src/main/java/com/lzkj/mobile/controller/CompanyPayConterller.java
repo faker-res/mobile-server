@@ -1,5 +1,15 @@
 package com.lzkj.mobile.controller;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -9,16 +19,8 @@ import com.lzkj.mobile.vo.AgentCompanyRecordVO;
 import com.lzkj.mobile.vo.AgentRebateConfigVO;
 import com.lzkj.mobile.vo.CompanyPayVO;
 import com.lzkj.mobile.vo.GlobeResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
