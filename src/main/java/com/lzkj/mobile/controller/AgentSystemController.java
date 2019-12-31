@@ -451,6 +451,15 @@ public class AgentSystemController {
                     data.put("sjzcopen", false);
                 }
             }
+
+            //红包开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("redEnvelope", true);
+                } else {
+                    data.put("redEnvelope", false);
+                }
+            }
         }
         //获取房间信息
         redisKey = RedisKeyPrefix.getMobileKindList();
@@ -883,7 +892,7 @@ public class AgentSystemController {
                     data.put("RegisterAccountOpen", false);
                 }
             }
-            log.info("open ------>{}",vo);
+
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
 //                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
@@ -995,7 +1004,8 @@ public class AgentSystemController {
                     data.put("sjzcopen", false);
                 }
             }
-            
+
+            //红包开关
             if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
                 if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                     data.put("redEnvelope", true);
@@ -1072,5 +1082,29 @@ public class AgentSystemController {
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
         log.info("newLoginStatus：agentId:" + agentId + "\t registerMachine:" + registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
+    }
+    
+    @RequestMapping("/updateResversion")
+    public GlobeResponse updateResversion() {
+//    	platformServiceClient.updateResversion();
+    	List<Integer> agentList = agentClient.getALLAgent();
+    	String rediskey = "";
+    	for (Integer agentId : agentList) {
+    		rediskey = RedisKeyPrefix.getGameListStatus(agentId);
+    		redisService.delete(rediskey);
+//    		redisService.set(rediskey, "1");
+//			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+//			platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
+//			rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
+//			redisService.set(rediskey, platformVo);
+//			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+//			thirdList = platformServiceClient.getAgentGameByGameTypeItem(agentId);
+//			rediskey = RedisKeyPrefix.getAgentGameByGameTypeItemKey(agentId);
+//			redisService.set(rediskey, thirdList);
+//			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+		}
+    	GlobeResponse gb = new GlobeResponse();
+    	gb.setData("图片版本修改成功");
+    	return gb;
     }
 }

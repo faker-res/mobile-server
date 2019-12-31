@@ -115,7 +115,7 @@ public class TimeUtil {
 	    list.add(df.format(cld.getTime()) + " 00:00:00");
 	    //周日
 	    cld.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-	    list.add(df.format(cld.getTime()) + "23:59:59");
+	    list.add(df.format(cld.getTime()) + " 23:59:59");
 	    return list;
     }
 }

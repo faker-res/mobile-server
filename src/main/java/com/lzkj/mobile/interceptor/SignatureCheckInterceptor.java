@@ -35,6 +35,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
         		|| path.indexOf("/mobileInterface/getActivityType") > -1
         		|| path.indexOf("/mobileInterface/getActivityListByMobile") > -1
         		|| path.indexOf("/mobileInterface/getShareUrl") > -1
+        		|| path.indexOf("/agentSystem/updateResversion") > -1
         		) {
         	return true;
         }
