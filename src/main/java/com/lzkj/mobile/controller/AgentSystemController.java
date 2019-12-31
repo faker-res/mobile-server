@@ -1083,4 +1083,29 @@ public class AgentSystemController {
         log.info("newLoginStatus：agentId:" + agentId + "\t registerMachine:" + registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
+    
+    @RequestMapping("/updateResversion")
+    public GlobeResponse updateResversion() {
+    	platformServiceClient.updateResversion();
+    	List<Integer> agentList = agentClient.getALLAgent();
+    	String rediskey = "";
+    	List<PlatformVO> platformVo;
+		List<AgentMobileKindConfigVO> thirdList;
+    	for (Integer agentId : agentList) {
+    		rediskey = RedisKeyPrefix.getGameListStatus(agentId);
+    		redisService.set(rediskey, "0");
+			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+			platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
+			rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
+			redisService.set(rediskey, platformVo);
+			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+			thirdList = platformServiceClient.getAgentGameByGameTypeItem(agentId);
+			rediskey = RedisKeyPrefix.getAgentGameByGameTypeItemKey(agentId);
+			redisService.set(rediskey, thirdList);
+			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+		}
+    	GlobeResponse gb = new GlobeResponse();
+    	gb.setData("图片版本修改成功");
+    	return gb;
+    }
 }
