@@ -2576,7 +2576,17 @@ public class MobileInterfaceController {
         		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
         		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
         		redVO.setActivityId(v.getEventId());
-        		
+    		}
+    		if(v == null) {
+    			v = agentServiceClient.getTomorrowRedEnvelopeSain(parentId);
+    			if(v !=null) {
+    				redVO.setStatus(0);		//获取第二天红包雨
+            		redVO.setDayStartTime(v.getDayStartTime() * 1000);
+            		redVO.setDayEndTime(v.getDayEndTime() * 1000);
+            		redVO.setActivityId(v.getEventId());
+    			}
+    		}
+    		if(v != null) {
         		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
             	if(v1 != null) {
             		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
