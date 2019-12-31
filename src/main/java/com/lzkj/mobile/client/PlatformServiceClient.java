@@ -150,5 +150,8 @@ public interface PlatformServiceClient {
     @RequestMapping("/platform/mobile/getTaskReward")
     Object getTaskReward(@RequestParam("userId")Integer userId,@RequestParam("taskId")Integer taskId,@RequestParam("password")String password,
     		@RequestParam("machinIe")String machinIe,@RequestParam("ip")String ip);
+    
+    @RequestMapping("/platform/mobile/updateResversion")
+    void updateResversion();
 }
 
