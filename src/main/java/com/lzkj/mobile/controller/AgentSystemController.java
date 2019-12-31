@@ -1093,7 +1093,7 @@ public class AgentSystemController {
 		List<AgentMobileKindConfigVO> thirdList;
     	for (Integer agentId : agentList) {
     		rediskey = RedisKeyPrefix.getGameListStatus(agentId);
-    		redisService.set(rediskey, "0");
+    		redisService.set(rediskey, "1");
 			redisService.expire(rediskey, 2, TimeUnit.HOURS);
 			platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
 			rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
