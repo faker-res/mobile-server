@@ -1020,7 +1020,7 @@ public class MobileInterfaceController {
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
         List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
-        /*if (companyList != null && companyList.size()>0) {
+        if (companyList != null && companyList.size()>0) {
             companyList.forEach(type -> {
                 if ("AliPay".equals(type.getPayType())) {
                     type.setId(0);
@@ -1044,7 +1044,7 @@ public class MobileInterfaceController {
                     type.setId(6);
                 }
             });
-        }*/
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("payList", payList);
         data.put("compayList", companyList);
