@@ -107,9 +107,11 @@ public class TaskController {
 				throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
 			}
 			String ip = request.getRemoteHost();
-			Object obj = platformServiceClient.getTaskReward(userId, taskId, password, machinIe, ip);
+			String obj = platformServiceClient.getTaskReward(userId, taskId, password, machinIe, ip);			 
 			gb.setData(obj);
 		} catch (Exception e) {
+			gb.setCode("-1");
+			gb.setData("请求失败");
 			log.info("用户"+userId+"领取奖励报错",e);
 		}
 		return gb;
