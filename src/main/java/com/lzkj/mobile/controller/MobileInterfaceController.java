@@ -2501,7 +2501,7 @@ public class MobileInterfaceController {
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	String ip = getIpAddress(request);
+    	String ip = getIpAddress(request); 
     	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
     	if(param == null) {
     		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
@@ -2575,6 +2575,7 @@ public class MobileInterfaceController {
         		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
         		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
         		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+        		redVO.setCurrentTime(System.currentTimeMillis());
         		redVO.setActivityId(v.getEventId());
     		}
     		if(v == null) {
@@ -2583,6 +2584,7 @@ public class MobileInterfaceController {
     				redVO.setStatus(0);		//获取第二天红包雨
             		redVO.setDayStartTime(v.getDayStartTime() * 1000);
             		redVO.setDayEndTime(v.getDayEndTime() * 1000);
+            		redVO.setCurrentTime(System.currentTimeMillis());
             		redVO.setActivityId(v.getEventId());
     			}
     		}
@@ -2596,6 +2598,7 @@ public class MobileInterfaceController {
             				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
             				redVO.setStatus(2);      //红包雨可领取状态
             				redVO.setActivityId(v1.getEventId());
+            				redVO.setCurrentTime(System.currentTimeMillis());
             			}
             		}
             	}else {

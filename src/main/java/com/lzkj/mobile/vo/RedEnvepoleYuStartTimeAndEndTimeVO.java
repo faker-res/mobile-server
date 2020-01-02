@@ -11,4 +11,5 @@ public class RedEnvepoleYuStartTimeAndEndTimeVO {
 	private Integer status;
 	private Integer activityId;
 	private Integer redAmount;
+	private Long currentTime;
 }
