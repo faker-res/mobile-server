@@ -1,6 +1,7 @@
 package com.lzkj.mobile.controller;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,7 +126,7 @@ public class CompanyPayConterller {
      */
     @RequestMapping("/insertRecord")
     private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
-                                       String remarks, String account, String paymentAccount, String paymentName) {
+                                       String remarks, String account) {
         if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -136,7 +137,7 @@ public class CompanyPayConterller {
             throw new GlobeException(SystemConstants.FAIL_CODE, "下单失败，请稍后重试");
         }
         try {
-            Map map = null;
+            Map map = new HashMap();
             String payName = "";
             Integer type = null;
             if (0 <= payId && payId <= 6) {
@@ -150,9 +151,9 @@ public class CompanyPayConterller {
                     case 6 : payName = "redPwd";break;
                 }
                 type =  treasureServiceClient.getPayId(agentId,payName);
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account, paymentAccount, paymentName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account);
             } else {
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account, paymentAccount, paymentName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             }
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
