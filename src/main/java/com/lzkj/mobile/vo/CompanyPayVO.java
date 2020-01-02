@@ -16,4 +16,5 @@ public class CompanyPayVO {
     private Integer agentId;
     private String imageUrl;
     private String limitRecord;
+    private String remark;
 }

@@ -125,7 +125,7 @@ public class CompanyPayConterller {
      */
     @RequestMapping("/insertRecord")
     private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
-                                       String remarks, String account, String paymentAccount, String paymentName) {
+                                       String remarks, String account) {
         if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -136,7 +136,7 @@ public class CompanyPayConterller {
             throw new GlobeException(SystemConstants.FAIL_CODE, "下单失败，请稍后重试");
         }
         try {
-            Map map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account, paymentAccount, paymentName);
+            Map map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
             String mag = "";
