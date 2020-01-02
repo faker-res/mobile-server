@@ -104,8 +104,7 @@ public interface TreasureServiceClient {
 	 */
 	@RequestMapping("treasure/mobile/insertRecord")
 	Map insertRecord(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId, @RequestParam("gameId") Integer gameId,
-                     @RequestParam("payId") Integer payId, @RequestParam("orderAmount") BigDecimal orderAmount, @RequestParam("remarks") String remarks, @RequestParam("account") String account,
-                     @RequestParam("paymentAccount") String paymentAccount, @RequestParam("paymentName") String paymentName);
+                     @RequestParam("payId") Integer payId, @RequestParam("orderAmount") BigDecimal orderAmount, @RequestParam("remarks") String remarks, @RequestParam("account") String account);
 
 	@RequestMapping("treasure/mobile/getPayId")
 	Integer getPayId(@RequestParam("agentId")Integer agentId, @RequestParam("payName")String payName);

@@ -2569,13 +2569,14 @@ public class MobileInterfaceController {
     	Integer hby = accountsServiceClient.getUserRedEnvelopeRain(parentId);   //查询业主是否配置红包雨
     	RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
+    	Long currentTime = agentServiceClient.getCurrentDate();
     	if(hby > 0) {
     		if(v != null) {
     			redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
         		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
         		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
         		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
-        		redVO.setCurrentTime(System.currentTimeMillis());
+        		redVO.setCurrentTime(currentTime * 1000);
         		redVO.setActivityId(v.getEventId());
     		}
     		if(v == null) {
@@ -2584,7 +2585,7 @@ public class MobileInterfaceController {
     				redVO.setStatus(0);		//获取第二天红包雨
             		redVO.setDayStartTime(v.getDayStartTime() * 1000);
             		redVO.setDayEndTime(v.getDayEndTime() * 1000);
-            		redVO.setCurrentTime(System.currentTimeMillis());
+            		redVO.setCurrentTime(currentTime * 1000);
             		redVO.setActivityId(v.getEventId());
     			}
     		}
@@ -2598,7 +2599,7 @@ public class MobileInterfaceController {
             				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
             				redVO.setStatus(2);      //红包雨可领取状态
             				redVO.setActivityId(v1.getEventId());
-            				redVO.setCurrentTime(System.currentTimeMillis());
+            				redVO.setCurrentTime(currentTime * 1000);
             			}
             		}
             	}else {
@@ -2856,4 +2857,5 @@ public class MobileInterfaceController {
     	}
     	return globeResponse;
     }
+    
 }
