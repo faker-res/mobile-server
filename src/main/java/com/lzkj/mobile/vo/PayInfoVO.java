@@ -37,4 +37,5 @@ public class PayInfoVO {
 	private String remark;
 	private Boolean customizePay;
 	private Double rebate;
+	private Double activeMultiply;
 }
