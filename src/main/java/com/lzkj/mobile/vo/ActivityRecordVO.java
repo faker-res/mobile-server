@@ -16,4 +16,5 @@ public class ActivityRecordVO {
     private String memo;
     private BigDecimal amount;
     private String userMemo;
+    private Integer kindType;
 }

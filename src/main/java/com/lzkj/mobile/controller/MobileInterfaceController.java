@@ -59,6 +59,7 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.MD5Utils;
+import com.lzkj.mobile.util.ShortUrlGenerator;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
 
@@ -807,10 +808,6 @@ public class MobileInterfaceController {
             accessKeyId = "LTAI4FsUERw7ZHDiEbJJV2X5";
             accessKeySecret = "v0mNaai7xXdETrpVnPkrsHba8Iwkpa";
         }
-        if (sendMode == 15) {//百家
-            accessKeyId = "LTAI4Fd2z6p96UJ9AhzvLVbM";
-            accessKeySecret = "cBJMTLt3doAFReIsf9MNx5O1FGqea7";
-        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -861,14 +858,6 @@ public class MobileInterfaceController {
             request.setSignName("开元");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_178766749");
-            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
-        }
-        if (sendMode == 15) {//开元
-            //必填:短信签名-可在短信控制台中找到
-            request.setSignName("百I家");
-            //必填:短信模板-可在短信控制台中找到
-            request.setTemplateCode("SMS_180046998");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
@@ -2512,7 +2501,7 @@ public class MobileInterfaceController {
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	String ip = getIpAddress(request);
+    	String ip = getIpAddress(request); 
     	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
     	if(param == null) {
     		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
@@ -2582,6 +2571,24 @@ public class MobileInterfaceController {
     	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
     	if(hby > 0) {
     		if(v != null) {
+    			redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
+        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
+        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
+        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+        		redVO.setCurrentTime(System.currentTimeMillis());
+        		redVO.setActivityId(v.getEventId());
+    		}
+    		if(v == null) {
+    			v = agentServiceClient.getTomorrowRedEnvelopeSain(parentId);
+    			if(v !=null) {
+    				redVO.setStatus(0);		//获取第二天红包雨
+            		redVO.setDayStartTime(v.getDayStartTime() * 1000);
+            		redVO.setDayEndTime(v.getDayEndTime() * 1000);
+            		redVO.setCurrentTime(System.currentTimeMillis());
+            		redVO.setActivityId(v.getEventId());
+    			}
+    		}
+    		if(v != null) {
         		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
             	if(v1 != null) {
             		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
@@ -2590,16 +2597,14 @@ public class MobileInterfaceController {
             			if(count1 < v1.getLimitedNumber()) {
             				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
             				redVO.setStatus(2);      //红包雨可领取状态
+            				redVO.setActivityId(v1.getEventId());
+            				redVO.setCurrentTime(System.currentTimeMillis());
             			}
             		}
             	}else {
             		redVO.setRedAmount(0);
             	}
-        		redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
-        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
-        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
-        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
-        		redVO.setActivityId(v.getEventId());
+        		
         	}else {
         		redVO.setStatus(1);   //活动已结束
         	}
@@ -2615,7 +2620,9 @@ public class MobileInterfaceController {
         		if(count > 0) {
             		vo.setLoginRedEnvepoleStatus(1);	//已领取
             	}else {
+            		BigDecimal amount = accountsServiceClient.getLoginRedEnvelopeAmoutByParentId(parentId);
             		vo.setLoginRedEnvepoleStatus(0);  //可领取
+            		vo.setRedAmount(amount);		//登录红包金额
             	}
         	}else {
         		vo.setLoginRedEnvepoleStatus(2);	//活动已结束
@@ -2827,6 +2834,26 @@ public class MobileInterfaceController {
         GlobeResponse<YebDescriptionVO> globeResponse = new GlobeResponse<>();
             globeResponse.setData(list);
             return globeResponse;
-
+    }
+    
+    @RequestMapping("/getShareUrl")
+    private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
+    	if (g == null || p == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();    	
+    	String shareJumpLinkKey = RedisKeyPrefix.shareJumpLinkKey();
+    	String shareUrl = redisDao.get(shareJumpLinkKey, String.class);
+    	if(StringUtil.isEmpty(shareUrl)) {
+    		globeResponse.setData("");    		
+    	} else {
+    		String shortParam = ShortUrlGenerator.ShortText("g=" + g + "&p=" + p);
+    		JSONObject j = new JSONObject();
+    		j.put("p", p);
+    		j.put("g", g);
+    		redisDao.set(RedisKeyPrefix.getShareParamKey(shortParam), j);
+    		globeResponse.setData(shareUrl + "/" + shortParam);
+    	}
+    	return globeResponse;
     }
 }

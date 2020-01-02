@@ -1,5 +1,15 @@
 package com.lzkj.mobile.controller;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -9,16 +19,8 @@ import com.lzkj.mobile.vo.AgentCompanyRecordVO;
 import com.lzkj.mobile.vo.AgentRebateConfigVO;
 import com.lzkj.mobile.vo.CompanyPayVO;
 import com.lzkj.mobile.vo.GlobeResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -134,7 +136,24 @@ public class CompanyPayConterller {
             throw new GlobeException(SystemConstants.FAIL_CODE, "下单失败，请稍后重试");
         }
         try {
-            Map map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account, paymentAccount, paymentName);
+            Map map = null;
+            String payName = "";
+            Integer type = null;
+            if (0 <= payId && payId <= 6) {
+                switch (payId) {
+                    case 0 : payName = "AliPay"; break;
+                    case 1 : payName = "WeChatPay";break;
+                    case 2 : payName = "BankPay";break;
+                    case 3 : payName = "CloudPay";break;
+                    case 4 : payName = "QQPay";break;
+                    case 5 : payName = "JinDongPay";break;
+                    case 6 : payName = "redPwd";break;
+                }
+                type =  treasureServiceClient.getPayId(agentId,payName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account, paymentAccount, paymentName);
+            } else {
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account, paymentAccount, paymentName);
+            }
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
             String mag = "";
