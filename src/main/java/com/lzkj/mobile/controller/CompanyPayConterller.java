@@ -137,6 +137,24 @@ public class CompanyPayConterller {
         }
         try {
             Map map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
+            Map map = null;
+            String payName = "";
+            Integer type = null;
+            if (0 <= payId && payId <= 6) {
+                switch (payId) {
+                    case 0 : payName = "AliPay"; break;
+                    case 1 : payName = "WeChatPay";break;
+                    case 2 : payName = "BankPay";break;
+                    case 3 : payName = "CloudPay";break;
+                    case 4 : payName = "QQPay";break;
+                    case 5 : payName = "JinDongPay";break;
+                    case 6 : payName = "redPwd";break;
+                }
+                type =  treasureServiceClient.getPayId(agentId,payName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account, paymentAccount, paymentName);
+            } else {
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account, paymentAccount, paymentName);
+            }
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
             String mag = "";

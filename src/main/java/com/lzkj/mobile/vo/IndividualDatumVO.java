@@ -17,4 +17,5 @@ public class IndividualDatumVO {
     private Integer status;
     private String remarks;
     private String collectDate;
+    private Integer bankStatus;
 }
