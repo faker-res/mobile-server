@@ -254,5 +254,12 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/winAndLose")
     TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 
+	// ------------------------第三方APP支付 start--------------------------------
+	@RequestMapping("/treasure/mobile/getThirdAppPayConfigList")
+	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId);
+	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
+	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
+	// ------------------------第三方APP支付 end--------------------------------
+
 }
 
