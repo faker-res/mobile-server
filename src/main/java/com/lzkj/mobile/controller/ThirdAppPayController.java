@@ -22,8 +22,8 @@ public class ThirdAppPayController {
     /**
      * 查询业主的三方APP配置信息
      */
-    @RequestMapping("/getLuckyOrderConfig")
-    public GlobeResponse<Object> getLuckyOrderConfig(Integer agentId){
+    @RequestMapping("/getThirdAppPayConfigList")
+    public GlobeResponse<Object> getThirdAppPayConfigList(Integer agentId){
         List<ThirdAppPayConfigVO> configList = treasureServiceClient.getThirdAppPayConfigList(agentId);
         List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
         // 过滤掉不可用数据
