@@ -1,48 +1,57 @@
 package com.lzkj.mobile.client;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.lzkj.mobile.vo.ActivityTypeVO;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.NewsVO;
-
 @FeignClient(name = "nativeweb-service")
 public interface NativeWebServiceClient {
 
-	@RequestMapping("/nativeWeb/mobile/configInfo")
-	ConfigInfo getConfigInfo(@RequestParam("configKey") String configKey);
+    @RequestMapping("/nativeWeb/mobile/configInfo")
+    ConfigInfo getConfigInfo(@RequestParam("configKey") String configKey);
 
-	@RequestMapping("nativeWeb/mobile/getGameNotice")
-	List<NewsVO> getGameNotice(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);
+    @RequestMapping("nativeWeb/mobile/getGameNotice")
+    List<NewsVO> getGameNotice(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);
 
-	@RequestMapping("nativeWeb/mobile/getMobileNotice")
+    @RequestMapping("nativeWeb/mobile/getMobileNotice")
     List<NewsVO> getMobileNotice(@RequestParam("agentId") Integer agentId);
 
-	@RequestMapping("nativeWeb/mobile/getOrderRecord")
-	AwardOrderPageVo getAwardOrder(@RequestParam("page") int i, @RequestParam("number") Integer numberN, @RequestParam("userId") Integer userNo);
+    @RequestMapping("nativeWeb/mobile/getOrderRecord")
+    AwardOrderPageVo getAwardOrder(@RequestParam("page") int i, @RequestParam("number") Integer numberN, @RequestParam("userId") Integer userNo);
 
-	@RequestMapping("nativeWeb/mobile/getActivityList")
-	Object getActivityList(@RequestParam("agentId") Integer agentId);
+    @RequestMapping("nativeWeb/mobile/getActivityList")
+    Object getActivityList(@RequestParam("agentId") Integer agentId);
 
-	@RequestMapping("/nativeWeb/mobile/getShowImgUrl")
+    @RequestMapping("/nativeWeb/mobile/getShowImgUrl")
     String getShowImgUrl(@RequestParam("agentId") Integer agentId);
-	
+
 	@RequestMapping("/nativeweb/manager/active/getActivityType")
 	List<ActivityTypeVO> getActivityType();
-	
+
 	@RequestMapping("/nativeweb/manager/active/getActivityListByMobile")
 	CommonPageVO getActivityListByMobile(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory")Integer gameCategory,@RequestParam("pageIndex")Integer pageIndex);
-	
-	
+
+
 	@RequestMapping("nativeWeb/mobile/getNoticeTitile")
-	List<NewsVO> getNoticeTitile(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);	
-	
+	List<NewsVO> getNoticeTitile(@RequestParam("classID") Integer classID, @RequestParam("agentId") Integer agentId);
+
 	@RequestMapping("nativeWeb/mobile/getNoticeDetail")
 	public String getNoticeDetail(@RequestParam("newsId")Integer newsId);
+
+	@RequestMapping("/nativeweb/manager/active/getYuebaoDescription")
+    YebDescriptionVO getYuebaoDescription(@RequestParam("agentId")Integer agentId);
+
+
+    @RequestMapping("nativeWeb/mobile/userApply")
+    Map<String, Object> userApply(@RequestParam("userId") Integer userId, @RequestParam("activeId") Integer activeId,
+                                  @RequestParam("amount") BigDecimal amount,@RequestParam("agentId")Integer agentId,@RequestParam("memo")String memo);
+
+    @RequestMapping("nativeWeb/mobile/getApplyList")
+    CommonPageVO<ActivityRecordVO> getApplyList(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") Integer pageIndex,
+                                                @RequestParam("pageSize") Integer pageSize,@RequestParam("kindType")Integer kindType);
 }

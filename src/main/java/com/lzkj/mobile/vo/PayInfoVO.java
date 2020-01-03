@@ -36,4 +36,6 @@ public class PayInfoVO {
 	private AgentRebateConfigVO configVO;
 	private String remark;
 	private Boolean customizePay;
+	private Double rebate;
+	private Double activeMultiply;
 }

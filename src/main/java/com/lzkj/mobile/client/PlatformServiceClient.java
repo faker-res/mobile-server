@@ -23,8 +23,6 @@ public interface PlatformServiceClient {
 	@RequestMapping("/platform/mobile/getWhitelist")
 	int getWhitelist(@RequestParam("registerMachine") String registerMachine);
 
-    @RequestMapping("/platform/mobile/getRebateInfo")
-    AgentRebateConfigVO getRebateInfo(@RequestParam("agentId") Integer agentId);
 
     //查询用户反馈意见
 	@RequestMapping("/platform/mobile/getFeedbackInfo")
@@ -135,12 +133,25 @@ public interface PlatformServiceClient {
 	List<SystemStatusInfoVO> getSystemOpen(@RequestParam("parentId")Integer parentId);
 
 	@RequestMapping("/platform/mobile/getAgentGameListByGameTypeItem")
-	List<PlatformVO>  getAgentGameListByGameTypeItem(@RequestParam("agentId")Integer agentId);
+    public List<PlatformVO>  getAgentGameListByGameTypeItem(@RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/platform/mobile/getAgentGameByGameTypeItem")
-	List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
+    public List<AgentMobileKindConfigVO> getAgentGameByGameTypeItem(@RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/platform/mobile/getYebInterestRate")
     List<YebInterestRateVO> getYebInterestRate(@RequestParam("parentId")Integer parentId);
 
+    @RequestMapping("/platform/mobile/getTaskDetails")
+    TaskVO getTaskDetails(@RequestParam("taskId")Integer taskId);
+    
+    @RequestMapping("/platform/mobile/getTaskinfoByUserId")
+    List<AccountsTask> getTaskinfoByUserId(@RequestParam("userId")Integer userId,@RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/platform/mobile/getTaskReward")
+    String getTaskReward(@RequestParam("userId")Integer userId,@RequestParam("taskId")Integer taskId,@RequestParam("password")String password,
+    		@RequestParam("machinIe")String machinIe,@RequestParam("ip")String ip);
+    
+    @RequestMapping("/platform/mobile/updateResversion")
+    void updateResversion();
 }
+

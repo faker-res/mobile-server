@@ -4,27 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.lzkj.mobile.vo.AccReportVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.AccountsLevelVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.MailVO;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.UserCodeDetailsVO;
-import com.lzkj.mobile.vo.UserInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
 
 @FeignClient(name = "accounts-service")
 public interface AccountsServiceClient {
@@ -68,9 +52,12 @@ public interface AccountsServiceClient {
     @RequestMapping("accounts/mobile/queryParentRation")
     BigDecimal queryParentRation(@RequestParam("gameId") Integer gameId);
 
-    //查询当前用户上级代理佣金
-    @RequestMapping("accounts/mobile/queryRatioUserInfo")
-    BigDecimal queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+    //查询当前用户代理佣金
+    @RequestMapping("/accounts/mobile/queryRatioUserInfo")
+    BigDecimal  queryRatioUserInfo(@RequestParam("gameId") Integer gameId);
+
+    @RequestMapping("/accounts/mobile/queryRatioUserInfoType")
+    BigDecimal queryRatioUserInfoType(@RequestParam("gameId")Integer gameId, @RequestParam("kindType")int kindType);
 
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryRegisterMobile")
@@ -156,11 +143,43 @@ public interface AccountsServiceClient {
     List<ActivityRedEnvelopeRewardVO> getRedEnvelopeReward(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 
     @RequestMapping("/accounts/mobile/getReceivingRedEnvelope")
-    Integer getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId);
+    Integer getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId,@RequestParam("activityId") Integer activityId);
 
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
 
+    @RequestMapping("/accounts/mobile/getRedEnvelope")
+    List<ActivityRedEnvelopeVO> getRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
+
+
     @RequestMapping("/accounts/mobile/getOpenMailList")
     List<MailVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
+
+    @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
+    RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);
+
+    @RequestMapping("/accounts/mobile/getReceiveRedEnvelopeRecord")
+    Integer getReceiveRedEnvelopeRecord(@RequestParam("userId") Integer userId);
+    
+    @RequestMapping("/accounts/mobile/getUserLoginRedEnvelopeIsOpen")
+    Integer getUserLoginRedEnvelopeIsOpen(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/accounts/mobile/getLoginRedEnvelopeAmoutByParentId")
+    BigDecimal getLoginRedEnvelopeAmoutByParentId(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/accounts/mobile/getUserLoginRedEnvelope")
+    Integer getUserLoginRedEnvelope(@RequestParam("parentId") Integer parentId);
+
+    @RequestMapping("/accounts/mobile/getUserRedEnvelopeRain")
+    Integer getUserRedEnvelopeRain(@RequestParam("parentId") Integer parentId);
+
+    @RequestMapping("/accounts/mobile/saveBankCardRawData")
+    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
+
+    @RequestMapping("/accounts/mobile/getBankCardRawData")
+    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/accounts/mobile/winAndLoseDetail")
+    List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+
 }

@@ -143,10 +143,31 @@ public interface AgentServiceClient {
 
     @RequestMapping("/agent/mobile/getRedEnvelope")
     RedEnvelopeVO getRedEnvelope(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeSain")
+    RedEnvelopeVO getRedEnvelopeSain(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/agent/mobile/getTomorrowRedEnvelopeSain")
+    RedEnvelopeVO getTomorrowRedEnvelopeSain(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/agent/mobile/getCurrentDate")
+    Long getCurrentDate();
 
     @RequestMapping("/agent/mobile/receiveRedEnvelopeRain")
     Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") String machineId, @RequestParam("ip") String ip);
     
+    @RequestMapping("/agent/mobile/getUserRankings")
+    List<UserRankinsVO> getUserRankings(@RequestParam("parentId") Integer parentId);
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeType")
+    List<RedEnvelopeConditionTypeVO> getRedEnvelopeType();
+    
+    @RequestMapping("/agent/mobile/getRedEnvelopeRecord")
+    CommonPageVO<RedEnvelopeRecordVO> getRedEnvelopeRecord(@RequestParam("userId") Integer userId,@RequestParam("typeId") Integer typeId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize,@RequestParam("date") Integer date);
+    
+    @RequestMapping("/agent/mobile/getRedEnvepoleYuStartTimeAndEndTime")
+    RedEnvepoleYuStartTimeAndEndTimeVO getRedEnvepoleYuStartTimeAndEndTime(@RequestParam("parentId") Integer parentId,@RequestParam("eventId") Integer eventId);
+
     @RequestMapping("/agent/mobile/hasFreeRedEnvelope")
-    Integer hasFreeRedEnvelope(@RequestParam("eventId") Integer eventId, @RequestParam("parentId") Integer parentId);
+    Integer todayRedEnvelopeRainCount(@RequestParam("eventId") Integer eventId, @RequestParam("parentId") Integer parentId);
 }

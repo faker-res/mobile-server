@@ -1,20 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.client.PlatformServiceClient;
@@ -25,30 +10,18 @@ import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.redis.JsonUtil;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.vo.AccReportVO;
-import com.lzkj.mobile.vo.AgencyEqualReward;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentMobileKindConfigVO;
-import com.lzkj.mobile.vo.AgentSystemStatusInfoVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.CloudShieldConfigurationVO;
-import com.lzkj.mobile.vo.DayUserAbsScoreVO;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MyPlayerVO;
-import com.lzkj.mobile.vo.MyQmTxRecord;
-import com.lzkj.mobile.vo.MyRewardRecordVO;
-import com.lzkj.mobile.vo.MyRewardVO;
-import com.lzkj.mobile.vo.PlatformVO;
-import com.lzkj.mobile.vo.QmAchievementVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.UserCodeDetailsVO;
-import com.lzkj.mobile.vo.WeekRankingListVO;
-import com.lzkj.mobile.vo.ZzSysRatioVO;
-import com.lzkj.mobile.vo.yebProfitDetailsVO;
-
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/agentSystem")
@@ -203,8 +176,8 @@ public class AgentSystemController {
      * 查询推广佣金
      */
     @RequestMapping("/zzSysRatio")
-    private GlobeResponse<Object> getZzSysRatio(Integer agentId,Integer userId) {
-        if (agentId==null||agentId ==0){
+    private GlobeResponse<Object> getZzSysRatio(Integer agentId, Integer userId) {
+        if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
         List<ZzSysRatioVO> list = agentClient.getZzSysRatio(agentId);
@@ -251,8 +224,8 @@ public class AgentSystemController {
      */
     @RequestMapping("/getBankInfo")
     public GlobeResponse<Object> getMaintainKey(Integer agentId) {
-    	long startMillis = System.currentTimeMillis();
-    	log.info("/getBankInfo,参数:agentId={}",agentId);
+        long startMillis = System.currentTimeMillis();
+        log.info("/getBankInfo,参数:agentId={}", agentId);
         if (null == agentId || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -310,7 +283,7 @@ public class AgentSystemController {
         //获取业主配置
         redisKey = RedisKeyPrefix.getAgentSystemStatusInfoKey(agentId);
         List<AgentSystemStatusInfoVO> agentSystemList;
-        List agentSystemMapList =  redisService.get(redisKey,List.class);
+        List agentSystemMapList = redisService.get(redisKey, List.class);
         if (null == agentSystemMapList) {
             agentSystemList = agentClient.getBindMobileSendInfo(agentId);
             redisService.set(redisKey, agentSystemList);
@@ -378,8 +351,8 @@ public class AgentSystemController {
 
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
-                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
-                    data.put("ZCJMZSJBTBOpen", true);
+//                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+//                    data.put("ZCJMZSJBTBOpen", true);
                     data.put("goldGiftCount", vo.getGoldGiftCount());
                     switch (vo.getOptionButton()) {
                         case 0:
@@ -395,9 +368,9 @@ public class AgentSystemController {
                             data.put("optionButton", 3);//双选
                             break;
                     }
-                } else {
-                    data.put("ZCJMZSJBTBOpen", false);
-                }
+//                } else {
+//                    data.put("ZCJMZSJBTBOpen", false);
+//                }
             }
 
             //提现时输入余额宝密码开关
@@ -476,6 +449,15 @@ public class AgentSystemController {
                     data.put("sjzcopen", true);
                 } else {
                     data.put("sjzcopen", false);
+                }
+            }
+
+            //红包开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("redEnvelope", true);
+                } else {
+                    data.put("redEnvelope", false);
                 }
             }
         }
@@ -648,7 +630,7 @@ public class AgentSystemController {
         }
         yebProfitDetailsVO lists = treasureServiceClient.getYwbAfterInfo(userId);
         if (lists == null) {
-            lists =new yebProfitDetailsVO();
+            lists = new yebProfitDetailsVO();
             lists.setYesterdayAfter(BigDecimal.ZERO);
             lists.setTotalAfter(BigDecimal.ZERO);
             lists.setInsureScore(BigDecimal.ZERO);
@@ -668,8 +650,8 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         List<DayUserAbsScoreVO> list = treasureServiceClient.getWeekRankList(parentId);
-        if(list == null || list.size() == 0) {
-        	return globeResponse;
+        if (list == null || list.size() == 0) {
+            return globeResponse;
         }
         globeResponse.setData(list);
         return globeResponse;
@@ -685,7 +667,7 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
 
-       List<WeekRankingListVO> list = agentClient.getLastRankingList(parentId);
+        List<WeekRankingListVO> list = agentClient.getLastRankingList(parentId);
         //上周没有赠送的情况下，获取旧打码量数据
 //        if(list == null || list.size() == 0) {
 //            List<DayUserAbsScoreVO> lastWeekList = treasureServiceClient.getLastWeekRank(parentId);
@@ -703,12 +685,13 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         List<WeekRankingListVO> list = agentClient.getPlayerRankInfo(userId);
-        if(list == null || list.size() == 0) {
+        if (list == null || list.size() == 0) {
             return globeResponse;
         }
         globeResponse.setData(list);
         return globeResponse;
     }
+
     /**
      * 代理排行榜奖励说明
      */
@@ -722,6 +705,7 @@ public class AgentSystemController {
         globeResponse.setData(agentConfig);
         return globeResponse;
     }
+
     /**
      * 领取奖励
      */
@@ -733,8 +717,8 @@ public class AgentSystemController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Map<String, Object> param = this.agentClient.receiveReward(id);
         int ret = (Integer) param.get("ret");
-        if(ret == 0)
-        	return globeResponse;
+        if (ret == 0)
+            return globeResponse;
         throw new GlobeException(SystemConstants.FAIL_CODE, param.get("msg").toString());
     }
 
@@ -748,14 +732,18 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
-        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId,agentId);
+        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId, agentId);
         if (param == null) {
             UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
+            //是否可提现状态
             userCodeDetailsVO.setStatus(1);
+            //需求打码量
             userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
+            //实际打码量
             userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
             userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
             globeResponse.setData(userCodeDetailsVO);
+
 
             return globeResponse;
         }
@@ -767,12 +755,12 @@ public class AgentSystemController {
      * 资金明细
      */
     @RequestMapping("/fundDetails")
-    public GlobeResponse<Object> fundDetails(Integer gameId,Integer agentId ) {
+    public GlobeResponse<Object> fundDetails(Integer gameId, Integer agentId) {
         if (gameId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        List<Map<String, Object>> param = this.agentClient.fundDetails(gameId,agentId);
+        List<Map<String, Object>> param = this.agentClient.fundDetails(gameId, agentId);
         globeResponse.setData(param);
         return globeResponse;
     }
@@ -824,7 +812,7 @@ public class AgentSystemController {
         //获取业主配置
         redisKey = RedisKeyPrefix.getAgentSystemStatusInfoKey(agentId);
         List<AgentSystemStatusInfoVO> agentSystemList;
-        List agentSystemMapList =  redisService.get(redisKey,List.class);
+        List agentSystemMapList = redisService.get(redisKey, List.class);
         if (null == agentSystemMapList) {
             agentSystemList = agentClient.getBindMobileSendInfo(agentId);
             redisService.set(redisKey, agentSystemList);
@@ -898,11 +886,11 @@ public class AgentSystemController {
                     data.put("RegisterAccountOpen", false);
                 }
             }
-            log.info("open ------>{}",vo);
+
             //注册界面赠送金币图标开关
             if (vo.getStatusName().equals(AgentSystemEnum.ZCJMZSJBTBOPEN.getName())) {
-                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
-                    data.put("ZCJMZSJBTBOpen", true);
+//                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+//                    data.put("ZCJMZSJBTBOpen", true);
                     data.put("goldGiftCount", vo.getGoldGiftCount());
                     switch (vo.getOptionButton()) {
                         case 0:
@@ -918,9 +906,9 @@ public class AgentSystemController {
                             data.put("optionButton", 3);//双选
                             break;
                     }
-                } else {
-                    data.put("ZCJMZSJBTBOpen", false);
-                }
+//                } else {
+//                    data.put("ZCJMZSJBTBOpen", false);
+//                }
             }
 
             //提现时输入余额宝密码开关
@@ -1010,6 +998,15 @@ public class AgentSystemController {
                     data.put("sjzcopen", false);
                 }
             }
+
+            //红包开关
+            if (vo.getStatusName().equals(AgentSystemEnum.REDEVENLOPE.getName())) {
+                if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    data.put("redEnvelope", true);
+                } else {
+                    data.put("redEnvelope", false);
+                }
+            }
         }
         //获取房间信息
         redisKey = RedisKeyPrefix.getMobileKindList();
@@ -1079,5 +1076,29 @@ public class AgentSystemController {
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
         log.info("newLoginStatus：agentId:" + agentId + "\t registerMachine:" + registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
+    }
+    
+    @RequestMapping("/updateResversion")
+    public GlobeResponse updateResversion() {
+//    	platformServiceClient.updateResversion();
+    	List<Integer> agentList = agentClient.getALLAgent();
+    	String rediskey = "";
+    	for (Integer agentId : agentList) {
+    		rediskey = RedisKeyPrefix.getGameListStatus(agentId);
+    		redisService.delete(rediskey);
+//    		redisService.set(rediskey, "1");
+//			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+//			platformVo = platformServiceClient.getAgentGameListByGameTypeItem(agentId);
+//			rediskey = RedisKeyPrefix.getAgentGameListByGameTypeItemKey(agentId);
+//			redisService.set(rediskey, platformVo);
+//			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+//			thirdList = platformServiceClient.getAgentGameByGameTypeItem(agentId);
+//			rediskey = RedisKeyPrefix.getAgentGameByGameTypeItemKey(agentId);
+//			redisService.set(rediskey, thirdList);
+//			redisService.expire(rediskey, 2, TimeUnit.HOURS);
+		}
+    	GlobeResponse gb = new GlobeResponse();
+    	gb.setData("图片版本修改成功");
+    	return gb;
     }
 }

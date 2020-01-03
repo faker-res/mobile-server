@@ -2,6 +2,8 @@ package com.lzkj.mobile.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CompanyPayVO {
     private Integer id;
@@ -16,4 +18,6 @@ public class CompanyPayVO {
     private Integer agentId;
     private String imageUrl;
     private String limitRecord;
+    private String remark;
+    private List<Integer> channelLevelId;
 }

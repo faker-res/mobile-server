@@ -85,7 +85,7 @@ public interface TreasureServiceClient {
 	 * @return
 	 */
 	@RequestMapping("treasure/mobile/getCompanyPay")
-	List<Object> getCompanyPay(@RequestParam("agentId") Integer agentId);
+	List<CompanyPayVO> getCompanyPay(@RequestParam("agentId") Integer agentId);
 
 	/**
 	 * 获取公司支付类型
@@ -104,15 +104,16 @@ public interface TreasureServiceClient {
 	 */
 	@RequestMapping("treasure/mobile/insertRecord")
 	Map insertRecord(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId, @RequestParam("gameId") Integer gameId,
-                     @RequestParam("payId") Integer payId, @RequestParam("orderAmount") BigDecimal orderAmount, @RequestParam("remarks") String remarks, @RequestParam("account") String account,
-                     @RequestParam("paymentAccount") String paymentAccount, @RequestParam("paymentName") String paymentName);
+                     @RequestParam("payId") Integer payId, @RequestParam("orderAmount") BigDecimal orderAmount, @RequestParam("remarks") String remarks, @RequestParam("account") String account);
 
+	@RequestMapping("treasure/mobile/getPayId")
+	Integer getPayId(@RequestParam("agentId")Integer agentId, @RequestParam("payName")String payName);
 
 	@RequestMapping("treasure/mobile/getUpdateAddress")
 	GatewayInfo getUpdateAddress(@RequestParam("agentId") Integer agentId);
 
 	@RequestMapping("treasure/mobile/updateMerchantOrderId")
-	void updateMerchantOrderId(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("merchantOrderId") String merchantOrderId);
+	void updateMerchantOrderId(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("merchantOrderId") String merchantOrderId, @RequestParam("orderStatus") Integer orderStatus);
 
 	@RequestMapping("treasure/mobile/updatePassagewayResponse")
 	void updatePassagewayResponse(@RequestParam("ownerOrderId") String ownerOrderId, @RequestParam("passagewayResponse") String passagewayResponse);
@@ -211,7 +212,48 @@ public interface TreasureServiceClient {
 	@RequestMapping("/treasure/mobile/getUserYebIncome")
 	CommonPageVO<UserRecordInsureVO> getUserYebIncome(@RequestParam("userId") Integer userId,@RequestParam("date") Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 
-	@RequestMapping("/agentControl/getIndividualDatumStatus")
-	Boolean getIndividualDatumStatus(@RequestParam("agentId")Integer agentId,@RequestParam("gameId") Integer gameId);
+	/*@RequestMapping("/agentControl/getIndividualDatumStatus")
+	Boolean getIndividualDatumStatus(@RequestParam("agentId")Integer agentId,@RequestParam("gameId") Integer gameId);*/
+
+	@RequestMapping("/agentControl/IndividualDatum")
+	CommonPageVO<IndividualDatumVO> IndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId, @RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate, @RequestParam("status")Integer status, @RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize")Integer pageSize);
+
+	@RequestMapping("/agentControl/getIndividualDatum")
+	IndividualDatumVO getIndividualDatum(@RequestParam("agentId")Integer agentId, @RequestParam("gameId")Integer gameId);
+
+
+	@RequestMapping("/treasure/mobile/getRebateInfo")
+	AgentRebateConfigVO getRebateInfo(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+
+	// -------------------幸运注单 start-----------------------
+	/*@RequestMapping("/agentControl/getLuckyOrderConfigList")
+	CommonPageVO<LuckyOrderConfigVO> getLuckyOrderConfigList(
+			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
+			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,
+			@RequestParam("betAmount")BigDecimal betAmount,@RequestParam("joinTimeLimit")Integer joinTimeLimit,
+			@RequestParam("numberMatchType")Integer numberMatchType,@RequestParam("awardType")Integer awardType,
+			@RequestParam("agentId")Integer agentId);*/
+	@RequestMapping("/agentControl/getLuckyOrderConfig")
+	LuckyOrderConfigVO getLuckyOrderConfig(@RequestParam("agentId")Integer agentId);
+
+	@RequestMapping("/agentControl/getLuckyOrderInfoList")
+	CommonPageVO<LuckyOrderInfoVO> getLuckyOrderInfoList(
+			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
+			@RequestParam("prizeState")Integer prizeState,@RequestParam("applyState")Integer applyState,
+			@RequestParam("agentId")Integer agentId,@RequestParam("userId")Integer userId,
+			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,
+			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,@RequestParam("gameId")Integer gameId);
+
+	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
+	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
+
+	@RequestMapping("/agentControl/applyLuckyOrderInfo")
+	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
+
+    // -------------------幸运注单 end-----------------------
+    @RequestMapping("/treasure/mobile/winAndLose")
+    TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+
+
 }
 

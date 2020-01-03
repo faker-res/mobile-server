@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,67 +62,6 @@ import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.ShortUrlGenerator;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CleanChipsConfigVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.LuckyVO;
-import com.lzkj.mobile.vo.MemberRechargeVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PayTypeList;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.RedEnvelopeVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.TransactionTypeVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.UserRecordInsureVO;
-import com.lzkj.mobile.vo.UserRewardDetailVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VIPReceiveInfoVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.VideoTypeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VipRankReceiveVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
-import com.lzkj.mobile.vo.YebInterestRateVO;
-import com.lzkj.mobile.vo.YebScoreVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -1079,45 +1019,35 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
-        List<Object> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
-        List<PayTypeList> lists = new ArrayList<>();
-        if (companyList != null) {
+        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
+        if (companyList != null && companyList.size()>0) {
             companyList.forEach(type -> {
-                PayTypeList typeList = new PayTypeList();
-                if ("AliPay".equals(type)) {
-                    typeList.setId(0);
-                    typeList.setPayType((String) type);
+                if ("AliPay".equals(type.getPayType())) {
+                    type.setId(0);
                 }
-                if ("WeChatPay".equals(type)) {
-                    typeList.setId(1);
-                    typeList.setPayType((String) type);
+                if ("WeChatPay".equals(type.getPayType())) {
+                    type.setId(1);
                 }
-                if ("BankPay".equals(type)) {
-                    typeList.setId(2);
-                    typeList.setPayType((String) type);
+                if ("BankPay".equals(type.getPayType())) {
+                    type.setId(2);
                 }
-                if ("CloudPay".equals(type)) {
-                    typeList.setId(3);
-                    typeList.setPayType((String) type);
+                if ("CloudPay".equals(type.getPayType())) {
+                    type.setId(3);
                 }
-                if ("QQPay".equals(type)) {
-                    typeList.setId(4);
-                    typeList.setPayType((String) type);
+                if ("QQPay".equals(type.getPayType())) {
+                    type.setId(4);
                 }
-                if ("JinDongPay".equals(type)) {
-                    typeList.setId(5);
-                    typeList.setPayType((String) type);
+                if ("JinDongPay".equals(type.getPayType())) {
+                    type.setId(5);
                 }
-                if("redPwd".equals(type)){
-                    typeList.setId(6);
-                    typeList.setPayType((String) type);
+                if("redPwd".equals(type.getPayType())){
+                    type.setId(6);
                 }
-                lists.add(typeList);
             });
         }
         Map<String, Object> data = new HashMap<>();
         data.put("payList", payList);
-        data.put("compayList", lists);
+        data.put("compayList", companyList);
 
         globeResponse.setData(data);
         log.info("/getPayList,耗时:{}", System.currentTimeMillis() - startMillis);
@@ -1141,6 +1071,40 @@ public class MobileInterfaceController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(this.treasureServiceClient.getGameRecord(pageIndex, pageSize, userId, kindId));
+        return globeResponse;
+    }
+
+    @RequestMapping("/addException")
+    public GlobeResponse<Object> addException(String time,String yeZhu,String error, String errorMessage,String file,String line,String message,String httpSend,String scene,String socketMainCode, String socketSubCode
+    ,String eventName, String newHandle,String kindId , String platform) {
+        GlobeResponse globeResponse = new GlobeResponse();
+       /* if () {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数不能为空");
+        }*/
+        GameException gameException = new GameException();
+        gameException.setTime(time);
+        gameException.setYeZhu(yeZhu);
+        gameException.setError(error);
+        gameException.setErrorMessage(errorMessage);
+        gameException.setFile(file);
+        gameException.setLine(line);
+        gameException.setMessage(message);
+        gameException.setHttpSend(httpSend);
+        gameException.setScene(scene);
+        gameException.setSocketMainCode(socketMainCode);
+        gameException.setSocketSubCode(socketSubCode);
+        gameException.setEventName(eventName);
+        gameException.setNewHandle(newHandle);
+        gameException.setKindId(kindId);
+        gameException.setPlatform(platform);
+        Boolean flag = true;
+        try {
+            mongoTemplate.save(gameException,"Exception");
+        } catch (Exception e){
+            flag = false;
+        }
+
+        globeResponse.setData(flag);
         return globeResponse;
     }
 
@@ -1331,7 +1295,9 @@ public class MobileInterfaceController {
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
         OnLineOrderVO onLineOrderVO = new OnLineOrderVO();
+
         onLineOrderVO.setOrderId(GetOrderIDByPrefix("e",userId));  //订单标识 时间+userId
+
         onLineOrderVO.setOperUserId(userId);                // 操作用户
         onLineOrderVO.setAccounts(account);                 //充值用户
         onLineOrderVO.setOrderAmount(amount);               //订单金额
@@ -1592,8 +1558,11 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/updateMerchantOrderId")
-    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId) {
-        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId);
+    public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId, Integer orderStatus) {
+    	if(orderStatus == null) {
+    		orderStatus = 0;
+    	}
+        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId, orderStatus);
         return "ok";
     }
 
@@ -1804,8 +1773,8 @@ public class MobileInterfaceController {
 
     /**
      * 查询玩家VIP等级
-     *
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getUserVipLevel")
@@ -2115,9 +2084,11 @@ public class MobileInterfaceController {
         globeResponse.setData(userInfo);
         return globeResponse;
     }
+
     /**
      * 修改用户个人信息
-     *
+     * @param nickName
+     * @param gender
      * @param userId
      * @return
      */
@@ -2132,12 +2103,14 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    /**
-     * 修改用户个人信息
-     *
-     * @param userId
-     * @return
-     */
+   /**
+    * 修改用户个人信息
+    * @param mobilePhone
+    * @param qq
+    * @param eMail
+    * @param userId
+    * @return
+    */
     @RequestMapping("/updateUserContactInfo")
     private GlobeResponse<Object> updateUserContactInfo(String mobilePhone,String qq,String eMail,Integer userId) {
         if (userId == null) {
@@ -2152,8 +2125,6 @@ public class MobileInterfaceController {
 
     /**
      * 获取所有平台
-     *
-     * @param userId
      * @return
      */
     @RequestMapping("/getVideoType")
@@ -2177,8 +2148,6 @@ public class MobileInterfaceController {
 
     /**
      * 获取时间
-     *
-     * @param userId
      * @return
      */
     @RequestMapping("/getDate")
@@ -2209,8 +2178,12 @@ public class MobileInterfaceController {
 
     /**
      * 获取投注记录
-     *
+     * @param kindType
+     * @param date
+     * @param kindId
      * @param userId
+     * @param pageIndex
+     * @param pageSize
      * @return
      */
     @RequestMapping("/getChannelGameUserBetAndScore")
@@ -2230,7 +2203,6 @@ public class MobileInterfaceController {
     /**
      * 获取所有交易类型
      *
-     * @param userId
      * @return
      */
     @RequestMapping("/getTransactionType")
@@ -2246,8 +2218,11 @@ public class MobileInterfaceController {
 
     /**
      * 获取账户明细
-     *
      * @param userId
+     * @param typeId
+     * @param date
+     * @param pageSize
+     * @param pageIndex
      * @return
      */
     @RequestMapping("/getAccountDetails")
@@ -2286,8 +2261,9 @@ public class MobileInterfaceController {
 
     /**
      * 获取个人报表
-     *
      * @param userId
+     * @param kindType
+     * @param date
      * @return
      */
     @RequestMapping("/getPersonalReport")
@@ -2333,9 +2309,9 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 获取红包奖励
-     *
+     * 旧版获取红包奖励
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getRedEnvelopeReward")
@@ -2355,34 +2331,37 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 领取红包奖励
-     *
+     * 旧版领取红包奖励
      * @param userId
+     * @param score
+     * @param machineId
+     * @param typeId
+     * @param request
      * @return
      */
-    @RequestMapping("/getReceivingRedEnvelope")
-    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
-    	if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	Map<String, Object> data = new HashMap<>();
-    	String ip = getIpAddress(request);
-    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
-    	switch (ret) {
-		case -1:
-			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
-		}
-    	data.put("code", ret);
-    	globeResponse.setData(data);
-    	return globeResponse;
-    }
+//    @RequestMapping("/getReceivingRedEnvelope")
+//    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
+//    	if (userId == null) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+//        }
+//    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+//    	Map<String, Object> data = new HashMap<>();
+//    	String ip = getIpAddress(request);
+//    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId);
+//    	switch (ret) {
+//		case -1:
+//			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
+//		}
+//    	data.put("code", ret);
+//    	globeResponse.setData(data);
+//    	return globeResponse;
+//    }
 
 
     /**
      * 获取余额宝收益、余额宝日、月、年利率
-     *
      * @param userId
+     * @param parentId
      * @return
      */
     @RequestMapping("/getYebScore")
@@ -2406,8 +2385,10 @@ public class MobileInterfaceController {
 
     /**
      * 获取VIP奖励明细
-     *
      * @param userId
+     * @param parentId
+     * @param pageSize
+     * @param pageIndex
      * @return
      */
     @RequestMapping("/getUserRewardDetail")
@@ -2427,8 +2408,11 @@ public class MobileInterfaceController {
 
     /**
      * 获取余额宝明细
-     *
      * @param userId
+     * @param date
+     * @param pageSize
+     * @param pageIndex
+     * @param typeId
      * @return
      */
     @RequestMapping("/getUserYebInfo")
@@ -2479,8 +2463,11 @@ public class MobileInterfaceController {
     	return globeResponse;
     }
 
-    /*
+    /**
      * 红包雨
+     * @param parentId
+     * @param userId
+     * @return
      */
     @RequestMapping("/getRedEnvelopeRain")
     public GlobeResponse<Object> getRedEnvelopeRain(Integer parentId,Integer userId) {
@@ -2489,8 +2476,8 @@ public class MobileInterfaceController {
     	if(v != null) {
     		int count = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v.getEventId());
     		if(count < 1) {
-    			count = agentServiceClient.hasFreeRedEnvelope(v.getEventId(), parentId);
-    			if(count > 0) {
+    			count = agentServiceClient.todayRedEnvelopeRainCount(v.getEventId(), parentId);
+    			if(count < v.getLimitedNumber()) {
 	    			HashMap<String, Object> data = new  HashMap<>();
 	    			data.put("id", v.getEventId());
 	    			data.put("redAmount", 0.01);
@@ -2503,13 +2490,18 @@ public class MobileInterfaceController {
     	return globeResponse;
     }
 
-    /*
+    /**
      * 领取红包雨红包
+     * @param request
+     * @param id
+     * @param userId
+     * @param machineId
+     * @return
      */
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	String ip = getIpAddress(request);
+    	String ip = getIpAddress(request); 
     	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
     	if(param == null) {
     		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
@@ -2524,22 +2516,269 @@ public class MobileInterfaceController {
     	throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
 
-//    /**
-//     * 提现信息审核开关
-//     */
-//    @RequestMapping("/getIndividualDatumStatus")
-//    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        if(agentId == null || agentId == 0) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-//        }
-//        if(gameId == null || gameId == 0) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-//        }
-//        Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-//        globeResponse.setData(flag);
-//        return globeResponse;
-//    }
+    /**
+     * 提现信息审核开关
+     */
+    @RequestMapping("/getIndividualDatumStatus")
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        if(agentId == null || agentId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        if(gameId == null || gameId == 0) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId,gameId);
+        if (pageVO == null) {
+            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+            return globeResponse;
+        } else {
+            if (StringUtils.isBlank(pageVO.getBankNO())) {
+                globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
+                return globeResponse;
+            }
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
+        if (flag) {
+            globeResponse.setData(pageVO);
+            return globeResponse;
+        }
+        globeResponse.setData(flag);
+        return globeResponse;*/
+    }
+
+    /* 新版获取红包
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/getRedEnvelope")
+    public GlobeResponse<Object> getRedEnvelope(Integer userId,Integer parentId) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
+    	Integer sf = accountsServiceClient.getUserLoginRedEnvelope(parentId);   //查询业主是否配置登录红包
+    	Integer hby = accountsServiceClient.getUserRedEnvelopeRain(parentId);   //查询业主是否配置红包雨
+    	RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
+    	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
+    	Long currentTime = agentServiceClient.getCurrentDate();
+    	if(hby > 0) {
+    		if(v != null) {
+    			redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
+        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
+        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
+        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+        		redVO.setCurrentTime(currentTime * 1000);
+        		redVO.setActivityId(v.getEventId());
+    		}
+    		if(v == null) {
+    			v = agentServiceClient.getTomorrowRedEnvelopeSain(parentId);
+    			if(v !=null) {
+    				redVO.setStatus(0);		//获取第二天红包雨
+            		redVO.setDayStartTime(v.getDayStartTime() * 1000);
+            		redVO.setDayEndTime(v.getDayEndTime() * 1000);
+            		redVO.setCurrentTime(currentTime * 1000);
+            		redVO.setActivityId(v.getEventId());
+    			}
+    		}
+    		if(v != null) {
+        		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
+            	if(v1 != null) {
+            		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
+            		if(count1 < 1) {
+            			count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
+            			if(count1 < v1.getLimitedNumber()) {
+            				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
+            				redVO.setStatus(2);      //红包雨可领取状态
+            				redVO.setActivityId(v1.getEventId());
+            				redVO.setCurrentTime(currentTime * 1000);
+            			}
+            		}
+            	}else {
+            		redVO.setRedAmount(0);
+            	}
+        		
+        	}else {
+        		redVO.setStatus(1);   //活动已结束
+        	}
+    	}else {
+    		redVO.setStatus(4);    //状态为4  客户端不展示红包雨
+    	}
+
+    	LoginRedEnvepoleStatusVO vo = new LoginRedEnvepoleStatusVO();
+    	if(sf > 0) {
+    		Integer isOpen = accountsServiceClient.getUserLoginRedEnvelopeIsOpen(parentId);    //获取登录红包状态
+        	Integer count = accountsServiceClient.getReceiveRedEnvelopeRecord(userId);  //查询用户是否领取过登录红包
+        	if(isOpen > 0) {
+        		if(count > 0) {
+            		vo.setLoginRedEnvepoleStatus(1);	//已领取
+            	}else {
+            		BigDecimal amount = accountsServiceClient.getLoginRedEnvelopeAmoutByParentId(parentId);
+            		vo.setLoginRedEnvepoleStatus(0);  //可领取
+            		vo.setRedAmount(amount);		//登录红包金额
+            	}
+        	}else {
+        		vo.setLoginRedEnvepoleStatus(2);	//活动已结束
+        	}
+    	}else {
+    		vo.setLoginRedEnvepoleStatus(4);    //状态为4  客户端不展示登录红包
+    	}
+    	List<LoginRedEnvepoleStatusVO> l = new ArrayList<LoginRedEnvepoleStatusVO>();
+    	l.add(vo);
+    	List<RedEnvepoleYuStartTimeAndEndTimeVO> le = new ArrayList<RedEnvepoleYuStartTimeAndEndTimeVO>();
+    	le.add(redVO);
+    	data.put("OthersRedEnvepoleList", list);  //每日充值红包 累计充值红包  每日打码量红包  累计打码量红包  在这个这里
+    	data.put("LoginRedEnvepoleStatus", l);  //登录红包  这个只是获取登录红包是否已被领取
+    	data.put("RedEnvelopeRain", le);        //红包雨
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+
+    /**
+     * 新版领取红包奖励
+     * @param userId
+     * @param score
+     * @param machineId
+     * @param typeId
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getReceivingRedEnvelopes")
+    private GlobeResponse<Object> getReceivingRedEnvelopes(Integer userId,BigDecimal score,String machineId,Integer typeId,Integer activityId,HttpServletRequest request) {
+    	if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	String ip = getIpAddress(request);
+    	Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId,score,ip,machineId,typeId,activityId);  //activityId
+    	switch (ret) {
+		case -1:
+			throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
+		}
+    	data.put("code", ret);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+    /**
+     * 获取红包手气榜
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/getUserRankings")
+    public GlobeResponse<Object> getUserRankings(Integer parentId) {
+    	if (parentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<UserRankinsVO> list = agentServiceClient.getUserRankings(parentId);
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+
+    /**
+     * 获取红包类型
+     * @return
+     */
+    @RequestMapping("/getRedEnvelopeType")
+    public GlobeResponse<Object> getRedEnvelopeType() {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<RedEnvelopeConditionTypeVO> list = agentServiceClient.getRedEnvelopeType();
+    	RedEnvelopeConditionTypeVO vo = new RedEnvelopeConditionTypeVO();
+    	vo.setTypeId(0);
+    	vo.setTypeName("全部");
+    	list.add(vo);
+    	Collections.sort(list, Comparator.comparing(RedEnvelopeConditionTypeVO::getTypeId));
+    	data.put("list", list);
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+
+    /**
+     * 获取时间
+     * @return
+     */
+    @RequestMapping("/getDateTime")
+    private GlobeResponse<Object> getDateTime() {
+    	List<Map<String, String>> data =new ArrayList<>();
+        Map<String, String> map = new HashMap<String, String>();
+//        map.put("code", "0");
+//        map.put("name", "全部时间");
+//        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "1");
+        map.put("name", "今天");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "2");
+        map.put("name", "最近一周");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "3");
+        map.put("name", "最近一个月");
+        data.add(map);
+        map = new HashMap<String, String>();
+        map.put("code", "4");
+        map.put("name", "最近三个月");
+        data.add(map);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("list",data);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(maps);
+        return globeResponse;
+    }
+
+    /**
+     * 红包记录
+     * @param userId
+     * @param typeId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/getRedEnvelopeRecord")
+    public GlobeResponse<Object> getRedEnvelopeRecord(Integer userId,Integer typeId,Integer pageIndex,Integer pageSize,Integer date) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	CommonPageVO<RedEnvelopeRecordVO> list = agentServiceClient.getRedEnvelopeRecord(userId,typeId,pageIndex,pageSize,date);
+    	if(list != null) {
+    		data.put("list", list.getLists());
+    		data.put("total",list.getPageCount());
+    	}
+    	globeResponse.setData(data);
+    	return globeResponse;
+    }
+
+    /**
+     * 活动规则
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/getRedEnvepoleRules")
+    public GlobeResponse<Object> getRedEnvepoleRules(Integer parentId) {
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	RedEnvepoleRulesVO vo = accountsServiceClient.getRedEnvepoleRules(parentId);
+    	Map<String, Object> data = new HashMap<>();
+    	data.put("rules",vo);
+    	globeResponse.setData(data);
+		return globeResponse;
+    }
 
     @RequestMapping("/getNoticeTitile")
     private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
@@ -2559,6 +2798,43 @@ public class MobileInterfaceController {
     	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
     	globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
     	return globeResponse;
+    }
+
+    @RequestMapping("/saveBankCardRawData")
+    private GlobeResponse<String> saveBankCardRawData(Integer userId,Integer gameId,Integer agentId,String bankNo,String bankName,String compellation,String bankAddress) {
+        if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+        Boolean flag = accountsServiceClient.saveBankCardRawData(userId,gameId,agentId,bankNo,bankName,compellation,bankAddress);
+        if (!flag) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "保存失败");
+        }
+        return globeResponse;
+    }
+
+    @RequestMapping("/getBankCardRawData")
+    private GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId,Integer agentId) {
+        if (gameId == null || agentId == null ) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<IndividualDatumVO> globeResponse = new GlobeResponse<IndividualDatumVO>();
+        globeResponse.setData(accountsServiceClient.getBankCardRawData(gameId,agentId));
+        return globeResponse;
+    }
+
+    /**
+     * 余额宝说明查询
+     */
+    @RequestMapping("/getYuebaoDescription")
+    public GlobeResponse<YebDescriptionVO> getYuebaoDescription(Integer agentId)  {
+        if (agentId == null ) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        YebDescriptionVO list = nativeWebServiceClient.getYuebaoDescription(agentId);
+        GlobeResponse<YebDescriptionVO> globeResponse = new GlobeResponse<>();
+            globeResponse.setData(list);
+            return globeResponse;
     }
     
     @RequestMapping("/getShareUrl")
@@ -2581,4 +2857,5 @@ public class MobileInterfaceController {
     	}
     	return globeResponse;
     }
+    
 }
