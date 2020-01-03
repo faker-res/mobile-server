@@ -6,12 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lzkj.mobile.client.PlatformServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.AccountsTask;
 import com.lzkj.mobile.vo.GlobeResponse;
@@ -26,6 +28,9 @@ public class TaskController {
 	
 	@Autowired
 	private PlatformServiceClient platformServiceClient;
+	
+	@Value("${server.url}")
+    private String serverUrl;
 	
 	@RequestMapping("/getTaskDetails")
 	public GlobeResponse<TaskVO> getTaskDetails(Integer taskId,Integer userId) {
@@ -62,7 +67,7 @@ public class TaskController {
 			}else if(vo.getTaskType() == 3) {
 				sb.append("损失达到"+vo.getInnings()+"元及以上");
 			}else {
-				sb.append("新增直属下级均需充值"+vo.getInnings()+"元及以上");
+				sb.append("新增直属下级均需充值"+vo.getThirdItemValue()+"元及以上");
 			}
 			vo.setTaskRang(sb.toString());
 			gb.setData(vo);
@@ -107,8 +112,15 @@ public class TaskController {
 				throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
 			}
 			String ip = request.getRemoteHost();
-			String obj = platformServiceClient.getTaskReward(userId, taskId, password, machinIe, ip);			 
-			gb.setData(obj);
+			String obj = platformServiceClient.getTaskReward(userId, taskId, password, machinIe, ip);	
+			String [] args = obj.split(",");
+			String data = args[0];
+			gb.setData(data);
+			if(data.indexOf("奖励领取成功") > -1) {
+				String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + args[2] + ",\"insuranceScore\":" + 0 +
+	                    ", \"VipLevel\":" + args[1] + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
+	            log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
+			}
 		} catch (Exception e) {
 			gb.setCode("-1");
 			gb.setData("请求失败");
