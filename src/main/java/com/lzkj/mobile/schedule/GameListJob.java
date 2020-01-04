@@ -56,7 +56,7 @@ public class GameListJob implements ApplicationRunner {
 	/**
 	 * 将游戏列表写入到ftp服务器
 	 */
-	@Scheduled(cron = "0 0/3 * * * *")
+	@Scheduled(fixedDelay = 60000 * 3)
 	public void uploadGameList() {
 		log.info("开始写游戏列表到文件服务器");
 		FTPClient fc = new FTPClient();
