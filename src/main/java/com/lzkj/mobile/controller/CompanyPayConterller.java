@@ -1,16 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -20,8 +9,17 @@ import com.lzkj.mobile.vo.AgentCompanyRecordVO;
 import com.lzkj.mobile.vo.AgentRebateConfigVO;
 import com.lzkj.mobile.vo.CompanyPayVO;
 import com.lzkj.mobile.vo.GlobeResponse;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -150,8 +148,8 @@ public class CompanyPayConterller {
                     case 5 : payName = "JinDongPay";break;
                     case 6 : payName = "redPwd";break;
                 }
-                type =  treasureServiceClient.getPayId(agentId,payName);
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account);
+               // type =  treasureServiceClient.getPayId(agentId,payName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId,payId, orderAmount, remarks, account);
             } else {
                 map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             }
