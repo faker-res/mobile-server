@@ -41,5 +41,6 @@ public class ThirdAppPayConfigVO {
     private Integer sort;
     private String remark;
     private List<Integer> channelLevelId;
+    private String imageUrl;
 
 }
