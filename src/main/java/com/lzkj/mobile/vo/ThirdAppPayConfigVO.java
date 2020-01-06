@@ -42,5 +42,6 @@ public class ThirdAppPayConfigVO {
     private String remark;
     private List<Integer> channelLevelId;
     private String imageUrl;
+    private List<Integer> idList; // web前端用于批量操作
 
 }
