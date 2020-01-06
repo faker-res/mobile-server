@@ -3,6 +3,7 @@ package com.lzkj.mobile.vo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 第三方app充值配置
@@ -37,5 +38,8 @@ public class ThirdAppPayConfigVO {
 
     private Integer agentId;
 
+    private Integer sort;
+    private String remark;
+    private List<Integer> channelLevelId;
 
 }
