@@ -2857,5 +2857,18 @@ public class MobileInterfaceController {
     	}
     	return globeResponse;
     }
+
+    /**
+     * 查询游戏公告
+     */
+    @RequestMapping("/getGameNews")
+    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId,Integer pageIndex,Integer pageSize) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(accountsServiceClient.getGameNews(agentId,pageIndex,pageSize));
+        return globeResponse;
+    }
     
 }
