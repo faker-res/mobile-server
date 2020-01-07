@@ -85,7 +85,7 @@ public interface TreasureServiceClient {
 	 * @return
 	 */
 	@RequestMapping("treasure/mobile/getCompanyPay")
-	List<CompanyPayVO> getCompanyPay(@RequestParam("agentId") Integer agentId);
+	List<CompanyPayVO> getCompanyPay(@RequestParam("userId") Integer userId,@RequestParam("agentId") Integer agentId);
 
 	/**
 	 * 获取公司支付类型

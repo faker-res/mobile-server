@@ -1019,7 +1019,7 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
-        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
+        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(userId,agentId);          //公司充值
         if (companyList != null && companyList.size()>0) {
             companyList.forEach(type -> {
                 if ("AliPay".equals(type.getPayType())) {
