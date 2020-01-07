@@ -23,8 +23,8 @@ public class ThirdAppPayController {
      * 查询业主的三方APP配置信息
      */
     @RequestMapping("/getThirdAppPayConfigList")
-    public GlobeResponse<Object> getThirdAppPayConfigList(Integer agentId){
-        List<ThirdAppPayConfigVO> configList = treasureServiceClient.getThirdAppPayConfigList(agentId);
+    public GlobeResponse<Object> getThirdAppPayConfigList(Integer agentId,Integer userId){
+        List<ThirdAppPayConfigVO> configList = treasureServiceClient.getThirdAppPayConfigList(agentId,userId);
         List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
         // 过滤掉不可用数据
         configList.stream().forEach(obj -> {

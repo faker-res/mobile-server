@@ -256,7 +256,7 @@ public interface TreasureServiceClient {
 
 	// ------------------------第三方APP支付 start--------------------------------
 	@RequestMapping("/treasure/mobile/getThirdAppPayConfigList")
-	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId);
+	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
 	// ------------------------第三方APP支付 end--------------------------------
