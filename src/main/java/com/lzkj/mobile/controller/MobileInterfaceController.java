@@ -1021,7 +1021,7 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
-        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
+        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(userId,agentId);          //公司充值
         if (companyList != null && companyList.size()>0) {
             companyList.forEach(type -> {
                 if ("AliPay".equals(type.getPayType())) {
@@ -2240,7 +2240,7 @@ public class MobileInterfaceController {
     	if(typeId.equals(10)) {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("平台资金切换");
+    			vo.setTypeName(l.get(i).getTypeName());
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
     			if(l.get(i).getPresentScore().signum() == -1) {
@@ -2252,7 +2252,7 @@ public class MobileInterfaceController {
     			page.setLists(temp);
     		}
     	}
-    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
+    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,date);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
     	data.put("count", list);
@@ -2861,6 +2861,19 @@ public class MobileInterfaceController {
     		globeResponse.setData(shareUrl + "/" + shortParam);
     	}
     	return globeResponse;
+    }
+
+    /**
+     * 查询游戏公告
+     */
+    @RequestMapping("/getGameNews")
+    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId,Integer pageIndex,Integer pageSize) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(accountsServiceClient.getGameNews(agentId,pageIndex,pageSize));
+        return globeResponse;
     }
     
 }

@@ -182,4 +182,7 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 
+    @RequestMapping("/accounts/mobile/getGameNews")
+    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId, @RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+
 }
