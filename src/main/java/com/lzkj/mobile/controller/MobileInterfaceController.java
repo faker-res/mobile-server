@@ -9,6 +9,8 @@ import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -2520,7 +2522,7 @@ public class MobileInterfaceController {
      * 提现信息审核开关
      */
     @RequestMapping("/getIndividualDatumStatus")
-    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) throws ParseException {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         if(agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
@@ -2536,6 +2538,9 @@ public class MobileInterfaceController {
             if (StringUtils.isBlank(pageVO.getBankNO())) {
                 globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
                 return globeResponse;
+            }
+            if (!StringUtils.isBlank(pageVO.getCollectDate()) && (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(pageVO.getCollectDate()).getTime()) <(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2020-01-04 08:00:00").getTime())) {
+                pageVO.setStatus(4);//兼容历史数据（绑定成功）
             }
             globeResponse.setData(pageVO);
             return globeResponse;
