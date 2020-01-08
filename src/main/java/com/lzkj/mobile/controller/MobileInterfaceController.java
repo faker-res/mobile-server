@@ -2250,7 +2250,7 @@ public class MobileInterfaceController {
     			page.setLists(temp);
     		}
     	}
-    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
+    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,date);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
     	data.put("count", list);
