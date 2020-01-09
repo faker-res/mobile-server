@@ -2250,7 +2250,7 @@ public class MobileInterfaceController {
     			page.setLists(temp);
     		}
     	}
-    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
+    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,date);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
     	data.put("count", list);
@@ -2501,7 +2501,7 @@ public class MobileInterfaceController {
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	String ip = getIpAddress(request); 
+    	String ip = getIpAddress(request);
     	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
     	if(param == null) {
     		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
@@ -2605,7 +2605,7 @@ public class MobileInterfaceController {
             	}else {
             		redVO.setRedAmount(0);
             	}
-        		
+
         	}else {
         		redVO.setStatus(1);   //活动已结束
         	}
@@ -2836,17 +2836,17 @@ public class MobileInterfaceController {
             globeResponse.setData(list);
             return globeResponse;
     }
-    
+
     @RequestMapping("/getShareUrl")
     private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
     	if (g == null || p == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();    	
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
     	String shareJumpLinkKey = RedisKeyPrefix.shareJumpLinkKey();
     	String shareUrl = redisDao.get(shareJumpLinkKey, String.class);
     	if(StringUtil.isEmpty(shareUrl)) {
-    		globeResponse.setData("");    		
+    		globeResponse.setData("");
     	} else {
     		String shortParam = ShortUrlGenerator.ShortText("g=" + g + "&p=" + p);
     		JSONObject j = new JSONObject();
@@ -2857,5 +2857,5 @@ public class MobileInterfaceController {
     	}
     	return globeResponse;
     }
-    
+
 }

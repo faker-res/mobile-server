@@ -85,7 +85,7 @@ public interface TreasureServiceClient {
 	 * @return
 	 */
 	@RequestMapping("treasure/mobile/getCompanyPay")
-	List<CompanyPayVO> getCompanyPay(@RequestParam("agentId") Integer agentId);
+	List<CompanyPayVO> getCompanyPay(@RequestParam("userId") Integer userId,@RequestParam("agentId") Integer agentId);
 
 	/**
 	 * 获取公司支付类型
@@ -177,7 +177,7 @@ public interface TreasureServiceClient {
 	CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
 
 	@RequestMapping("treasure/mobile/accountChangeStatistics")
-	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId);
+	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId,@RequestParam("date")Integer date);
 
 	@RequestMapping("/treasure/mobile/verifyPassword")
 	String verifyPassword(@RequestParam("userId") Integer userId);
