@@ -1007,6 +1007,11 @@ public class AgentSystemController {
                     data.put("redEnvelope", false);
                 }
             }
+            
+            //竞价包开启时间
+            if (vo.getStatusName().equals(AgentSystemEnum.BIDPACKAGEOPEN.getName())) {
+            	data.put("BidPackageOpen", vo.getStatusValue());
+            }
         }
         //获取房间信息
         redisKey = RedisKeyPrefix.getMobileKindList();

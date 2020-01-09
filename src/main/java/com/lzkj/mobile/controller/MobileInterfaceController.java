@@ -9,6 +9,8 @@ import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1019,7 +1021,7 @@ public class MobileInterfaceController {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         userId = userId == null ? 0 : userId;
         Map<String, List<PayInfoVO>> payList = treasureServiceClient.getPayList(userId,agentId);   //第三方充值渠道
-        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(agentId);          //公司充值
+        List<CompanyPayVO> companyList = treasureServiceClient.getCompanyPay(userId,agentId);          //公司充值
         if (companyList != null && companyList.size()>0) {
             companyList.forEach(type -> {
                 if ("AliPay".equals(type.getPayType())) {
@@ -2238,7 +2240,11 @@ public class MobileInterfaceController {
     	if(typeId.equals(10)) {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("平台资金切换");
+    			if(!StringUtils.isBlank(vo.getCollectNote())){
+    				vo.setTypeName(l.get(i).getCollectNote());    				
+    			}else {
+    				vo.setTypeName(l.get(i).getTypeName());
+    			}
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
     			if(l.get(i).getPresentScore().signum() == -1) {
@@ -2249,8 +2255,16 @@ public class MobileInterfaceController {
     			temp.add(vo);
     			page.setLists(temp);
     		}
+    	}else if(typeId.equals(8)) {
+    		if(page.getLists() != null && page.getLists().size() > 0) {
+    			page.getLists().forEach(object -> {
+    				if(!StringUtils.isBlank(object.getCollectNote())) {
+    					object.setTypeName(object.getCollectNote());
+    				}
+    			});
+    		}
     	}
-    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId);
+    	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,date);
     	data.put("list", page.getLists());
     	data.put("total", page.getPageCount());
     	data.put("count", list);
@@ -2520,7 +2534,7 @@ public class MobileInterfaceController {
      * 提现信息审核开关
      */
     @RequestMapping("/getIndividualDatumStatus")
-    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) throws ParseException {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         if(agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
@@ -2536,6 +2550,9 @@ public class MobileInterfaceController {
             if (StringUtils.isBlank(pageVO.getBankNO())) {
                 globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
                 return globeResponse;
+            }
+            if (!StringUtils.isBlank(pageVO.getCollectDate()) && (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(pageVO.getCollectDate()).getTime()) <(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2020-01-04 08:00:00").getTime())) {
+                pageVO.setStatus(4);//兼容历史数据（绑定成功）
             }
             globeResponse.setData(pageVO);
             return globeResponse;
@@ -2856,6 +2873,19 @@ public class MobileInterfaceController {
     		globeResponse.setData(shareUrl + "/" + shortParam);
     	}
     	return globeResponse;
+    }
+
+    /**
+     * 查询游戏公告
+     */
+    @RequestMapping("/getGameNews")
+    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId,Integer pageIndex,Integer pageSize) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(accountsServiceClient.getGameNews(agentId,pageIndex,pageSize));
+        return globeResponse;
     }
     
 }

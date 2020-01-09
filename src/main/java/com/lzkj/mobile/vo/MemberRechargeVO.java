@@ -12,4 +12,5 @@ public class MemberRechargeVO {
 	private BigDecimal expenditureScore = BigDecimal.ZERO;
 	private String collectDate;
 	private String typeName;
+	private String collectNote;
 }
