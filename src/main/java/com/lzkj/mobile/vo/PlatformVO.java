@@ -20,4 +20,5 @@ public class PlatformVO implements Serializable{
 	private Integer gameTypeItem;
 	private Integer kindMark;
 	private List<AgentMobileKindConfigVO> list;
+	private Integer bidPackageStatus;
 }

@@ -23,4 +23,5 @@ public class AgentMobileKindConfigVO implements Serializable{
     private Integer subscript;
     private String iconImgUrl;
     private int resVersion;
+    private int bidPackageStatus;
 }
