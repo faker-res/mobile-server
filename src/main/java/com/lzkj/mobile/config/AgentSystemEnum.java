@@ -24,7 +24,9 @@ public enum AgentSystemEnum {
     REGISTERACCOUNTOPEN("RegisterAccountOpen","注册帐号开关"),
     YEBPASSWORDOPEN("YEBpasswordOpen","余额宝密码开关"),
     ZCJMZSJBTBOPEN("ZCJMZSJBTBOpen", "注册界面赠送金币图标开关"),
-	REDEVENLOPE("RedEnvelopeIsOpen","开启红包功能");
+	REDEVENLOPE("RedEnvelopeIsOpen","开启红包功能"),
+	BIDPACKAGEOPEN("BidPackageOpen","竞价包开启时间");
+	
     private String name;
 
     private String describe;

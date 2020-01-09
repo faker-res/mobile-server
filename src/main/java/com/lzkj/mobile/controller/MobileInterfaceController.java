@@ -2240,7 +2240,11 @@ public class MobileInterfaceController {
     	if(typeId.equals(10)) {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName(l.get(i).getTypeName());
+    			if(!StringUtils.isBlank(vo.getCollectNote())){
+    				vo.setTypeName(l.get(i).getCollectNote());    				
+    			}else {
+    				vo.setTypeName(l.get(i).getTypeName());
+    			}
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
     			if(l.get(i).getPresentScore().signum() == -1) {
@@ -2250,6 +2254,14 @@ public class MobileInterfaceController {
     			}
     			temp.add(vo);
     			page.setLists(temp);
+    		}
+    	}else if(typeId.equals(8)) {
+    		if(page.getLists() != null && page.getLists().size() > 0) {
+    			page.getLists().forEach(object -> {
+    				if(!StringUtils.isBlank(object.getCollectNote())) {
+    					object.setTypeName(object.getCollectNote());
+    				}
+    			});
     		}
     	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,date);
