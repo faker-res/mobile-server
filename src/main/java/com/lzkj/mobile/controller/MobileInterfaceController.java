@@ -2887,5 +2887,20 @@ public class MobileInterfaceController {
         globeResponse.setData(accountsServiceClient.getGameNews(agentId,pageIndex,pageSize));
         return globeResponse;
     }
-    
+
+    // ----------------签到奖励 start--------------------
+    @RequestMapping("/getSignAwardConfigList")
+    public GlobeResponse<List<SignAwardConfig>> getSignAwardConfigList(Integer agentId,Integer userId) {
+        GlobeResponse<List<SignAwardConfig>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(platformServiceClient.getUserSignAwardConfigList(agentId,userId));
+        return globeResponse;
+    }
+    @RequestMapping("/acceptUserSignAward")
+    public GlobeResponse<String> acceptUserSignAward(Integer agentId,Integer userId,Integer itemId) {
+        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+        platformServiceClient.acceptUserSignAward(agentId,userId);
+        return globeResponse;
+    }
+    // ----------------签到奖励 end---------------------
+
 }

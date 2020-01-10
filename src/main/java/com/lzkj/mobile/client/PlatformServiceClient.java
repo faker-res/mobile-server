@@ -2,6 +2,7 @@ package com.lzkj.mobile.client;
 
 import com.lzkj.mobile.vo.*;
 
+import javafx.beans.binding.BooleanBinding;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -153,5 +154,10 @@ public interface PlatformServiceClient {
     
     @RequestMapping("/platform/mobile/updateResversion")
     void updateResversion();
+
+	@RequestMapping("/agentSystem/setUp/getUserSignAwardConfigList")
+	List<SignAwardConfig> getUserSignAwardConfigList(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
+	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
+	Boolean acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
 }
 
