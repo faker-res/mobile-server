@@ -110,6 +110,8 @@ public class MobileInterfaceController {
     @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
 
     @RequestMapping("/getScoreRank")
