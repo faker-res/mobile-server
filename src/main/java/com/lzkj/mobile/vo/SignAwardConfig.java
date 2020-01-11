@@ -12,5 +12,6 @@ public class SignAwardConfig {
      * 显示方式：1随机不展示金额 2随机展示金额 3固定不展示金额
      */
     private Integer displayType;
-    List<SignAwardConfigItem> itemList;
+    private List<SignAwardConfigItem> itemList;
+    private List<UserAwardRecord> recordList;
 }
