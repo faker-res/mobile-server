@@ -2,6 +2,7 @@ package com.lzkj.mobile.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -22,4 +23,8 @@ public class UserAwardRecord {
      * 奖励类型：1签到
      */
     private Integer awardType;
+    /**
+     * 奖励金额
+     */
+    private BigDecimal awardAmount;
 }

@@ -2913,12 +2913,13 @@ public class MobileInterfaceController {
                 globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
                 return globeResponse;
             }
-            Boolean success = platformServiceClient.acceptUserSignAward(agentId,userId);
-            if(!success){
+            BigDecimal awardAmount = platformServiceClient.acceptUserSignAward(agentId,userId);
+            if( awardAmount==null || awardAmount.compareTo(BigDecimal.ZERO) <= 0 ){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
                 globeResponse.setMsg("操作失败：该奖励已失效或已领取");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setData(awardAmount.toString());
                 globeResponse.setMsg("保存成功");
             }
         }catch (Exception e){
