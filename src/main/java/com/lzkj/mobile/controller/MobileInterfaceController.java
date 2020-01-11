@@ -24,11 +24,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -2240,7 +2242,11 @@ public class MobileInterfaceController {
     	if(typeId.equals(10)) {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
-    			vo.setTypeName("平台资金切换");
+    			if(!StringUtils.isBlank(vo.getCollectNote())){
+    				vo.setTypeName(l.get(i).getCollectNote());    				
+    			}else {
+    				vo.setTypeName(l.get(i).getTypeName());
+    			}
     			vo.setBalance(l.get(i).getBalance());
     			vo.setCollectDate(l.get(i).getCollectDate());
     			if(l.get(i).getPresentScore().signum() == -1) {
@@ -2250,6 +2256,14 @@ public class MobileInterfaceController {
     			}
     			temp.add(vo);
     			page.setLists(temp);
+    		}
+    	}else if(typeId.equals(8)) {
+    		if(page.getLists() != null && page.getLists().size() > 0) {
+    			page.getLists().forEach(object -> {
+    				if(!StringUtils.isBlank(object.getCollectNote())) {
+    					object.setTypeName(object.getCollectNote());
+    				}
+    			});
     		}
     	}
     	AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId,date);
@@ -2503,7 +2517,7 @@ public class MobileInterfaceController {
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	String ip = getIpAddress(request);
+    	String ip = getIpAddress(request); 
     	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
     	if(param == null) {
     		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
@@ -2522,7 +2536,7 @@ public class MobileInterfaceController {
      * 提现信息审核开关
      */
     @RequestMapping("/getIndividualDatumStatus")
-    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) {
+    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId,Integer gameId) throws ParseException {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         if(agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
@@ -2538,6 +2552,9 @@ public class MobileInterfaceController {
             if (StringUtils.isBlank(pageVO.getBankNO())) {
                 globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
                 return globeResponse;
+            }
+            if (!StringUtils.isBlank(pageVO.getCollectDate()) && (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(pageVO.getCollectDate()).getTime()) <(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2020-01-04 08:00:00").getTime())) {
+                pageVO.setStatus(4);//兼容历史数据（绑定成功）
             }
             globeResponse.setData(pageVO);
             return globeResponse;
@@ -2607,7 +2624,7 @@ public class MobileInterfaceController {
             	}else {
             		redVO.setRedAmount(0);
             	}
-
+        		
         	}else {
         		redVO.setStatus(1);   //活动已结束
         	}
@@ -2838,17 +2855,17 @@ public class MobileInterfaceController {
             globeResponse.setData(list);
             return globeResponse;
     }
-
+    
     @RequestMapping("/getShareUrl")
     private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
     	if (g == null || p == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();    	
     	String shareJumpLinkKey = RedisKeyPrefix.shareJumpLinkKey();
     	String shareUrl = redisDao.get(shareJumpLinkKey, String.class);
     	if(StringUtil.isEmpty(shareUrl)) {
-    		globeResponse.setData("");
+    		globeResponse.setData("");    		
     	} else {
     		String shortParam = ShortUrlGenerator.ShortText("g=" + g + "&p=" + p);
     		JSONObject j = new JSONObject();
@@ -2859,5 +2876,57 @@ public class MobileInterfaceController {
     	}
     	return globeResponse;
     }
+
+    /**
+     * 查询游戏公告
+     */
+    @RequestMapping("/getGameNews")
+    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId,Integer pageIndex,Integer pageSize) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(accountsServiceClient.getGameNews(agentId,pageIndex,pageSize));
+        return globeResponse;
+    }
+
+    // ----------------签到奖励 start--------------------
+    @RequestMapping("/getSignAwardConfigList")
+    public GlobeResponse<List<SignAwardConfig>> getSignAwardConfigList(Integer agentId,Integer userId) {
+        GlobeResponse<List<SignAwardConfig>> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(platformServiceClient.getUserSignAwardConfigList(agentId,userId));
+        return globeResponse;
+    }
+    @RequestMapping("/acceptUserSignAward")
+    public GlobeResponse<String> acceptUserSignAward(Integer agentId,Integer userId,Integer itemId) {
+        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+        RedisLock redisLock = null;
+        try{
+            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_"+userId), redisTemplate, 10);
+            Boolean hasLock = redisLock.tryLock();
+            if (!hasLock) {
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
+                return globeResponse;
+            }
+            Boolean success = platformServiceClient.acceptUserSignAward(agentId,userId);
+            if(!success){
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
+            }else{
+                globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setMsg("保存成功");
+            }
+        }catch (Exception e){
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg(e.getMessage());
+        }finally {
+            if( redisLock != null ){
+                redisLock.unlock();
+            }
+        }
+        return globeResponse;
+    }
+    // ----------------签到奖励 end---------------------
 
 }
