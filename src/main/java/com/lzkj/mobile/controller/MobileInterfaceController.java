@@ -24,11 +24,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,6 +109,10 @@ public class MobileInterfaceController {
 
     @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
+
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
 
 
@@ -2898,7 +2904,31 @@ public class MobileInterfaceController {
     @RequestMapping("/acceptUserSignAward")
     public GlobeResponse<String> acceptUserSignAward(Integer agentId,Integer userId,Integer itemId) {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
-        platformServiceClient.acceptUserSignAward(agentId,userId);
+        RedisLock redisLock = null;
+        try{
+            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_"+userId), redisTemplate, 10);
+            Boolean hasLock = redisLock.tryLock();
+            if (!hasLock) {
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
+                return globeResponse;
+            }
+            Boolean success = platformServiceClient.acceptUserSignAward(agentId,userId);
+            if(!success){
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
+            }else{
+                globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setMsg("保存成功");
+            }
+        }catch (Exception e){
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg(e.getMessage());
+        }finally {
+            if( redisLock != null ){
+                redisLock.unlock();
+            }
+        }
         return globeResponse;
     }
     // ----------------签到奖励 end---------------------
