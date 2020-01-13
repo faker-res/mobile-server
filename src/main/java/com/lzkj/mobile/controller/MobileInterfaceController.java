@@ -2900,7 +2900,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
     @RequestMapping("/acceptUserSignAward")
-    public GlobeResponse<String> acceptUserSignAward(Integer agentId,Integer userId,Integer itemId) {
+    public GlobeResponse<String> acceptUserSignAward(Integer agentId,Integer userId) {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
         RedisLock redisLock = null;
         try{
@@ -2911,12 +2911,13 @@ public class MobileInterfaceController {
                 globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
                 return globeResponse;
             }
-            Boolean success = platformServiceClient.acceptUserSignAward(agentId,userId);
-            if(!success){
+            BigDecimal awardAmount = platformServiceClient.acceptUserSignAward(agentId,userId);
+            if( awardAmount==null || awardAmount.compareTo(BigDecimal.ZERO) <= 0 ){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
-                globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
+                globeResponse.setMsg("操作失败：该奖励已失效或已领取");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setData(awardAmount.toString());
                 globeResponse.setMsg("保存成功");
             }
         }catch (Exception e){

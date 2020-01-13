@@ -117,7 +117,7 @@ public class CompanyPayConterller {
      * @param agentId
      * @param userId
      * @param gameId
-     * @param payId
+     * @param payId  此处的payid 是指：通道id, 不是公司充值配置id
      * @param orderAmount
      * @param remarks
      * @return
@@ -148,8 +148,8 @@ public class CompanyPayConterller {
                     case 5 : payName = "JinDongPay";break;
                     case 6 : payName = "redPwd";break;
                 }
-               // type =  treasureServiceClient.getPayId(agentId,payName);
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId,payId, orderAmount, remarks, account);
+                type =  treasureServiceClient.getPayId(agentId,payName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account);
             } else {
                 map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             }

@@ -158,6 +158,6 @@ public interface PlatformServiceClient {
 	@RequestMapping("/agentSystem/setUp/getUserSignAwardConfigList")
 	List<SignAwardConfig> getUserSignAwardConfigList(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
 	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
-	Boolean acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
+	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
 }
 
