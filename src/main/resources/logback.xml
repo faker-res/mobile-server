@@ -16,7 +16,7 @@
             <fileNamePattern>${LOG_HOME}/${LOG_PREFIX}-info-%d{yyyyMMdd}-%i.log</fileNamePattern>
             <!-- 单个日志文件最多500MB, 30天的日志周期，最大不能超过20GB -->
             <maxFileSize>100MB</maxFileSize>
-            <maxHistory>2</maxHistory>
+            <maxHistory>30</maxHistory>
             <totalSizeCap>20GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
@@ -24,7 +24,7 @@
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n</Pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
+            <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
