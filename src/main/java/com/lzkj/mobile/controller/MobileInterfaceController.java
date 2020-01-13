@@ -2894,9 +2894,12 @@ public class MobileInterfaceController {
 
     // ----------------签到奖励 start--------------------
     @RequestMapping("/getSignAwardConfigList")
-    public GlobeResponse<List<SignAwardConfig>> getSignAwardConfigList(Integer agentId,Integer userId) {
-        GlobeResponse<List<SignAwardConfig>> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(platformServiceClient.getUserSignAwardConfigList(agentId,userId));
+    public GlobeResponse<Map> getSignAwardConfigList(Integer agentId,Integer userId) {
+        GlobeResponse<Map> globeResponse = new GlobeResponse<>();
+        Map responseData = new HashMap();
+        responseData.put("configList",platformServiceClient.getUserSignAwardConfigList(agentId,userId));
+        responseData.put("serverTime",System.currentTimeMillis());
+        globeResponse.setData(responseData);
         return globeResponse;
     }
     @RequestMapping("/acceptUserSignAward")
