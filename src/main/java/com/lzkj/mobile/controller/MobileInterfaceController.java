@@ -110,10 +110,8 @@ public class MobileInterfaceController {
     @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
-
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
 
 
     @RequestMapping("/getScoreRank")
@@ -1031,25 +1029,25 @@ public class MobileInterfaceController {
         if (companyList != null && companyList.size()>0) {
             companyList.forEach(type -> {
                 if ("AliPay".equals(type.getPayType())) {
-                    type.setId(0);
+                    type.setPayId(0);
                 }
                 if ("WeChatPay".equals(type.getPayType())) {
-                    type.setId(1);
+                    type.setPayId(1);
                 }
                 if ("BankPay".equals(type.getPayType())) {
-                    type.setId(2);
+                    type.setPayId(2);
                 }
                 if ("CloudPay".equals(type.getPayType())) {
-                    type.setId(3);
+                    type.setPayId(3);
                 }
                 if ("QQPay".equals(type.getPayType())) {
-                    type.setId(4);
+                    type.setPayId(4);
                 }
                 if ("JinDongPay".equals(type.getPayType())) {
-                    type.setId(5);
+                    type.setPayId(5);
                 }
                 if("redPwd".equals(type.getPayType())){
-                    type.setId(6);
+                    type.setPayId(6);
                 }
             });
         }
@@ -2247,7 +2245,7 @@ public class MobileInterfaceController {
     		for(int i = 0;i<l.size();i++) {
     			MemberRechargeVO vo = new MemberRechargeVO();
     			if(!StringUtils.isBlank(vo.getCollectNote())){
-    				vo.setTypeName(l.get(i).getCollectNote());    				
+    				vo.setTypeName(l.get(i).getCollectNote());
     			}else {
     				vo.setTypeName(l.get(i).getTypeName());
     			}
@@ -2521,7 +2519,7 @@ public class MobileInterfaceController {
     @RequestMapping("/receiveRedEnvelopeRain")
     public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-    	String ip = getIpAddress(request); 
+    	String ip = getIpAddress(request);
     	Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
     	if(param == null) {
     		throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
@@ -2628,7 +2626,7 @@ public class MobileInterfaceController {
             	}else {
             		redVO.setRedAmount(0);
             	}
-        		
+
         	}else {
         		redVO.setStatus(1);   //活动已结束
         	}
@@ -2859,17 +2857,17 @@ public class MobileInterfaceController {
             globeResponse.setData(list);
             return globeResponse;
     }
-    
+
     @RequestMapping("/getShareUrl")
     private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
     	if (g == null || p == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();    	
+    	GlobeResponse<String> globeResponse = new GlobeResponse<String>();
     	String shareJumpLinkKey = RedisKeyPrefix.shareJumpLinkKey();
     	String shareUrl = redisDao.get(shareJumpLinkKey, String.class);
     	if(StringUtil.isEmpty(shareUrl)) {
-    		globeResponse.setData("");    		
+    		globeResponse.setData("");
     	} else {
     		String shortParam = ShortUrlGenerator.ShortText("g=" + g + "&p=" + p);
     		JSONObject j = new JSONObject();
