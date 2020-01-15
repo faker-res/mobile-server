@@ -2915,7 +2915,7 @@ public class MobileInterfaceController {
                 return globeResponse;
             }
             BigDecimal awardAmount = platformServiceClient.acceptUserSignAward(agentId,userId);
-            if( awardAmount==null || awardAmount.compareTo(BigDecimal.ZERO) <= 0 ){
+            if( awardAmount==null || awardAmount.compareTo(BigDecimal.ZERO) < 0 ){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
                 globeResponse.setMsg("当前签到无奖励");
             }else{
