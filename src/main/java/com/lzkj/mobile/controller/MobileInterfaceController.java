@@ -2894,40 +2894,45 @@ public class MobileInterfaceController {
 
     // ----------------签到奖励 start--------------------
     @RequestMapping("/getSignAwardConfigList")
-    public GlobeResponse<Map> getSignAwardConfigList(Integer agentId,Integer userId) {
+    public GlobeResponse<Map> getSignAwardConfigList(Integer agentId, Integer userId) {
         GlobeResponse<Map> globeResponse = new GlobeResponse<>();
         Map responseData = new HashMap();
-        responseData.put("configList",platformServiceClient.getUserSignAwardConfigList(agentId,userId));
-        responseData.put("serverTime",System.currentTimeMillis());
+        responseData.put("configList", platformServiceClient.getUserSignAwardConfigList(agentId, userId));
+        responseData.put("serverTime", System.currentTimeMillis());
         globeResponse.setData(responseData);
         return globeResponse;
     }
+
     @RequestMapping("/acceptUserSignAward")
-    public GlobeResponse<String> acceptUserSignAward(Integer agentId,Integer userId) {
+    public GlobeResponse<String> acceptUserSignAward(Integer agentId, Integer userId) {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
         RedisLock redisLock = null;
-        try{
-            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_"+userId), redisTemplate, 10);
+        try {
+            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_" + userId), redisTemplate, 10);
             Boolean hasLock = redisLock.tryLock();
             if (!hasLock) {
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
                 globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
                 return globeResponse;
             }
-            BigDecimal awardAmount = platformServiceClient.acceptUserSignAward(agentId,userId);
-            if( awardAmount==null || awardAmount.compareTo(BigDecimal.ZERO) < 0 ){
+            BigDecimal awardAmount = platformServiceClient.acceptUserSignAward(agentId, userId);
+            if (awardAmount == null || awardAmount.compareTo(BigDecimal.ZERO) < 0) {
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
                 globeResponse.setMsg("当前签到无奖励");
-            }else{
+            } else if (awardAmount.compareTo(BigDecimal.ZERO) == 0) {
+                globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setData(awardAmount.toString());
+                globeResponse.setMsg("当前签到无奖励");
+            } else {
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
                 globeResponse.setData(awardAmount.toString());
                 globeResponse.setMsg("保存成功");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             globeResponse.setCode(SystemConstants.FAIL_CODE);
             globeResponse.setMsg(e.getMessage());
-        }finally {
-            if( redisLock != null ){
+        } finally {
+            if (redisLock != null) {
                 redisLock.unlock();
             }
         }
