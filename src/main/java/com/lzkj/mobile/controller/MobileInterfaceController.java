@@ -24,11 +24,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,6 +110,8 @@ public class MobileInterfaceController {
     @Resource(name="gameMongoTemplate")
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
 
     @RequestMapping("/getScoreRank")
@@ -2887,5 +2891,53 @@ public class MobileInterfaceController {
         globeResponse.setData(accountsServiceClient.getGameNews(agentId,pageIndex,pageSize));
         return globeResponse;
     }
-    
+
+    // ----------------签到奖励 start--------------------
+    @RequestMapping("/getSignAwardConfigList")
+    public GlobeResponse<Map> getSignAwardConfigList(Integer agentId, Integer userId) {
+        GlobeResponse<Map> globeResponse = new GlobeResponse<>();
+        Map responseData = new HashMap();
+        responseData.put("configList", platformServiceClient.getUserSignAwardConfigList(agentId, userId));
+        responseData.put("serverTime", System.currentTimeMillis());
+        globeResponse.setData(responseData);
+        return globeResponse;
+    }
+
+    @RequestMapping("/acceptUserSignAward")
+    public GlobeResponse<String> acceptUserSignAward(Integer agentId, Integer userId) {
+        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
+        RedisLock redisLock = null;
+        try {
+            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_" + userId), redisTemplate, 10);
+            Boolean hasLock = redisLock.tryLock();
+            if (!hasLock) {
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("操作失败：请求太频繁，请稍后重试");
+                return globeResponse;
+            }
+            BigDecimal awardAmount = platformServiceClient.acceptUserSignAward(agentId, userId);
+            if (awardAmount == null || awardAmount.compareTo(BigDecimal.ZERO) < 0) {
+                globeResponse.setCode(SystemConstants.FAIL_CODE);
+                globeResponse.setMsg("当前签到无奖励");
+            } else if (awardAmount.compareTo(BigDecimal.ZERO) == 0) {
+                globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setData(awardAmount.toString());
+                globeResponse.setMsg("当前签到无奖励");
+            } else {
+                globeResponse.setCode(SystemConstants.SUCCESS_CODE);
+                globeResponse.setData(awardAmount.toString());
+                globeResponse.setMsg("保存成功");
+            }
+        } catch (Exception e) {
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg(e.getMessage());
+        } finally {
+            if (redisLock != null) {
+                redisLock.unlock();
+            }
+        }
+        return globeResponse;
+    }
+    // ----------------签到奖励 end---------------------
+
 }
