@@ -257,7 +257,7 @@ public class AgentSystemController {
         String redisKey = RedisKeyPrefix.getQrCodeKey(agentId);
 
         //获取后台代理配置
-        redisKey = RedisKeyPrefix.getQrCode(agentId);
+           redisKey = RedisKeyPrefix.getQrCode(agentId);
         AgentAccVO agentAccVO = redisService.get(redisKey, AgentAccVO.class);
         if (agentAccVO == null) {
             agentAccVO = agentClient.getQrCode(agentId);
@@ -308,6 +308,7 @@ public class AgentSystemController {
         data.put("channelGameUrl", channelGameUrl);
         data.put("showbanner", imgUrl);
         data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
+        data.put("loadingUrl",agentAccVO.getLoadingUrl());
         String[] gameUrl = gameUrlList.split(",");
         data.put("gameUrlList", gameUrl);
         String[] huodong = huodongurl.split(",");
@@ -837,6 +838,7 @@ public class AgentSystemController {
         data.put("channelGameUrl", channelGameUrl);
         data.put("showbanner", imgUrl);
         data.put("guanwangUrl", agentAccVO.getPrimaryDomain());
+        data.put("loadingUrl",agentAccVO.getLoadingUrl());
         String[] gameUrl = gameUrlList.split(",");
         data.put("gameUrlList", gameUrl);
         String[] huodong = huodongurl.split(",");
@@ -1077,7 +1079,7 @@ public class AgentSystemController {
         log.info("newLoginStatus：agentId:" + agentId + "\t registerMachine:" + registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
-    
+
     @RequestMapping("/updateResversion")
     public GlobeResponse updateResversion() {
 //    	platformServiceClient.updateResversion();
