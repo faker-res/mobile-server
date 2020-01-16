@@ -51,5 +51,6 @@ public class AgentAccVO {
     private short status = 0;
     private String primaryDomain;
     private String hotVersion;
+    private String loadingUrl;//加载页地址
 
 }
