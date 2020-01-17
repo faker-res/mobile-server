@@ -2102,9 +2102,14 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/updateUserContactInfo")
-    private GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId) {
+    private GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        //
+        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
+        if(num>0){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
         }
         int count = accountsServiceClient.updateUserContactInfo(mobilePhone, qq, eMail, userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
@@ -2822,6 +2827,17 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    /**
+     * 绑定银行卡
+     * @param userId
+     * @param gameId
+     * @param agentId
+     * @param bankNo
+     * @param bankName
+     * @param compellation
+     * @param bankAddress
+     * @return
+     */
     @RequestMapping("/saveBankCardRawData")
     private GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
         if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {

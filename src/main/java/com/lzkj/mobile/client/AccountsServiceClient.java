@@ -63,6 +63,15 @@ public interface AccountsServiceClient {
     @RequestMapping("accounts/mobile/queryRegisterMobile")
     Integer queryRegisterMobile(@RequestParam("phone") String phone);
 
+    /**
+     * 此手机号在同一业主名下是否有注册过
+     * @param phone
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("accounts/mobile/queryRegisterMobile")
+    Integer queryRegisterMobile(@RequestParam("phone") String phone,@RequestParam("agentId") String agentId);
+
     @RequestMapping("accounts/mobile/getMyDirectlyPlayer")
     Integer getMyDirectlyPlayer(@RequestParam("userId") Integer userId);
 
