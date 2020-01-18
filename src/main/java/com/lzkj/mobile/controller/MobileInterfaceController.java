@@ -1,41 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
-import static com.lzkj.mobile.util.HttpUtil.post;
-import static com.lzkj.mobile.util.IpAddress.getIpAddress;
-import static com.lzkj.mobile.util.MD5Utils.MD5Encode;
-import static com.lzkj.mobile.util.MD5Utils.getAllFields;
-import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.DefaultAcsClient;
@@ -45,11 +9,7 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.client.NativeWebServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
 import com.lzkj.mobile.config.SystemConfigKey;
@@ -61,85 +21,33 @@ import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
-import com.lzkj.mobile.util.HttpRequest;
-import com.lzkj.mobile.util.MD5Utils;
-import com.lzkj.mobile.util.ShortUrlGenerator;
-import com.lzkj.mobile.util.StringUtil;
-import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CleanChipsConfigVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.CompanyPayVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameException;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.IndividualDatumVO;
-import com.lzkj.mobile.vo.LoginRedEnvepoleStatusVO;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.LuckyVO;
-import com.lzkj.mobile.vo.MemberRechargeVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.RedEnvelopeConditionTypeVO;
-import com.lzkj.mobile.vo.RedEnvelopeRecordVO;
-import com.lzkj.mobile.vo.RedEnvelopeVO;
-import com.lzkj.mobile.vo.RedEnvepoleRulesVO;
-import com.lzkj.mobile.vo.RedEnvepoleYuStartTimeAndEndTimeVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemNewsVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.TransactionTypeVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.UserRankinsVO;
-import com.lzkj.mobile.vo.UserRecordInsureVO;
-import com.lzkj.mobile.vo.UserRewardDetailVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VIPReceiveInfoVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.VideoTypeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VipRankReceiveVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
-import com.lzkj.mobile.vo.YebDescriptionVO;
-import com.lzkj.mobile.vo.YebInterestRateVO;
-import com.lzkj.mobile.vo.YebScoreVO;
-
+import com.lzkj.mobile.util.*;
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
+import static com.lzkj.mobile.util.HttpUtil.post;
+import static com.lzkj.mobile.util.IpAddress.getIpAddress;
+import static com.lzkj.mobile.util.MD5Utils.MD5Encode;
+import static com.lzkj.mobile.util.MD5Utils.getAllFields;
+import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
 
 @Slf4j
 @RestController
@@ -626,7 +534,7 @@ public class MobileInterfaceController {
      * @param phone
      * @param type
      * @return sendMode = 1 为完美短信发送   2 为3D短信发送    3-4 都为众鑫短信   5 为188短信   6 为天朝短信   7 为至尊短信
-     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元   15 百家
+     * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元   15 百家  26开元
      */
     @RequestMapping("/getCode")
     private GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
@@ -2211,10 +2119,10 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         //
-        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
-        if(num>0){
-            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
-        }
+//        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
+//        if(num>0){
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
+//        }
         int count = accountsServiceClient.updateUserContactInfo(mobilePhone, qq, eMail, userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(count);
@@ -2341,7 +2249,7 @@ public class MobileInterfaceController {
          if (typeId.equals(10)) {
              for (int i = 0; i < l.size(); i++) {
                  MemberRechargeVO vo = new MemberRechargeVO();
-                 if (!StringUtils.isBlank(vo.getCollectNote())) {
+                 if (!StringUtils.isBlank(l.get(i).getCollectNote())) {
                      vo.setTypeName(l.get(i).getCollectNote());
                  } else {
                      vo.setTypeName(l.get(i).getTypeName());
@@ -2687,55 +2595,56 @@ public class MobileInterfaceController {
         if (parentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Map<String, Object> data = new HashMap<>();
-        List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId, parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
-        Integer sf = accountsServiceClient.getUserLoginRedEnvelope(parentId);   //查询业主是否配置登录红包
-        Integer hby = accountsServiceClient.getUserRedEnvelopeRain(parentId);   //查询业主是否配置红包雨
-        RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
-        RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
-        Long currentTime = agentServiceClient.getCurrentDate();
-        if (hby > 0) {
-            if (v != null) {
-                redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
-                redVO.setStatus(0);        //当天有红包雨活动 开始倒计时
-                redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
-                redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
-                redVO.setCurrentTime(currentTime * 1000);
-                redVO.setActivityId(v.getEventId());
-            }
-            if (v == null) {
-                v = agentServiceClient.getTomorrowRedEnvelopeSain(parentId);
-                if (v != null) {
-                    redVO.setStatus(0);        //获取第二天红包雨
-                    redVO.setDayStartTime(v.getDayStartTime() * 1000);
-                    redVO.setDayEndTime(v.getDayEndTime() * 1000);
-                    redVO.setCurrentTime(currentTime * 1000);
-                    redVO.setActivityId(v.getEventId());
-                }
-            }
-            if (v != null) {
-                RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
-                if (v1 != null) {
-                    int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
-                    if (count1 < 1) {
-                        count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
-                        if (count1 < v1.getLimitedNumber()) {
-                            redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
-                            redVO.setStatus(2);      //红包雨可领取状态
-                            redVO.setActivityId(v1.getEventId());
-                            redVO.setCurrentTime(currentTime * 1000);
-                        }
-                    }
-                } else {
-                    redVO.setRedAmount(0);
-                }
-            } else {
-                redVO.setStatus(1);   //活动已结束
-            }
-        } else {
-            redVO.setStatus(4);    //状态为4  客户端不展示红包雨
-        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	Map<String, Object> data = new HashMap<>();
+    	List<ActivityRedEnvelopeVO> list = accountsServiceClient.getRedEnvelope(userId,parentId);//获取取每日充值、累计充值、每日打码、累计打码 红包
+    	Integer sf = accountsServiceClient.getUserLoginRedEnvelope(parentId);   //查询业主是否配置登录红包
+    	Integer hby = accountsServiceClient.getUserRedEnvelopeRain(parentId);   //查询业主是否配置红包雨
+    	RedEnvelopeVO v = agentServiceClient.getRedEnvelopeSain(parentId);   //是否有红包雨活动
+    	RedEnvepoleYuStartTimeAndEndTimeVO redVO = new RedEnvepoleYuStartTimeAndEndTimeVO();
+    	Long currentTime = agentServiceClient.getCurrentDate();
+    	if(hby > 0) {
+    		if(v != null) {
+    			redVO = agentServiceClient.getRedEnvepoleYuStartTimeAndEndTime(parentId, v.getEventId());
+        		redVO.setStatus(0);		//当天有红包雨活动 开始倒计时
+        		redVO.setDayStartTime(redVO.getDayStartTime() * 1000);
+        		redVO.setDayEndTime(redVO.getDayEndTime() * 1000);
+        		redVO.setCurrentTime(currentTime * 1000);
+        		redVO.setActivityId(v.getEventId());
+    		}
+    		if(v == null) {
+    			v = agentServiceClient.getTomorrowRedEnvelopeSain(parentId);
+    			if(v !=null) {
+    				redVO.setStatus(0);		//获取第二天红包雨
+            		redVO.setDayStartTime(v.getDayStartTime() * 1000);
+            		redVO.setDayEndTime(v.getDayEndTime() * 1000);
+            		redVO.setCurrentTime(currentTime * 1000);
+            		redVO.setActivityId(v.getEventId());
+    			}
+    		}
+    		if(v != null) {
+        		RedEnvelopeVO v1 = agentServiceClient.getRedEnvelope(parentId);
+            	if(v1 != null) {
+            		int count1 = agentServiceClient.userSingleRedEnvelopeCount(userId, parentId, v1.getEventId());
+            		if(count1 < 1) {
+            			count1 = agentServiceClient.todayRedEnvelopeRainCount(v1.getEventId(), parentId);
+            			if(count1 < v1.getLimitedNumber()) {
+            				redVO.setRedAmount(1);   //客户端十分钟请求一次  如果金额大于0  APP右上角红包抖动
+            				redVO.setStatus(2);      //红包雨可领取状态
+            				redVO.setActivityId(v1.getEventId());
+            				redVO.setCurrentTime(currentTime * 1000);
+            			}
+            		}
+            	}else {
+            		redVO.setRedAmount(0);
+            	}
+
+        	}else {
+        		redVO.setStatus(1);   //活动已结束
+        	}
+    	}else {
+    		redVO.setStatus(4);    //状态为4  客户端不展示红包雨
+    	}
 
         LoginRedEnvepoleStatusVO vo = new LoginRedEnvepoleStatusVO();
         if (sf > 0) {
@@ -2949,7 +2858,7 @@ public class MobileInterfaceController {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
         Boolean flag = accountsServiceClient.saveBankCardRawData(userId, gameId, agentId, bankNo, bankName, compellation, bankAddress);
         if (!flag) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "保存失败");
+            throw new GlobeException(SystemConstants.FAIL_CODE, "保存成功,如果问题,请联系客服");
         }
         return globeResponse;
     }
@@ -3059,5 +2968,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
     // ----------------签到奖励 end---------------------
+
 
 }

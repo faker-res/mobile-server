@@ -1,8 +1,6 @@
 package com.lzkj.mobile.client;
 
 import com.lzkj.mobile.vo.*;
-
-import javafx.beans.binding.BooleanBinding;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
