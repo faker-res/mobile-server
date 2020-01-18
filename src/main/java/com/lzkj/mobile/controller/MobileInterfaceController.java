@@ -2858,7 +2858,7 @@ public class MobileInterfaceController {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
         Boolean flag = accountsServiceClient.saveBankCardRawData(userId, gameId, agentId, bankNo, bankName, compellation, bankAddress);
         if (!flag) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "保存失败");
+            throw new GlobeException(SystemConstants.FAIL_CODE, "保存成功,如果问题,请联系客服");
         }
         return globeResponse;
     }
