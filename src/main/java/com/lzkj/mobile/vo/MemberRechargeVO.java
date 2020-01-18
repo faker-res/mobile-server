@@ -1,8 +1,8 @@
 package com.lzkj.mobile.vo;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 public class MemberRechargeVO {
@@ -12,4 +12,5 @@ public class MemberRechargeVO {
 	private BigDecimal expenditureScore = BigDecimal.ZERO;
 	private String collectDate;
 	private String typeName;
+	private String collectNote;
 }

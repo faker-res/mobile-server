@@ -1,9 +1,9 @@
 package com.lzkj.mobile.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
-
-import lombok.Data;
 
 @Data
 public class AgentMobileKindConfigVO implements Serializable{
@@ -23,4 +23,5 @@ public class AgentMobileKindConfigVO implements Serializable{
     private Integer subscript;
     private String iconImgUrl;
     private int resVersion;
+    private int bidPackageStatus;
 }

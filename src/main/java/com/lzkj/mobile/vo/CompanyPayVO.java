@@ -21,4 +21,7 @@ public class CompanyPayVO {
     private String limitRecord;
     private String remark;
     private List<Integer> channelLevelId;
+    private String coinUrl;//icon
+    private String subject;//教程标题
+    private String content;//教程内容
 }

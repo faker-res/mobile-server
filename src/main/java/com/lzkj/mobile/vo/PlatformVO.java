@@ -1,9 +1,9 @@
 package com.lzkj.mobile.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
-
-import lombok.Data;
 
 @Data
 public class PlatformVO implements Serializable{
@@ -20,4 +20,5 @@ public class PlatformVO implements Serializable{
 	private Integer gameTypeItem;
 	private Integer kindMark;
 	private List<AgentMobileKindConfigVO> list;
+	private Integer bidPackageStatus;
 }

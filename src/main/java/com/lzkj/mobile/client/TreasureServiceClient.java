@@ -1,17 +1,15 @@
 package com.lzkj.mobile.client;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.vo.*;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "treasure-service")
 public interface TreasureServiceClient {
@@ -85,7 +83,7 @@ public interface TreasureServiceClient {
 	 * @return
 	 */
 	@RequestMapping("treasure/mobile/getCompanyPay")
-	List<CompanyPayVO> getCompanyPay(@RequestParam("agentId") Integer agentId);
+	List<CompanyPayVO> getCompanyPay(@RequestParam("userId") Integer userId,@RequestParam("agentId") Integer agentId);
 
 	/**
 	 * 获取公司支付类型
@@ -254,6 +252,11 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/winAndLose")
     TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 
-
+	// ------------------------第三方APP支付 start--------------------------------
+	@RequestMapping("/treasure/mobile/getThirdAppPayConfigList")
+	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
+	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
+	// ------------------------第三方APP支付 end--------------------------------
 }
 

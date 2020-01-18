@@ -1,14 +1,14 @@
 package com.lzkj.mobile.client;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "accounts-service")
 public interface AccountsServiceClient {
@@ -62,6 +62,15 @@ public interface AccountsServiceClient {
     //查询当前用户上级代理佣金
     @RequestMapping("accounts/mobile/queryRegisterMobile")
     Integer queryRegisterMobile(@RequestParam("phone") String phone);
+
+    /**
+     * 此手机号在同一业主名下是否有注册过
+     * @param phone
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("accounts/mobile/queryRegisterMobile")
+    Integer queryRegisterMobile(@RequestParam("phone") String phone,@RequestParam("agentId") String agentId);
 
     @RequestMapping("accounts/mobile/getMyDirectlyPlayer")
     Integer getMyDirectlyPlayer(@RequestParam("userId") Integer userId);
@@ -181,5 +190,8 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+
+    @RequestMapping("/accounts/mobile/getGameNews")
+    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId, @RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
 
 }
