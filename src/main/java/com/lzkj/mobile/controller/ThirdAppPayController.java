@@ -2,7 +2,9 @@ package com.lzkj.mobile.controller;
 
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.vo.*;
+import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.ThirdAppPayConfigVO;
+import com.lzkj.mobile.vo.ThirdAppPayRecordVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

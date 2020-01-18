@@ -16,7 +16,7 @@
             <fileNamePattern>${LOG_HOME}/${LOG_PREFIX}-info-%d{yyyyMMdd}-%i.log</fileNamePattern>
             <!-- 单个日志文件最多500MB, 30天的日志周期，最大不能超过20GB -->
             <maxFileSize>100MB</maxFileSize>
-            <maxHistory>2</maxHistory>
+            <maxHistory>30</maxHistory>
             <totalSizeCap>20GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
