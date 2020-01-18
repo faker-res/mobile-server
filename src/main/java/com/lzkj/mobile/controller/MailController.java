@@ -42,7 +42,8 @@ public class MailController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
         }
         //获取该用户可以看的邮件
-        List<MailVO> lists = accountsServiceClient.getMailsInfo(gameId, agentId);
+        List<MailVO> lists = new ArrayList<MailVO>(); 
+        //accountsServiceClient.getMailsInfo(gameId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(lists);
         log.info("/getMailsInfo,耗时:{}", System.currentTimeMillis() - startMillis);
@@ -65,7 +66,8 @@ public class MailController {
         if (!flag) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "读取邮件失败");
         }
-        List<MailVO> mailsVO =accountsServiceClient.getOpenMailList(ids);
+        List<MailVO> mailsVO = new ArrayList<MailVO>();
+        //accountsServiceClient.getOpenMailList(ids);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(mailsVO);
         return globeResponse;
@@ -80,7 +82,8 @@ public class MailController {
     	for (int i = 0; i < id.length; i++) {
     		ids.add(id[i]);
 		}
-        Boolean flag= accountsServiceClient.deleteMail(ids);
+        Boolean flag= true; 
+        //accountsServiceClient.deleteMail(ids);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(flag);
         return globeResponse;
@@ -97,7 +100,8 @@ public class MailController {
         if (gameId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
         }
-        int count= accountsServiceClient.totalMail(gameId, agentId);
+        int count= 0; 
+        //accountsServiceClient.totalMail(gameId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(count);
         return globeResponse;
