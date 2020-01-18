@@ -125,7 +125,7 @@ public class CompanyPayConterller {
     @RequestMapping("/insertRecord")
     private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
                                        String remarks, String account) {
-        if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
+    	if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         RedisLock redisLock = new RedisLock(RedisKeyPrefix.payLock(""+userId+orderAmount), redisTemplate, 10);
@@ -136,7 +136,23 @@ public class CompanyPayConterller {
         }
         try {
             Map map = new HashMap();
-            map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
+            String payName = "";
+            Integer type = null;
+            if (0 <= payId && payId <= 6) {
+                switch (payId) {
+                    case 0 : payName = "AliPay"; break;
+                    case 1 : payName = "WeChatPay";break;
+                    case 2 : payName = "BankPay";break;
+                    case 3 : payName = "CloudPay";break;
+                    case 4 : payName = "QQPay";break;
+                    case 5 : payName = "JinDongPay";break;
+                    case 6 : payName = "redPwd";break;
+                }
+               // type =  treasureServiceClient.getPayId(agentId,payName);
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId,payId, orderAmount, remarks, account);
+            } else {
+                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
+            }
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
             String mag = "";
