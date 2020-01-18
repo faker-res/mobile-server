@@ -2119,10 +2119,10 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         //
-        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
-        if(num>0){
-            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
-        }
+//        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
+//        if(num>0){
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
+//        }
         int count = accountsServiceClient.updateUserContactInfo(mobilePhone, qq, eMail, userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(count);
