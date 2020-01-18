@@ -117,7 +117,7 @@ public class CompanyPayConterller {
      * @param agentId
      * @param userId
      * @param gameId
-     * @param payId
+     * @param payId  此处的payid 是指：通道id, 不是公司充值配置id
      * @param orderAmount
      * @param remarks
      * @return
@@ -136,23 +136,7 @@ public class CompanyPayConterller {
         }
         try {
             Map map = new HashMap();
-            String payName = "";
-            Integer type = null;
-            if (0 <= payId && payId <= 6) {
-                switch (payId) {
-                    case 0 : payName = "AliPay"; break;
-                    case 1 : payName = "WeChatPay";break;
-                    case 2 : payName = "BankPay";break;
-                    case 3 : payName = "CloudPay";break;
-                    case 4 : payName = "QQPay";break;
-                    case 5 : payName = "JinDongPay";break;
-                    case 6 : payName = "redPwd";break;
-                }
-               // type =  treasureServiceClient.getPayId(agentId,payName);
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId,payId, orderAmount, remarks, account);
-            } else {
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
-            }
+            map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
             String mag = "";
