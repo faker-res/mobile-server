@@ -2249,7 +2249,7 @@ public class MobileInterfaceController {
          if (typeId.equals(10)) {
              for (int i = 0; i < l.size(); i++) {
                  MemberRechargeVO vo = new MemberRechargeVO();
-                 if (!StringUtils.isBlank(vo.getCollectNote())) {
+                 if (!StringUtils.isBlank(l.get(i).getCollectNote())) {
                      vo.setTypeName(l.get(i).getCollectNote());
                  } else {
                      vo.setTypeName(l.get(i).getTypeName());
