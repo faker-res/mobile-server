@@ -234,6 +234,22 @@ public interface TreasureServiceClient {
 	@RequestMapping("/agentControl/getLuckyOrderConfig")
 	LuckyOrderConfigVO getLuckyOrderConfig(@RequestParam("agentId")Integer agentId);
 
+	/**
+	 * 查询幸运注单
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param prizeState
+	 * @param applyState
+	 * @param agentId
+	 * @param userId
+	 * @param startDate
+	 * @param endDate
+	 * @param kindId
+	 * @param kindType
+	 * @param gameId
+	 * @return
+	 */
 	@RequestMapping("/agentControl/getLuckyOrderInfoList")
 	CommonPageVO<LuckyOrderInfoVO> getLuckyOrderInfoList(
 			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
@@ -245,6 +261,12 @@ public interface TreasureServiceClient {
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
 	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
+	/**
+	 * 手动申请幸运注单奖励
+	 *
+	 * @param vo
+	 * @return
+	 */
 	@RequestMapping("/agentControl/applyLuckyOrderInfo")
 	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
