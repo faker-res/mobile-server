@@ -105,7 +105,7 @@ public class LuckyOrderController {
 
         CommonPageVO<LuckyOrderInfoVO> list = treasureServiceClient.getLuckyOrderInfoList(pageIndex, pageSize,
                 prizeState,  applyState,0, userId, startDate, endDate,kindId,kindType,gameId);
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>(100);
         if(list==null){
             data.put("list", new ArrayList());
             data.put("total", 0);
