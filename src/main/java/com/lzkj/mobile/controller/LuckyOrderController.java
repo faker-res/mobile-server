@@ -1,6 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -10,11 +9,9 @@ import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +102,7 @@ public class LuckyOrderController {
 
         CommonPageVO<LuckyOrderInfoVO> list = treasureServiceClient.getLuckyOrderInfoList(pageIndex, pageSize,
                 prizeState,  applyState,0, userId, startDate, endDate,kindId,kindType,gameId);
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>(100);
         if(list==null){
             data.put("list", new ArrayList());
             data.put("total", 0);

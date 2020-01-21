@@ -56,6 +56,7 @@ public class LuckyOrderInfoVO {
     private String remark	;
     private Date createTime;
     private Date updateTime;
+    private Date applyDate;
     /**
      * 游戏分类
      */
