@@ -157,5 +157,14 @@ public interface PlatformServiceClient {
 	List<SignAwardConfig> getUserSignAwardConfigList(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
 	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
 	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
+
+	/**
+	 * 未领取福利统计
+	 * @param agentId
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/platform/mobile/getTaskinfoCount")
+	Integer getTaskinfoCount(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId);
 }
 
