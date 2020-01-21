@@ -843,6 +843,7 @@ public class AgentSystemController {
         data.put("gameUrlList", gameUrl);
         String[] huodong = huodongurl.split(",");
         data.put("huodongurl", huodong);
+        data.put("domainFont", agentAccVO.getDomainFont());
         for (AgentSystemStatusInfoVO vo : agentSystemList) {
             //是否系统维护
             if (!flag) {
