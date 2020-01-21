@@ -100,7 +100,7 @@ public interface AccountsServiceClient {
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
 
     @RequestMapping("/accounts/mobile/getMailsInfo")
-    List<MailVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    List<InternalMessageVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/openMail")
     Boolean openMail(@RequestParam("ids") List<Integer> ids);
@@ -162,7 +162,7 @@ public interface AccountsServiceClient {
 
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
-    List<MailVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
+    List<InternalMessageVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
     RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);
