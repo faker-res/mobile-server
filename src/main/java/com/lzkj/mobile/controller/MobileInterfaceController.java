@@ -2932,6 +2932,17 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    /**
+     * 未领取福利统计
+     * @param agentId
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getTaskinfoCount")
+    public Integer getTaskinfoCount(Integer agentId, Integer userId){
+        return  platformServiceClient.getTaskinfoCount(agentId,userId);
+    }
+
     @RequestMapping("/acceptUserSignAward")
     public GlobeResponse<String> acceptUserSignAward(Integer agentId, Integer userId) {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
