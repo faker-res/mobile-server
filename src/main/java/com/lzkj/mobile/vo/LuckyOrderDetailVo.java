@@ -41,7 +41,7 @@ public class LuckyOrderDetailVo {
     /**
      * 开奖结果
      */
-    private BigDecimal resultScore;
+    private BigDecimal prizeAmount;
 
 
 }
