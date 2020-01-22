@@ -264,11 +264,17 @@ public interface TreasureServiceClient {
 	/**
 	 * 幸运注单明细
 	 *
-	 * @param param
+	 * @param agentId
+	 * @param userId
+	 * @param pageIndex
+	 * @param pageSize
 	 * @return
 	 */
-	@RequestMapping("/luckyOrderDetailList")
-	CommonPageVO<LuckyOrderDetailVo> luckyOrderDetailList(Map<String, Object> param);
+	@RequestMapping("/agentControl/luckyOrderDetailList")
+	CommonPageVO<LuckyOrderDetailVo> luckyOrderDetailList(@RequestParam("agentId") Integer agentId,
+														  @RequestParam("userId") Integer userId,
+														  @RequestParam("pageIndex") Integer pageIndex,
+														  @RequestParam("pageSize") Integer pageSize);
 
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
 	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
