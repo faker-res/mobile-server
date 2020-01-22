@@ -117,6 +117,28 @@ public class LuckyOrderController {
     }
 
     /**
+     * 幸运注单明细
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping("/luckyOrderDetailList")
+    public GlobeResponse<Object> luckyOrderDetailList(Map<String, Object> param) {
+        CommonPageVO<LuckyOrderDetailVo> pageVO = treasureServiceClient.luckyOrderDetailList(param);
+        Map<String, Object> data = new HashMap<>(100);
+        if(pageVO == null){
+            data.put("list", new ArrayList());
+            data.put("total", 0);
+        }else{
+            data.put("list", pageVO.getLists());
+            data.put("total", pageVO.getRecordCount());
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
+
+    /**
      * 手动领奖
      */
     @RequestMapping("/receiveLuckyOrderInfo")
