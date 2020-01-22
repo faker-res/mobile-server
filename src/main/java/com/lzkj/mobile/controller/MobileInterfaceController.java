@@ -2909,7 +2909,12 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 查询游戏公告
+     * 游戏公告
+     *
+     * @param agentId
+     * @param pageIndex
+     * @param pageSize
+     * @return
      */
     @RequestMapping("/getGameNews")
     private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId, Integer pageIndex, Integer pageSize) {
