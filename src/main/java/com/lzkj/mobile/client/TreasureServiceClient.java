@@ -271,12 +271,22 @@ public interface TreasureServiceClient {
 	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
     // -------------------幸运注单 end-----------------------
+
     @RequestMapping("/treasure/mobile/winAndLose")
     TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 
 	// ------------------------第三方APP支付 start--------------------------------
+
+	/**
+	 * 第三方APP支付
+	 *
+	 * @param agentId
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping("/treasure/mobile/getThirdAppPayConfigList")
 	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
 	// ------------------------第三方APP支付 end--------------------------------
