@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author xxx
+ */
 @FeignClient(name = "treasure-service")
 public interface TreasureServiceClient {
 
@@ -258,6 +261,15 @@ public interface TreasureServiceClient {
 			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,
 			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,@RequestParam("gameId")Integer gameId);
 
+	/**
+	 * 幸运注单明细
+	 *
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping("/luckyOrderDetailList")
+	CommonPageVO<LuckyOrderDetailVo> luckyOrderDetailList(Map<String, Object> param);
+
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
 	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
@@ -285,10 +297,12 @@ public interface TreasureServiceClient {
 	 * @return
 	 */
 	@RequestMapping("/treasure/mobile/getThirdAppPayConfigList")
-	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,
+													   @RequestParam("userId") Integer userId);
 
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
+	
 	// ------------------------第三方APP支付 end--------------------------------
 }
 

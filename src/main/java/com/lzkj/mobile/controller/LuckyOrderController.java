@@ -1,6 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
@@ -10,11 +9,9 @@ import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +111,28 @@ public class LuckyOrderController {
             data.put("total", list.getRecordCount());
         }
 
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
+
+    /**
+     * 幸运注单明细
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping("/luckyOrderDetailList")
+    public GlobeResponse<Object> luckyOrderDetailList(Map<String, Object> param) {
+        CommonPageVO<LuckyOrderDetailVo> pageVO = treasureServiceClient.luckyOrderDetailList(param);
+        Map<String, Object> data = new HashMap<>(100);
+        if(pageVO == null){
+            data.put("list", new ArrayList());
+            data.put("total", 0);
+        }else{
+            data.put("list", pageVO.getLists());
+            data.put("total", pageVO.getRecordCount());
+        }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
