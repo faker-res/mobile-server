@@ -183,15 +183,34 @@ public interface AccountsServiceClient {
     Integer getUserRedEnvelopeRain(@RequestParam("parentId") Integer parentId);
 
     @RequestMapping("/accounts/mobile/saveBankCardRawData")
-    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
+    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,
+                                @RequestParam("gameId")Integer gameId,
+                                @RequestParam("agentId")Integer agentId,
+                                @RequestParam("bankNo")String bankNo,
+                                @RequestParam("bankName")String bankName,
+                                @RequestParam("compellation")String compellation,
+                                @RequestParam("bankAddress")String bankAddress);
 
     @RequestMapping("/accounts/mobile/getBankCardRawData")
-    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId,
+                                         @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
-    List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+    List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId,
+                                             @RequestParam("beginTime")String beginTime,
+                                             @RequestParam("endTime") String endTime);
 
+    /**
+     * 游戏公告
+     *
+     * @param agentId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/accounts/mobile/getGameNews")
-    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId, @RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId,
+                                   @RequestParam("pageIndex")Integer pageIndex,
+                                   @RequestParam("pageSize") Integer pageSize);
 
 }
