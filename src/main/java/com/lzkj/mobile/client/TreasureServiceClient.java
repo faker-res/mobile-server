@@ -267,7 +267,7 @@ public interface TreasureServiceClient {
 	 * @param param
 	 * @return
 	 */
-	@RequestMapping("/luckyOrderDetailList")
+	@RequestMapping("/agentControl/luckyOrderDetailList")
 	CommonPageVO<LuckyOrderDetailVo> luckyOrderDetailList(Map<String, Object> param);
 
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
