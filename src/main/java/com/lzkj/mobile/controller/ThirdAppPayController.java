@@ -30,7 +30,7 @@ public class ThirdAppPayController {
         List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
         // 过滤掉不可用数据
         configList.stream().forEach(obj -> {
-            if(new Integer(1).equals(obj.getEnableState())){
+            if(new Integer(0).equals(obj.getEnableState())){
                 configListRet.add(obj);
             }
         });
