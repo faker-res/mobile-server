@@ -39,11 +39,18 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
         		) {
         	return true;
         }
-        String signatureKey = redisDao.get(RedisKeyPrefix.getSignatureKey(), String.class);
-        if(signatureKey == null || signatureKey.equals("")) {
-        	signatureKey = "lz-123321.";
-        	redisDao.set(RedisKeyPrefix.getSignatureKey(), signatureKey);
-        }
+        String signatureKey = null;
+        try {
+			signatureKey = redisDao.get(RedisKeyPrefix.getSignatureKey(), String.class);
+			if(signatureKey == null || signatureKey.equals("")) {
+				signatureKey = "lz-123321.";
+				redisDao.set(RedisKeyPrefix.getSignatureKey(), signatureKey);
+			}
+		}catch (Exception e){
+        	e.printStackTrace();
+        	System.out.println("请求异常:"+e.getMessage());
+			throw new GlobeException(SystemConstants.FAIL_CODE, "请求异常");
+		}
 		String signature = request.getParameter("s");
 		if(signature == null) {
 			throw new GlobeException(SystemConstants.FAIL_CODE, "签名错误");
