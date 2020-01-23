@@ -34,7 +34,7 @@ public class ThirdAppPayConfigVO {
      */
     private BigDecimal promotionRate;
     /**
-     * 可用状态：0关闭，1启用
+     * 可用状态：0启用，1关闭
      */
     private Integer enableState;
 
