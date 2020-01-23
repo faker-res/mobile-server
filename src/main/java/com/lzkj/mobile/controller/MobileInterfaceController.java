@@ -2927,22 +2927,30 @@ public class MobileInterfaceController {
     }
 
     // ----------------签到奖励 start--------------------
+
     @RequestMapping("/getSignAwardConfigList")
     public GlobeResponse<Map> getSignAwardConfigList(Integer agentId, Integer userId) {
         GlobeResponse<Map> globeResponse = new GlobeResponse<>();
-        Map responseData = new HashMap();
+        Map responseData = new HashMap(50);
         responseData.put("configList", platformServiceClient.getUserSignAwardConfigList(agentId, userId));
         responseData.put("serverTime", System.currentTimeMillis());
         globeResponse.setData(responseData);
         return globeResponse;
     }
 
+    /**
+     * 签到
+     *
+     * @param agentId
+     * @param userId
+     * @return
+     */
     @RequestMapping("/acceptUserSignAward")
     public GlobeResponse<String> acceptUserSignAward(Integer agentId, Integer userId) {
         GlobeResponse<String> globeResponse = new GlobeResponse<String>();
         RedisLock redisLock = null;
         try {
-            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_" + userId), redisTemplate, 10);
+            redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_" + userId), redisTemplate, 15000);
             Boolean hasLock = redisLock.tryLock();
             if (!hasLock) {
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
