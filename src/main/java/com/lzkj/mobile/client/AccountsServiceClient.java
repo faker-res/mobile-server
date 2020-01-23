@@ -101,13 +101,19 @@ public interface AccountsServiceClient {
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
 
     @RequestMapping("/accounts/mobile/getMailsInfo")
-    List<InternalMessageEntity> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    List<InternalMessageEntity> getMailsInfo(@RequestParam("gameId")Integer gameId);
 
     @RequestMapping("/accounts/mobile/openMail")
     Boolean openMail(@RequestParam("ids") List<Integer> ids);
 
+    @RequestMapping("/accounts/mobile/openAllMail")
+    Boolean openAllMail(@RequestParam("gameId")Integer gameId);
+
     @RequestMapping("/accounts/mobile/deleteMail")
     Boolean deleteMail(@RequestParam("ids") List<Integer> ids);
+
+    @RequestMapping("/accounts/mobile/deleteAllMail")
+    Boolean deleteAllMail(@RequestParam("gameId")Integer gameId);
 
     @RequestMapping("/accounts/mobile/getCollectionName")
     String getGameItem(@RequestParam("kindId") Integer kindId);
