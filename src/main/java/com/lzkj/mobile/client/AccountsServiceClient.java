@@ -1,5 +1,6 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,7 +101,7 @@ public interface AccountsServiceClient {
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
 
     @RequestMapping("/accounts/mobile/getMailsInfo")
-    List<InternalMessageVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    List<InternalMessageEntity> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/openMail")
     Boolean openMail(@RequestParam("ids") List<Integer> ids);
@@ -162,7 +163,7 @@ public interface AccountsServiceClient {
 
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
-    List<InternalMessageVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
+    List<InternalMessageEntity> getOpenMailList(@RequestParam("ids")List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
     RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);

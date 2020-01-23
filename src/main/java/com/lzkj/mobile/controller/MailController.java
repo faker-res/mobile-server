@@ -2,7 +2,9 @@ package com.lzkj.mobile.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.util.bean.BeanUtils;
 import com.lzkj.mobile.vo.GlobeResponse;
 import com.lzkj.mobile.vo.InternalMessageVO;
 import com.lzkj.mobile.vo.MailVO;
@@ -42,9 +44,9 @@ public class MailController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
         }
         //获取该用户可以看的邮件
-        List<InternalMessageVO> lists = accountsServiceClient.getMailsInfo(gameId, agentId);
+        List<InternalMessageEntity> list = accountsServiceClient.getMailsInfo(gameId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(lists);
+        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
         log.info("/getMailsInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
@@ -62,9 +64,9 @@ public class MailController {
         if (!flag) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "读取邮件失败");
         }
-        List<InternalMessageVO> list = accountsServiceClient.getOpenMailList(ids);
+        List<InternalMessageEntity> list = accountsServiceClient.getOpenMailList(ids);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(list);
+        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
         return globeResponse;
 
     }
