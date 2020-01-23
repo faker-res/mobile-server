@@ -155,6 +155,14 @@ public interface PlatformServiceClient {
 
 	@RequestMapping("/agentSystem/setUp/getUserSignAwardConfigList")
 	List<SignAwardConfig> getUserSignAwardConfigList(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
+
+	/**
+	 * 签到
+	 *
+	 * @param agentId
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
 	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
 }
