@@ -29,11 +29,11 @@ public class ThirdAppPayController {
         List<ThirdAppPayConfigVO> configList = treasureServiceClient.getThirdAppPayConfigList(agentId,userId);
         List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
         // 过滤掉不可用数据
-//        configList.stream().forEach(obj -> {
-//            if(new Integer(0).equals(obj.getEnableState())){
-//                configListRet.add(obj);
-//            }
-//        });
+        configList.stream().forEach(obj -> {
+            if(new Integer(0).equals(obj.getEnableState())){
+                configListRet.add(obj);
+            }
+        });
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(configList);
         return globeResponse;
