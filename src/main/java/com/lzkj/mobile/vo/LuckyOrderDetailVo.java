@@ -39,9 +39,12 @@ public class LuckyOrderDetailVo {
     private Date createTime;
 
     /**
-     * 开奖结果
+     * 派奖金额
      */
     private BigDecimal prizeAmount;
 
-
+    /**
+     * 派奖方式：1自动，2人工(来自配置)
+     */
+    private Integer prizeType;
 }
