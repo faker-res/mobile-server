@@ -1,5 +1,6 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,7 +101,7 @@ public interface AccountsServiceClient {
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
 
     @RequestMapping("/accounts/mobile/getMailsInfo")
-    List<MailVO> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    List<InternalMessageEntity> getMailsInfo(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/openMail")
     Boolean openMail(@RequestParam("ids") List<Integer> ids);
@@ -162,7 +163,7 @@ public interface AccountsServiceClient {
 
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
-    List<MailVO> getOpenMailList(@RequestParam("ids")List<Integer> ids);
+    List<InternalMessageEntity> getOpenMailList(@RequestParam("ids")List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
     RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);
@@ -183,15 +184,34 @@ public interface AccountsServiceClient {
     Integer getUserRedEnvelopeRain(@RequestParam("parentId") Integer parentId);
 
     @RequestMapping("/accounts/mobile/saveBankCardRawData")
-    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId, @RequestParam("bankNo")String bankNo, @RequestParam("bankName")String bankName, @RequestParam("compellation")String compellation, @RequestParam("bankAddress")String bankAddress);
+    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,
+                                @RequestParam("gameId")Integer gameId,
+                                @RequestParam("agentId")Integer agentId,
+                                @RequestParam("bankNo")String bankNo,
+                                @RequestParam("bankName")String bankName,
+                                @RequestParam("compellation")String compellation,
+                                @RequestParam("bankAddress")String bankAddress);
 
     @RequestMapping("/accounts/mobile/getBankCardRawData")
-    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId,
+                                         @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
-    List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
+    List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId,
+                                             @RequestParam("beginTime")String beginTime,
+                                             @RequestParam("endTime") String endTime);
 
+    /**
+     * 游戏公告
+     *
+     * @param agentId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/accounts/mobile/getGameNews")
-    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId, @RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
+    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId,
+                                   @RequestParam("pageIndex")Integer pageIndex,
+                                   @RequestParam("pageSize") Integer pageSize);
 
 }

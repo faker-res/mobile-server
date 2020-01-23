@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author xxx
+ */
 @FeignClient(name = "treasure-service")
 public interface TreasureServiceClient {
 
@@ -234,6 +237,22 @@ public interface TreasureServiceClient {
 	@RequestMapping("/agentControl/getLuckyOrderConfig")
 	LuckyOrderConfigVO getLuckyOrderConfig(@RequestParam("agentId")Integer agentId);
 
+	/**
+	 * 查询幸运注单
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param prizeState
+	 * @param applyState
+	 * @param agentId
+	 * @param userId
+	 * @param startDate
+	 * @param endDate
+	 * @param kindId
+	 * @param kindType
+	 * @param gameId
+	 * @return
+	 */
 	@RequestMapping("/agentControl/getLuckyOrderInfoList")
 	CommonPageVO<LuckyOrderInfoVO> getLuckyOrderInfoList(
 			@RequestParam("pageIndex")Integer pageIndex,@RequestParam("pageSize")Integer pageSize,
@@ -242,21 +261,54 @@ public interface TreasureServiceClient {
 			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,
 			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,@RequestParam("gameId")Integer gameId);
 
+	/**
+	 * 幸运注单明细
+	 *
+	 * @param agentId
+	 * @param userId
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping("/agentControl/luckyOrderDetailList")
+	CommonPageVO<LuckyOrderDetailVo> luckyOrderDetailList(@RequestParam("agentId") Integer agentId,
+														  @RequestParam("userId") Integer userId,
+														  @RequestParam("pageIndex") Integer pageIndex,
+														  @RequestParam("pageSize") Integer pageSize);
+
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
 	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
+	/**
+	 * 手动申请幸运注单奖励
+	 *
+	 * @param vo
+	 * @return
+	 */
 	@RequestMapping("/agentControl/applyLuckyOrderInfo")
 	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
     // -------------------幸运注单 end-----------------------
+
     @RequestMapping("/treasure/mobile/winAndLose")
     TodayWinOrLoseVO winAndLose(@RequestParam("userId")Integer userId, @RequestParam("beginTime")String beginTime,@RequestParam("endTime") String endTime);
 
 	// ------------------------第三方APP支付 start--------------------------------
+
+	/**
+	 * 第三方APP支付
+	 *
+	 * @param agentId
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping("/treasure/mobile/getThirdAppPayConfigList")
-	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,@RequestParam("userId") Integer userId);
+	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,
+													   @RequestParam("userId") Integer userId);
+
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
+
 	// ------------------------第三方APP支付 end--------------------------------
 }
 

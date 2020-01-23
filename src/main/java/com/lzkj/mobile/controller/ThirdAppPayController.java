@@ -29,11 +29,11 @@ public class ThirdAppPayController {
         List<ThirdAppPayConfigVO> configList = treasureServiceClient.getThirdAppPayConfigList(agentId,userId);
         List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
         // 过滤掉不可用数据
-        configList.stream().forEach(obj -> {
-            if(new Integer(1).equals(obj.getEnableState())){
-                configListRet.add(obj);
-            }
-        });
+//        configList.stream().forEach(obj -> {
+//            if(new Integer(0).equals(obj.getEnableState())){
+//                configListRet.add(obj);
+//            }
+//        });
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(configList);
         return globeResponse;
@@ -60,7 +60,7 @@ public class ThirdAppPayController {
                 globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
-                globeResponse.setMsg("保存成功");
+                globeResponse.setMsg("充值记录提交成功");
             }
         }catch (Exception e){
             globeResponse.setCode(SystemConstants.FAIL_CODE);

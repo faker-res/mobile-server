@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * 第三方app充值配置
+ *
+ * @author xxx
  */
 @Data
 public class ThirdAppPayConfigVO {
@@ -32,7 +34,7 @@ public class ThirdAppPayConfigVO {
      */
     private BigDecimal promotionRate;
     /**
-     * 可用状态：0关闭，1启用
+     * 可用状态：0启用，1关闭
      */
     private Integer enableState;
 
@@ -42,6 +44,10 @@ public class ThirdAppPayConfigVO {
     private String remark;
     private List<Integer> channelLevelId;
     private String imageUrl;
-    private List<Integer> idList; // web前端用于批量操作
+
+    /**
+     * web前端用于批量操作
+     */
+    private List<Integer> idList;
 
 }
