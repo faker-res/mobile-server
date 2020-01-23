@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * 第三方app充值配置
+ *
+ * @author xxx
  */
 @Data
 public class ThirdAppPayConfigVO {
@@ -42,6 +44,10 @@ public class ThirdAppPayConfigVO {
     private String remark;
     private List<Integer> channelLevelId;
     private String imageUrl;
-    private List<Integer> idList; // web前端用于批量操作
+
+    /**
+     * web前端用于批量操作
+     */
+    private List<Integer> idList;
 
 }
