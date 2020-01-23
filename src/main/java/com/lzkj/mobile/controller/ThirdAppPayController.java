@@ -60,7 +60,7 @@ public class ThirdAppPayController {
                 globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
-                globeResponse.setMsg("保存成功");
+                globeResponse.setMsg("充值记录提交成功");
             }
         }catch (Exception e){
             globeResponse.setCode(SystemConstants.FAIL_CODE);
