@@ -164,7 +164,8 @@ public interface PlatformServiceClient {
 	 * @return
 	 */
 	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
-	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
+	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,
+								   @RequestParam("userId") Integer userId);
 
 	/**
 	 * 未领取福利统计
