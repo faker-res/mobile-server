@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,15 +27,15 @@ public class ThirdAppPayController {
     @RequestMapping("/getThirdAppPayConfigList")
     public GlobeResponse<Object> getThirdAppPayConfigList(Integer agentId,Integer userId){
         List<ThirdAppPayConfigVO> configList = treasureServiceClient.getThirdAppPayConfigList(agentId,userId);
-//        List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
-//        // 过滤掉不可用数据
-//        configList.stream().forEach(obj -> {
-//            if(new Integer(0).equals(obj.getEnableState())){
-//                configListRet.add(obj);
-//            }
-//        });
+        List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
+        // 过滤掉不可用数据
+        configList.stream().forEach(obj -> {
+            if(new Integer(0).equals(obj.getEnableState())){
+                configListRet.add(obj);
+            }
+        });
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(configList);
+        globeResponse.setData(configListRet);
         return globeResponse;
     }
 
