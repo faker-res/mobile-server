@@ -174,11 +174,26 @@ public interface TreasureServiceClient {
 //	@RequestMapping("treasure/mobile/getVipReward")
 //	List<MemberRechargeVO> getVipReward(@RequestParam("userId")Integer userId);
 
-	@RequestMapping("treasure/mobile/getAccountDetails")
-	CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId")Integer userId,@RequestParam("typeId")Integer typeId,@RequestParam("date")Integer date,@RequestParam("pageSize")Integer pageSize,@RequestParam("pageIndex")Integer pageIndex);
+	/**
+	 * 账户明细
+	 *
+	 * @param userId
+	 * @param typeId
+	 * @param date
+	 * @param pageSize
+	 * @param pageIndex
+	 * @return
+	 */
+	@RequestMapping("/treasure/mobile/getAccountDetails")
+	CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId") Integer userId,
+													 @RequestParam("typeId") Integer typeId,
+													 @RequestParam("date") Integer date,
+													 @RequestParam("pageSize") Integer pageSize,
+													 @RequestParam("pageIndex") Integer pageIndex);
 
 	@RequestMapping("treasure/mobile/accountChangeStatistics")
-	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId")Integer userId,@RequestParam("date")Integer date);
+	AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId") Integer userId,
+													  @RequestParam("date") Integer date);
 
 	@RequestMapping("/treasure/mobile/verifyPassword")
 	String verifyPassword(@RequestParam("userId") Integer userId);
@@ -306,6 +321,12 @@ public interface TreasureServiceClient {
 	List<ThirdAppPayConfigVO> getThirdAppPayConfigList(@RequestParam("agentId")Integer agentId,
 													   @RequestParam("userId") Integer userId);
 
+	/**
+	 * 新增第三方APP支付记录
+	 *
+	 * @param vo
+	 * @return
+	 */
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
 

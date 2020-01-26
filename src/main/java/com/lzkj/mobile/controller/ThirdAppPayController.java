@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 第三方APP支付Controller
+ *
+ * @author xxx
+ */
 @RestController
 @RequestMapping("/thirdAppPay")
 @Slf4j
@@ -39,9 +44,25 @@ public class ThirdAppPayController {
         return globeResponse;
     }
 
+    /**
+     * 新增第三方APP支付记录
+     *
+     * @param gameId
+     * @param payType
+     * @param payName
+     * @param orderAmount
+     * @param realAmount
+     * @param reserveMsg
+     * @param userAccount
+     * @param userId
+     * @param agentId
+     * @return
+     */
     @RequestMapping("/insertThirdPayRecord")
-    public GlobeResponse<Object> insertThirdPayRecord(Integer gameId, Integer payType, String payName, BigDecimal orderAmount,
-                                                      BigDecimal realAmount,String reserveMsg,String userAccount,Integer userId,Integer agentId){
+    public GlobeResponse<Object> insertThirdPayRecord(Integer gameId, Integer payType,
+                                                      String payName, BigDecimal orderAmount,
+                                                      BigDecimal realAmount, String reserveMsg,
+                                                      String userAccount, Integer userId, Integer agentId){
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         try{
             ThirdAppPayRecordVO vo = new ThirdAppPayRecordVO();
