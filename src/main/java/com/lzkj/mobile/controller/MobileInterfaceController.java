@@ -2939,6 +2939,17 @@ public class MobileInterfaceController {
     }
 
     /**
+     * 未领取福利统计
+     * @param agentId
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getTaskinfoCount")
+    public Integer getTaskinfoCount(Integer agentId, Integer userId){
+        return  platformServiceClient.getTaskinfoCount(agentId,userId);
+    }
+
+    /**
      * 签到
      *
      * @param agentId
