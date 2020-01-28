@@ -71,7 +71,7 @@ public class ThirdAppPayController {
             vo.setPayType(payType);
             vo.setPayName(payName);
             vo.setOrderAmount(orderAmount);
-            vo.setRealAmount(realAmount);
+            vo.setRealAmount(orderAmount);
             vo.setReserveMsg(reserveMsg);
             vo.setUserAccount(userAccount);
             vo.setAgentId(agentId);
