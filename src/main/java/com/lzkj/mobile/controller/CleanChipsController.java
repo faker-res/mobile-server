@@ -27,6 +27,7 @@ public class CleanChipsController {
 
     /**
      * 1.视讯，2.电子，3.棋牌,4.捕鱼,5.体育,6.彩票
+     *
      * @param userId
      * @param agentId
      * @return
@@ -42,6 +43,7 @@ public class CleanChipsController {
 
     /**
      * 手动洗码
+     *
      * @param userId
      * @param agentId
      * @param vipLevel
