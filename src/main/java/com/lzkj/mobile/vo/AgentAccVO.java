@@ -53,4 +53,8 @@ public class AgentAccVO {
     private String hotVersion;
     private String loadingUrl;//加载页地址
 
+    /**
+     * 域名字体大小  22:22号字体；26:26号字体；30:30号字体
+     */
+    private Integer domainFont;
 }

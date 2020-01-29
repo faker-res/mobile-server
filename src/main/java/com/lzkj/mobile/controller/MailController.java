@@ -2,15 +2,21 @@ package com.lzkj.mobile.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.util.DateTransUtil;
+import com.lzkj.mobile.util.bean.BeanUtils;
 import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.InternalMessageVO;
 import com.lzkj.mobile.vo.MailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -40,10 +46,9 @@ public class MailController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
         }
         //获取该用户可以看的邮件
-        List<MailVO> lists = new ArrayList<MailVO>(); 
-        //accountsServiceClient.getMailsInfo(gameId, agentId);
+        List<InternalMessageEntity> list = accountsServiceClient.getMailsInfo(gameId);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(lists);
+        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO(), (s, t) -> t.setCreateTime(DateTransUtil.dateToStr(s.getCreateTime()))));
         log.info("/getMailsInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
@@ -52,36 +57,55 @@ public class MailController {
      * 查看邮件内容
      */
     @RequestMapping("/openMail")
-    public GlobeResponse openMail(int [] id) {
-        List<Integer> ids = new ArrayList<Integer>();
-        for (int i = 0; i < id.length; i++) {
-            ids.add(id[i]);
-        }
-        if (ids == null || ids.size() == 0) {
+    public GlobeResponse openMail(Integer[] id) {
+        if (id == null || id.length == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "请传入可用的参数");
         }
+        List<Integer> ids = Arrays.asList(id);
         Boolean flag = accountsServiceClient.openMail(ids);
         if (!flag) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "读取邮件失败");
         }
-        List<MailVO> mailsVO = new ArrayList<MailVO>();
-        //accountsServiceClient.getOpenMailList(ids);
+        List<InternalMessageEntity> list = accountsServiceClient.getOpenMailList(ids);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(mailsVO);
+        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
+        return globeResponse;
+    }
+
+    /**
+     * 打开用户所有邮件
+     */
+    @RequestMapping("/openAllMail")
+    public GlobeResponse openAllMail(Integer gameId) {
+        Boolean flag = accountsServiceClient.openAllMail(gameId);
+        if (!flag) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "读取邮件失败");
+        }
+        List<InternalMessageEntity> list = accountsServiceClient.getMailsInfo(gameId);
+        GlobeResponse globeResponse = new GlobeResponse();
+        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
         return globeResponse;
 
     }
+
     /**
      * 删除邮件
      */
     @RequestMapping("/deleteMail")
-    public GlobeResponse deleteMail(int [] id) {
-    	List<Integer> ids = new ArrayList<Integer>();
-    	for (int i = 0; i < id.length; i++) {
-    		ids.add(id[i]);
-		}
-        Boolean flag= true; 
-        //accountsServiceClient.deleteMail(ids);
+    public GlobeResponse deleteMail(Integer [] id) {
+    	List<Integer> ids = Arrays.asList(id);
+        Boolean flag = accountsServiceClient.deleteMail(ids);
+        GlobeResponse globeResponse = new GlobeResponse();
+        globeResponse.setData(flag);
+        return globeResponse;
+    }
+
+    /**
+     * 删除用户所有邮件
+     */
+    @RequestMapping("/deleteAllMail")
+    public GlobeResponse deleteAllMail(Integer gameId) {
+        Boolean flag = accountsServiceClient.deleteAllMail(gameId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(flag);
         return globeResponse;
@@ -98,8 +122,7 @@ public class MailController {
         if (gameId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "玩家游戏ID参数错误");
         }
-        int count= 0; 
-        //accountsServiceClient.totalMail(gameId, agentId);
+        int count = accountsServiceClient.totalMail(gameId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(count);
         return globeResponse;
