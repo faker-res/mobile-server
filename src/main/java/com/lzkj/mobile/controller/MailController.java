@@ -48,9 +48,13 @@ public class MailController {
         //获取该用户可以看的邮件
         List<InternalMessageEntity> list = accountsServiceClient.getMailsInfo(gameId);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO(), (s, t) -> t.setCreateTime(DateTransUtil.dateToStr(s.getCreateTime()))));
+        globeResponse.setData(entityToVo(list));
         log.info("/getMailsInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
+    }
+
+    private List<InternalMessageVO> entityToVo(List<InternalMessageEntity> list){
+        return BeanUtils.copyProperties(list, () -> new InternalMessageVO(), (s, t) -> t.setCreateTime(DateTransUtil.dateToStr(s.getCreateTime())));
     }
 
     /**
@@ -68,7 +72,7 @@ public class MailController {
         }
         List<InternalMessageEntity> list = accountsServiceClient.getOpenMailList(ids);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
+        globeResponse.setData(entityToVo(list));
         return globeResponse;
     }
 
@@ -83,7 +87,7 @@ public class MailController {
         }
         List<InternalMessageEntity> list = accountsServiceClient.getMailsInfo(gameId);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
+        globeResponse.setData(entityToVo(list));
         return globeResponse;
 
     }
