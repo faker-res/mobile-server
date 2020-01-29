@@ -2,6 +2,8 @@ package com.lzkj.mobile.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  *    
  *  *  
@@ -45,5 +47,9 @@ public class InternalMessageVO {
 	 * 状态: -1:删除 0:未读,1:已读
 	 */
 	private Integer status;
+	/**
+	 * 创建时间
+	 */
+	private String createTime;
 
 }

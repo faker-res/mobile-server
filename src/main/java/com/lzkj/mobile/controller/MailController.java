@@ -4,6 +4,7 @@ import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.util.DateTransUtil;
 import com.lzkj.mobile.util.bean.BeanUtils;
 import com.lzkj.mobile.vo.GlobeResponse;
 import com.lzkj.mobile.vo.InternalMessageVO;
@@ -47,7 +48,7 @@ public class MailController {
         //获取该用户可以看的邮件
         List<InternalMessageEntity> list = accountsServiceClient.getMailsInfo(gameId);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO()));
+        globeResponse.setData(BeanUtils.copyProperties(list, () -> new InternalMessageVO(), (s, t) -> t.setCreateTime(DateTransUtil.dateToStr(s.getCreateTime()))));
         log.info("/getMailsInfo,耗时:{}", System.currentTimeMillis() - startMillis);
         return globeResponse;
     }
