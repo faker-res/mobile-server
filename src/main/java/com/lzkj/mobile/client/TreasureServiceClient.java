@@ -303,6 +303,22 @@ public interface TreasureServiceClient {
 	@RequestMapping("/agentControl/applyLuckyOrderInfo")
 	Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
+	/**
+	 * 查询用户是否存在，账户是否冻结
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/accounts/mobile/selectUserInfo")
+	UserInfoVO selectUserInfo(@RequestParam("userId")Integer userId);
+
+	/**
+	 * 查询订单号是否存在
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping("/agentControl/selectUserInfo")
+	Integer selectOrderId(@RequestParam("orderId") String orderId);
+
     // -------------------幸运注单 end-----------------------
 
     @RequestMapping("/treasure/mobile/winAndLose")

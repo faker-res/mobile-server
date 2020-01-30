@@ -1290,12 +1290,39 @@ public class MobileInterfaceController {
 //	    }
 //    	redisDao.set(key, "lock");
 //    	redisDao.expire(key, 3, TimeUnit.SECONDS);
+
+        if(0 == amount.compareTo(BigDecimal.ZERO)  || -1 == amount.compareTo(BigDecimal.ZERO )){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！充值金额不能小于等于0。");
+        }
+        if(0 == qudaoId){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请重试");
+        }
+
+        //查询用户是否存在，账户是否冻结
+        UserInfoVO  userInfoVO = treasureServiceClient.selectUserInfo(userId);
+        if(0 == userInfoVO.getUserId()){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "此用户不存在");
+        }
+        if(1 == userInfoVO.getNullity()){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！您要充值的用户账号暂时处于冻结状态，请联系客户服务中心了解详细情况。");
+        }
+        if(0 != userInfoVO.getStunDown()){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！您要充值的用户账号使用了安全关闭功能，必须重新开通后才能继续使用。");
+        }
+
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
+
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
         OnLineOrderVO onLineOrderVO = new OnLineOrderVO();
 
         onLineOrderVO.setOrderId(GetOrderIDByPrefix("e", userId));  //订单标识 时间+userId
+
+        //判断订单是否存在
+        int num = treasureServiceClient.selectOrderId(onLineOrderVO.getOrderId());
+        if(num>0){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！该订单已存在,请重新充值");
+        }
 
         onLineOrderVO.setOperUserId(userId);                // 操作用户
         onLineOrderVO.setAccounts(account);                 //充值用户
@@ -1305,28 +1332,9 @@ public class MobileInterfaceController {
         onLineOrderVO.setPayInfoId(payInfoVO.getId());
         onLineOrderVO.setPayType(payInfoVO.getPayType());
 
-        //保存订单
-        HashMap map = treasureServiceClient.getRequestOrder(onLineOrderVO);
-        Integer ret = (Integer) map.get("ret");
-        String strErrorDescribe = (String) map.get("strErrorDescribe");
-        String mag = "";
-        if (ret == 1) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
-        }
-        if (ret == 2) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
-        }
-        if (ret == 3) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
-        }
-        if (ret == 4) {
-            mag = strErrorDescribe;
-            throw new GlobeException(SystemConstants.FAIL_CODE, mag);
 
-        } else {
+        String mag = "";
+
 //            StringBuffer url = request.getRequestURL();
 //            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
             String tempContextUrl = mobileInterfaceUrl;
@@ -1348,9 +1356,17 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
-            log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
-            return mag;
-        }
+
+            if( null == mag){
+                throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！网络不稳，请重新下单");
+            }
+            //保存订单
+        HashMap map = treasureServiceClient.getRequestOrder(onLineOrderVO);Integer ret = (Integer) map.get("ret");
+        String strErrorDescribe = (String) map.get("strErrorDescribe");
+
+        log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
+        return mag;
+
     }
 
     /**
