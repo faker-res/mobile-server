@@ -316,7 +316,7 @@ public interface TreasureServiceClient {
 	 * @param orderId
 	 * @return
 	 */
-	@RequestMapping("/agentControl/selectUserInfo")
+	@RequestMapping("/agentControl/selectOrderId")
 	Integer selectOrderId(@RequestParam("orderId") String orderId);
 
     // -------------------幸运注单 end-----------------------
