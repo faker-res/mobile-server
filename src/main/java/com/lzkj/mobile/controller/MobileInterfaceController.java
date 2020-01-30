@@ -1299,7 +1299,9 @@ public class MobileInterfaceController {
         }
 
         //查询用户是否存在，账户是否冻结
-        UserInfoVO  userInfoVO = treasureServiceClient.selectUserInfo(userId);
+        UserInfoVO  userInfoVO = accountsServiceClient.selectUserInfo(userId);
+
+        System.out.println("查到的用记信息"+ userInfoVO);
         if(0 == userInfoVO.getUserId()){
             throw new GlobeException(SystemConstants.FAIL_CODE, "此用户不存在");
         }
@@ -1356,13 +1358,13 @@ public class MobileInterfaceController {
             String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
             log.info("发送到中转中心：" + sendUrl + "?" + params);
             mag = HttpRequest.sendPost(sendUrl, params);
+        log.info("是否请求通了第三方支付：" + mag);
 
-            if( null == mag){
+            if( mag.isEmpty()){
                 throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！网络不稳，请重新下单");
             }
             //保存订单
         HashMap map = treasureServiceClient.getRequestOrder(onLineOrderVO);Integer ret = (Integer) map.get("ret");
-        String strErrorDescribe = (String) map.get("strErrorDescribe");
 
         log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
         return mag;
