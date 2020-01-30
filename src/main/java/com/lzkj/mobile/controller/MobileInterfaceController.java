@@ -1356,7 +1356,7 @@ public class MobileInterfaceController {
         params += "&ownerSign=" + sign;
         String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
         log.info("发送到中转中心：" + sendUrl + "?" + params);
-        
+
         mag = HttpRequest.sendPost(sendUrl, params);
         log.info("是否请求通了第三方支付：" + mag);
 
