@@ -1299,7 +1299,8 @@ public class MobileInterfaceController {
         }
 
         //查询用户是否存在，账户是否冻结
-        UserInfoVO  userInfoVO = treasureServiceClient.selectUserInfo(userId);
+        UserInfoVO  userInfoVO = accountsServiceClient.selectUserInfo(userId);
+
         if(0 == userInfoVO.getUserId()){
             throw new GlobeException(SystemConstants.FAIL_CODE, "此用户不存在");
         }
@@ -1337,32 +1338,33 @@ public class MobileInterfaceController {
 
 //            StringBuffer url = request.getRequestURL();
 //            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
-            String tempContextUrl = mobileInterfaceUrl;
-            Map<String, String> data = new LinkedHashMap<>();
-            data.put("amount", amount.toString());
-            data.put("backUrl", tempContextUrl + "/mobileInterface/payCallBack");
-            data.put("memberId", payInfoVO.getMemberId());
-            data.put("memberKey", payInfoVO.getMemberKey());
-            data.put("ownerId", payOwnerInfo.getOwnerId());
-            data.put("ownerOrderId", onLineOrderVO.getOrderId());
-            data.put("payType", payInfoVO.getPayTypeCode());
-            data.put("appId", payInfoVO.getAppId());
-            String params = getParam(data);
-            String sign = "amount=" + data.get("amount") + "&backUrl=" + data.get("backUrl") + "&memberId=" + data.get("memberId") +
+        String tempContextUrl = mobileInterfaceUrl;
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("amount", amount.toString());
+        data.put("backUrl", tempContextUrl + "/mobileInterface/payCallBack");
+        data.put("memberId", payInfoVO.getMemberId());
+        data.put("memberKey", payInfoVO.getMemberKey());
+        data.put("ownerId", payOwnerInfo.getOwnerId());
+        data.put("ownerOrderId", onLineOrderVO.getOrderId());
+        data.put("payType", payInfoVO.getPayTypeCode());
+        data.put("appId", payInfoVO.getAppId());
+        String params = getParam(data);
+        String sign = "amount=" + data.get("amount") + "&backUrl=" + data.get("backUrl") + "&memberId=" + data.get("memberId") +
                     "&memberKey=" + data.get("memberKey") + "&ownerId=" + data.get("ownerId") + "&ownerOrderId=" + data.get("ownerOrderId") +
                     "&payType=" + data.get("payType") + "&appId=" + data.get("appId");
-            sign = MD5Encode(sign + payOwnerInfo.getOwnerKey(), "utf-8");
-            params += "&ownerSign=" + sign;
-            String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
-            log.info("发送到中转中心：" + sendUrl + "?" + params);
-            mag = HttpRequest.sendPost(sendUrl, params);
+        sign = MD5Encode(sign + payOwnerInfo.getOwnerKey(), "utf-8");
+        params += "&ownerSign=" + sign;
+        String sendUrl = PayLineCheckJob.PAY_LINE + payInfoVO.getSendUrl();
+        log.info("发送到中转中心：" + sendUrl + "?" + params);
 
-            if( null == mag){
-                throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！网络不稳，请重新下单");
-            }
-            //保存订单
+        mag = HttpRequest.sendPost(sendUrl, params);
+        log.info("是否请求通了第三方支付：" + mag);
+
+        if( mag.isEmpty()){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉！网络不稳，请重新下单");
+        }
+        //保存订单
         HashMap map = treasureServiceClient.getRequestOrder(onLineOrderVO);Integer ret = (Integer) map.get("ret");
-        String strErrorDescribe = (String) map.get("strErrorDescribe");
 
         log.info("中转中心返回：userId={},amount={},qudaoId={}, 内容：{}", userId, amount, qudaoId, mag);
         return mag;
