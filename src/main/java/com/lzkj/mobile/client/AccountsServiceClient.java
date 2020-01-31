@@ -64,15 +64,6 @@ public interface AccountsServiceClient {
     @RequestMapping("accounts/mobile/queryRegisterMobile")
     Integer queryRegisterMobile(@RequestParam("phone") String phone);
 
-
-    /**
-     * 查询用户是否存在，账户是否冻结
-     * @param userId
-     * @return
-     */
-    @RequestMapping("/accounts/mobile/selectUserInfo")
-    UserInfoVO selectUserInfo(@RequestParam("userId")Integer userId);
-
     /**
      * 此手机号在同一业主名下是否有注册过
      * @param phone
