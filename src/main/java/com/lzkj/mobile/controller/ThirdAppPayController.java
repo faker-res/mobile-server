@@ -62,7 +62,8 @@ public class ThirdAppPayController {
     public GlobeResponse<Object> insertThirdPayRecord(Integer gameId, Integer payType,
                                                       String payName, BigDecimal orderAmount,
                                                       BigDecimal realAmount, String reserveMsg,
-                                                      String userAccount, Integer userId, Integer agentId){
+                                                      String userAccount, Integer userId, Integer agentId,
+                                                      Integer id){
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         try{
             ThirdAppPayRecordVO vo = new ThirdAppPayRecordVO();
@@ -75,6 +76,7 @@ public class ThirdAppPayController {
             vo.setReserveMsg(reserveMsg);
             vo.setUserAccount(userAccount);
             vo.setAgentId(agentId);
+            vo.setId(id);
             Boolean success = treasureServiceClient.insertThirdPayRecord(vo);
             if(!success){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
