@@ -329,7 +329,7 @@ public interface TreasureServiceClient {
 	 */
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
-
+	
 	// ------------------------第三方APP支付 end--------------------------------
 }
 
