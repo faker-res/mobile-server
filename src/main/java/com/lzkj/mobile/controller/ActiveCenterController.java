@@ -54,5 +54,17 @@ public class ActiveCenterController {
         globeResponse.setData(param);
         return globeResponse;
     }
-
+    
+    /**
+     * 用户触发活动
+     */
+    @RequestMapping("/getActivityByTrigger")
+    public GlobeResponse<Object> getActivityByTrigger(Integer userId,Integer agentId,Integer method,Integer device){
+    	if(userId == 0 || agentId == null || userId == null || agentId == 0 || method == null || method == 0 || device == 0 || device == null) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+    	}
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
+    	globeResponse.setData(nativeWebServiceClient.getActivityByTrigger(userId,agentId,method,device));
+    	return globeResponse;
+    }
 }

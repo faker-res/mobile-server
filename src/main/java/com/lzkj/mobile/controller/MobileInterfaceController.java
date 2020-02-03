@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -1114,10 +1115,12 @@ public class MobileInterfaceController {
         String detailString = detailList.toJSONString();
         long startTime = record.getLongValue("startTime") * 1000;
         long endTime = record.getLongValue("endTime") * 1000;
+        String betDate = TimeUtil.getDate(endTime);
         String shortGameCode = record.getString("gameCode");
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
+        log.info("detail:"+detailList);
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
@@ -1168,6 +1171,12 @@ public class MobileInterfaceController {
                 redisDao.expire(key, 60, TimeUnit.MINUTES);
                 accountsInfos(gr, accountsInfo);
             }
+            if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
+					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
+				log.info("accountsInfo:" + accountsInfo);
+				activityBetAmountAdvance(accountsInfo.getUserId(), accountsInfo.getParentId(), accountsInfo.getLevel(),
+						kindId, dJson.getBigDecimal("betTotal"), betDate, 10000);
+			}
             gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
@@ -1186,10 +1195,11 @@ public class MobileInterfaceController {
                 }
             }
         }
+        log.info("detail执行完毕");
         return globeResponse;
     }
 
-    //设置账户信息
+	//设置账户信息
     private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
         gr.setAccount(accountsInfo.getAccount());
         gr.setH5Account(accountsInfo.getH5Account());
@@ -2993,6 +3003,11 @@ public class MobileInterfaceController {
     }
 
     // ----------------签到奖励 end---------------------
-
-
+    
+    @Async
+    private void activityBetAmountAdvance(Integer userId, Integer parentId, Integer level, Integer kindId,
+			BigDecimal betAmount, String betDate, Integer gameKindId) {
+    	log.info("用户{}开始推动打码活动，参数：kindId:{}，gameKindId:{}，betAmount:{}，parentId:{}，level:{}，betDate:{}",userId,kindId,gameKindId,betAmount,parentId,level,betDate);
+    	nativeWebServiceClient.activityBetAmountAdvanceByTT(userId,parentId,level,kindId,betAmount,betDate,gameKindId);
+	}
 }
