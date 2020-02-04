@@ -2912,17 +2912,15 @@ public class MobileInterfaceController {
      * 游戏公告
      *
      * @param agentId
-     * @param pageIndex
-     * @param pageSize
      * @return
      */
     @RequestMapping("/getGameNews")
-    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId, Integer pageIndex, Integer pageSize) {
+    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(accountsServiceClient.getGameNews(agentId, pageIndex, pageSize));
+        globeResponse.setData(accountsServiceClient.getGameNews(agentId));
         return globeResponse;
     }
 
