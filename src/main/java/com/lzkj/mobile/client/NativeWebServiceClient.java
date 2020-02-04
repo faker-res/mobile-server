@@ -55,10 +55,16 @@ public interface NativeWebServiceClient {
     CommonPageVO<ActivityRecordVO> getApplyList(@RequestParam("userId") Integer userId, @RequestParam("pageIndex") Integer pageIndex,
                                                 @RequestParam("pageSize") Integer pageSize,@RequestParam("kindType")Integer kindType);
     
-    @RequestMapping("nativeWeb/mobile/getActivityByTrigger")
+    @RequestMapping("/nativeWeb/mobile/getActivityByTrigger")
 	Object getActivityByTrigger(@RequestParam("userId")Integer userId, @RequestParam("agentId")Integer agentId, @RequestParam("method")Integer method, @RequestParam("device")Integer device);
     
-    @RequestMapping("nativeweb/manager/active/activityBetAmountAdvanceByTT")
+    @RequestMapping("/nativeweb/manager/active/activityBetAmountAdvanceByTT")
 	void activityBetAmountAdvanceByTT(@RequestParam("userId")Integer userId, @RequestParam("parentId")Integer parentId, @RequestParam("level")Integer level, @RequestParam("kindId")Integer kindId, 
 			@RequestParam("betAmount")BigDecimal betAmount,@RequestParam("betDate")String betDate,@RequestParam("gameKindId") Integer gameKindId);
+    
+    @RequestMapping("/nativeWeb/mobile/getAccountsActivity")
+	Object getAccountsActivity(@RequestParam("userId")Integer userId, @RequestParam("activityId")Integer activityId,@RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/nativeWeb/mobile/getActivityApplication")
+	Object getActivityParameter(@RequestParam("activityId")Integer activityId,@RequestParam("agentId")Integer agentId);
 }

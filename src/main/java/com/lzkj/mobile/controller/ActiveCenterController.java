@@ -67,4 +67,27 @@ public class ActiveCenterController {
     	globeResponse.setData(nativeWebServiceClient.getActivityByTrigger(userId,agentId,method,device));
     	return globeResponse;
     }
+    
+    /**
+     * 根据活动id显示用户的进度
+     */
+    @RequestMapping("/getAccountsActivity")
+    public GlobeResponse<Object> getAccountsActivity(Integer userId,Integer activityId,Integer agentId){
+    	if(null == userId || userId == 0 || null == activityId || activityId == 0 || null == agentId || agentId == 0) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+    	}
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
+    	globeResponse.setData(nativeWebServiceClient.getAccountsActivity(userId,activityId,agentId));
+    	return globeResponse;
+    }
+    
+    @RequestMapping("/getActivityApplication")
+    public GlobeResponse<Object> getActivityApplication(Integer activityId,Integer agentId){
+    	if(null == activityId || activityId == 0 || null == agentId || agentId == 0) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+    	}
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
+    	globeResponse.setData(nativeWebServiceClient.getActivityParameter(activityId,agentId));
+    	return globeResponse;
+    }
 }
