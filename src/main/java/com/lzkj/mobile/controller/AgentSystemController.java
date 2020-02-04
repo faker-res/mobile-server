@@ -733,21 +733,21 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
-        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId, agentId);
-        if (param == null) {
-            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
-            //是否可提现状态
-            userCodeDetailsVO.setStatus(1);
-            //需求打码量
-            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
-            //实际打码量
-            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
-            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
-            globeResponse.setData(userCodeDetailsVO);
-
-
-            return globeResponse;
-        }
+        List<UserCodeDetailsVO> param = this.accountsClient.cashFlowDetails(userId, agentId);
+//        if (param == null) {
+//            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
+//            //是否可提现状态
+//            userCodeDetailsVO.setStatus(1);
+//            //需求打码量
+//            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
+//            //实际打码量
+//            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
+//            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
+//            globeResponse.setData(userCodeDetailsVO);
+//
+//
+//            return globeResponse;
+//        }
         globeResponse.setData(param);
         return globeResponse;
     }
