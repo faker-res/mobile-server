@@ -211,13 +211,9 @@ public interface AccountsServiceClient {
      * 游戏公告
      *
      * @param agentId
-     * @param pageIndex
-     * @param pageSize
      * @return
      */
     @RequestMapping("/accounts/mobile/getGameNews")
-    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId,
-                                   @RequestParam("pageIndex")Integer pageIndex,
-                                   @RequestParam("pageSize") Integer pageSize);
+    List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId);
 
 }
