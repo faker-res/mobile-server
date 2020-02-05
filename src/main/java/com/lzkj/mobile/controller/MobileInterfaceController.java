@@ -544,11 +544,14 @@ public class MobileInterfaceController {
         if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "代理参数错误");
         }
-
         //验证手机号码是否存在黑名单中
         Integer phoneNum = agentServiceClient.getPhoneCount(phone, agentId);
         if (phoneNum > 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "您的手机号码无权限获取，请联系客服！");
+        }
+        //校验手机号是否已在该平台注册
+        if (agentServiceClient.isAlreadyRegister(phone, agentId)) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "该手机号已被使用");
         }
         if (type == null) {
             type = "Register";
