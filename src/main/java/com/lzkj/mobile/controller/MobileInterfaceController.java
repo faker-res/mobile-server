@@ -551,8 +551,12 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "您的手机号码无权限获取，请联系客服！");
         }
         //校验手机号是否已在该平台注册
-        if (agentServiceClient.isAlreadyRegister(phone, agentId)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "该手机号已被使用");
+        if (agentServiceClient.isAlreadyRegister(phone, agentId) && "BindPhone".equals(type)) {
+            GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("该手机号已被使用");
+            globeResponse.setData(phone + ", 该手机号已被使用");
+            return globeResponse;
         }
         if (type == null) {
             type = "Register";
