@@ -554,6 +554,7 @@ public class MobileInterfaceController {
             GlobeResponse<Object> globeResponse = new GlobeResponse<>();
             globeResponse.setCode(SystemConstants.FAIL_CODE);
             globeResponse.setMsg("该手机号已被使用");
+            globeResponse.setData(phone + ", 该手机号已被使用");
             return globeResponse;
         }
         if (type == null) {
