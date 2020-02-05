@@ -551,7 +551,10 @@ public class MobileInterfaceController {
         }
         //校验手机号是否已在该平台注册
         if (agentServiceClient.isAlreadyRegister(phone, agentId)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "该手机号已被使用");
+            GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("该手机号已被使用");
+            return globeResponse;
         }
         if (type == null) {
             type = "Register";
