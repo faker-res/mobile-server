@@ -63,8 +63,12 @@ public interface NativeWebServiceClient {
 			@RequestParam("betAmount")BigDecimal betAmount,@RequestParam("betDate")String betDate,@RequestParam("gameKindId") Integer gameKindId);
     
     @RequestMapping("/nativeWeb/mobile/getAccountsActivity")
-	Object getAccountsActivity(@RequestParam("userId")Integer userId, @RequestParam("activityId")Integer activityId,@RequestParam("agentId")Integer agentId);
+	Object getAccountsActivity(@RequestParam("userId")Integer userId, @RequestParam("activityId")Integer activityId,@RequestParam("agentId")Integer agentId,@RequestParam("ruleType")Integer ruleType);
     
     @RequestMapping("/nativeWeb/mobile/getActivityApplication")
 	Object getActivityParameter(@RequestParam("activityId")Integer activityId,@RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/nativeWeb/mobile/getAccountsApplication")
+	Object getAccountsApplication(@RequestParam("id")Integer id, @RequestParam("userId")Integer userId, @RequestParam("activityId")Integer activityId, @RequestParam("agentId")Integer agentId,
+			@RequestParam("ruleType")Integer ruleType,@RequestParam("ruleId")Integer ruleId,@RequestParam("appDate")String appDate);
 }

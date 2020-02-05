@@ -3,6 +3,7 @@ package com.lzkj.mobile.controller;
 import com.lzkj.mobile.client.NativeWebServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.util.TimeUtil;
 import com.lzkj.mobile.vo.ActivityRecordVO;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GlobeResponse;
@@ -72,12 +73,12 @@ public class ActiveCenterController {
      * 根据活动id显示用户的进度
      */
     @RequestMapping("/getAccountsActivity")
-    public GlobeResponse<Object> getAccountsActivity(Integer userId,Integer activityId,Integer agentId){
-    	if(null == userId || userId == 0 || null == activityId || activityId == 0 || null == agentId || agentId == 0) {
+    public GlobeResponse<Object> getAccountsActivity(Integer userId,Integer activityId,Integer agentId,Integer ruleType){
+    	if(null == userId || userId == 0 || null == activityId || activityId == 0 || null == agentId || agentId == 0 || null == ruleType || ruleType == 0) {
     		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
     	}
     	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
-    	globeResponse.setData(nativeWebServiceClient.getAccountsActivity(userId,activityId,agentId));
+    	globeResponse.setData(nativeWebServiceClient.getAccountsActivity(userId,activityId,agentId,ruleType));
     	return globeResponse;
     }
     
@@ -88,6 +89,17 @@ public class ActiveCenterController {
     	}
     	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
     	globeResponse.setData(nativeWebServiceClient.getActivityParameter(activityId,agentId));
+    	return globeResponse;
+    }
+    
+    @RequestMapping("getAccountsApplication")
+    public GlobeResponse<Object> getAccountsApplication(Integer id,Integer userId,Integer activityId,Integer agentId,Integer ruleType,Integer ruleId){
+    	if(null == activityId || activityId == 0 || null == agentId || agentId == 0 || null == userId || userId == 0 || null == id || id == 0 || null == ruleType || ruleType == 0 || null == ruleId || ruleId == 0) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+    	}
+    	String appDate = TimeUtil.getNow();
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
+    	nativeWebServiceClient.getAccountsApplication(id,userId,activityId,agentId,ruleType,ruleId,appDate);
     	return globeResponse;
     }
 }
