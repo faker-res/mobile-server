@@ -89,11 +89,27 @@ public interface AgentServiceClient {
     List<MyPlayerVO> getAgentMyTeam(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,
                                     @RequestParam("pageSize") Integer pageSize, @RequestParam("pageIndex") Integer pageIndex);
 
-    /**\
+    /**
      * 验证电话号是否存在黑名单
+     *
+     * @param mobilePhone
+     * @param agentId
+     * @return
      */
     @RequestMapping("/agent/mobile/getPhoneCount")
-    Integer getPhoneCount(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("agentId") Integer agentId);
+    Integer getPhoneCount(@RequestParam("mobilePhone") String mobilePhone,
+                          @RequestParam("agentId") Integer agentId);
+
+    /**
+     * 校验该手机号是否已经在平台注册过
+     *
+     * @param phone
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/agent/mobile/isAlreadyRegister")
+    boolean isAlreadyRegister(@RequestParam("phone") String phone,
+                              @RequestParam("agentId") Integer agentId);
 
     @RequestMapping("/agent/mobile/getBindMobileSendInfo")
     List<AgentSystemStatusInfoVO> getBindMobileSendInfo(@RequestParam("agentId") Integer agentId);
