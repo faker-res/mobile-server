@@ -128,7 +128,7 @@ public class MailController {
         }
         int count = accountsServiceClient.totalMail(gameId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(count);
+        globeResponse.setData(count > 30 ? 30 : count);
         return globeResponse;
     }
 }
