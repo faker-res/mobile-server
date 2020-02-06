@@ -69,6 +69,6 @@ public interface NativeWebServiceClient {
 	Object getActivityParameter(@RequestParam("activityId")Integer activityId,@RequestParam("agentId")Integer agentId);
     
     @RequestMapping("/nativeWeb/mobile/getAccountsApplication")
-	Object getAccountsApplication(@RequestParam("id")Integer id, @RequestParam("userId")Integer userId, @RequestParam("activityId")Integer activityId, @RequestParam("agentId")Integer agentId,
-			@RequestParam("ruleType")Integer ruleType,@RequestParam("ruleId")Integer ruleId,@RequestParam("appDate")String appDate);
+	String getAccountsApplication(@RequestParam("id")Integer id, @RequestParam("userId")Integer userId, @RequestParam("activityId")Integer activityId, @RequestParam("agentId")Integer agentId,
+			@RequestParam("ruleType")Integer ruleType,@RequestParam("ruleId")Integer ruleId,@RequestParam("appDate")String appDate,@RequestParam("ip")String ip);
 }
