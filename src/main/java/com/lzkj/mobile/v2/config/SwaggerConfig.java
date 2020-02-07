@@ -1,4 +1,4 @@
-package com.lzkj.mobile.config;
+package com.lzkj.mobile.v2.config;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
