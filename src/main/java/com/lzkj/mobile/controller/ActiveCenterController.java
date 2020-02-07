@@ -1,25 +1,31 @@
 package com.lzkj.mobile.controller;
 
-import com.lzkj.mobile.client.NativeWebServiceClient;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.util.HttpRequest;
-import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.ActivityRecordVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.GlobeResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.lzkj.mobile.client.NativeWebServiceClient;
+import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.redis.RedisDao;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
+import com.lzkj.mobile.util.HttpRequest;
+import com.lzkj.mobile.util.TimeUtil;
+import com.lzkj.mobile.vo.ActivityRecordVO;
+import com.lzkj.mobile.vo.ActivityReviewRecordVO;
+import com.lzkj.mobile.vo.CommonPageVO;
+import com.lzkj.mobile.vo.GlobeResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/active")
@@ -31,6 +37,9 @@ public class ActiveCenterController {
     
     @Value("${server.url}")
     private String serverUrl;
+    
+    @Autowired
+    private RedisDao redisService;
     
     /**
      * 玩家手动申请活动
@@ -100,11 +109,17 @@ public class ActiveCenterController {
     	return globeResponse;
     }
     
-    @RequestMapping("getAccountsApplication")
+    @RequestMapping("/getAccountsApplication")
     public GlobeResponse<Object> getAccountsApplication(Integer id,Integer userId,Integer activityId,Integer agentId,Integer ruleType,Integer ruleId,HttpServletRequest request){
     	if(null == activityId || activityId == 0 || null == agentId || agentId == 0 || null == userId || userId == 0 || null == id || id == 0 || null == ruleType || ruleType == 0 || null == ruleId || ruleId == 0) {
     		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
     	}
+    	String redisKey = RedisKeyPrefix.getActivityApplication(userId, ruleId);
+    	if(!StringUtils.isBlank(redisService.get(redisKey, String.class))){
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "操作太频繁");
+    	}
+    	redisService.set(redisKey, "lock");
+    	redisService.expire(redisKey, 3, TimeUnit.SECONDS);
     	String appDate = TimeUtil.getNow();
     	String ip = request.getRemoteHost();
     	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
@@ -116,7 +131,24 @@ public class ActiveCenterController {
                     ", \"VipLevel\":" + args[2] + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
             log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
     	}
+    	redisService.delete(redisKey);
     	return globeResponse;
     }
     
+    @RequestMapping("/getActivityReviewRecordByUser")
+    public GlobeResponse<Object> getActivityReviewRecordByUser(Integer userId,Integer agentId,Integer pageIndex,Integer status){
+    	if(null == userId || userId == 0 || null == agentId || agentId == 0 || null == status || status < -1) {
+    		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+    	}
+    	if(null == pageIndex || pageIndex <= 0) {
+    		pageIndex = 1;
+    	}
+    	CommonPageVO<ActivityReviewRecordVO> page = nativeWebServiceClient.getActivityReviewRecordByUser(userId,agentId,pageIndex,status);
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
+    	Map<String,Object> map = new HashMap<String, Object>();
+    	map.put("list", page.getLists());
+    	map.put("count", page.getRecordCount());
+    	globeResponse.setData(map);
+    	return globeResponse;
+    }
 }
