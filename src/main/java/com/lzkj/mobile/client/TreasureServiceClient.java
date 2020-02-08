@@ -1,7 +1,6 @@
 package com.lzkj.mobile.client;
 
 import com.lzkj.agent.vo.CommonPage;
-import com.lzkj.agent.vo.inputVO.AuditRecordVO;
 import com.lzkj.agent.vo.inputVO.ProgramVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -360,14 +359,14 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/getMyTeam")
     List<MyTeamVO> getMyTeam(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
                              @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
-                             @RequestParam("gameId") Integer gameId, @RequestParam("dateTime") String dateTime);
+                             @RequestParam("gameId") Integer gameId, @RequestParam("dateTime") String dateTime, @RequestParam("nullity")Integer nullity);
 
     @RequestMapping("/treasure/mobile/getMyTeamCount")
     Integer getMyTeamCount(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
                            @RequestParam("gameId") Integer gameId, @RequestParam("dateTime") String dateTime);
 
     @RequestMapping("/treasure/mobile/getMyTeamTodayBet")
-    Integer getMyTeamTodayBet(Integer userId);
+    Integer getMyTeamTodayBet(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/treasure/mobile/getMyTeamOrder")
     CommonPage<MyTeamVO> getMyTeamOrder(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId, @RequestParam("userId") Integer userId,
@@ -378,5 +377,26 @@ public interface TreasureServiceClient {
     CommonPage<MyTeamVO> getMyTeamBeat(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
                                        @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
                                        @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
+
+    @RequestMapping("/treasure/mobile/getSelfReport")
+    SelfReportVO getSelfReport(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
+                                 @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
+
+    @RequestMapping("/treasure/mobile/submitDomain")
+    Boolean submitDomain(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId, @RequestParam("domain")String domain,
+                         @RequestParam("duration")Integer duration, @RequestParam("cost")String cost,@RequestParam("gameId")Integer gameId);
+
+    @RequestMapping("/treasure/mobile/getDomainFee")
+    List<DomainVO> getDomainFee(@RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/treasure/mobile/getDomain")
+    List<LinkVO> getDomain(@RequestParam("agentId")Integer agentId,@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/treasure/mobile/getRebate")
+    List<RebateInfoVO> getRebate(@RequestParam("agentId")Integer agentId,@RequestParam("userId")Integer userId);
+
+    @RequestMapping("/treasure/mobile/getRebateByTime")
+    RebateInfoVO getRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
+                                       @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
 }
 

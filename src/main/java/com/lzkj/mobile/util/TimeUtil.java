@@ -3,12 +3,7 @@ package com.lzkj.mobile.util;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 public class TimeUtil {
     public static String format(String str) throws ParseException {
@@ -117,5 +112,12 @@ public class TimeUtil {
 	    cld.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 	    list.add(df.format(cld.getTime()) + " 23:59:59");
 	    return list;
+    }
+
+    public static String getDate(long dateTime) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
+        Date date = new Date(dateTime);
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return s.format(date);
     }
 }
