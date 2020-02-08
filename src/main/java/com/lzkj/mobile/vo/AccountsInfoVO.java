@@ -2,6 +2,8 @@ package com.lzkj.mobile.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class AccountsInfoVO {
 	private int userId;
@@ -13,11 +15,8 @@ public class AccountsInfoVO {
 	private String underWrite;
 	private int userMedal;
 	private int agentId;
-	private String h5Account;
-	private String h5siteCode;
-	private Integer h5AgentId;
-	private Integer parentId;
-	private Integer level;
+    private String h5Account;
+    private String h5siteCode;
 //	public int getUserId() {
 //		return userId;
 //	}
