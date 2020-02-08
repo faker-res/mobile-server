@@ -134,12 +134,6 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.7</version>
 		</dependency>
-        <dependency>
-            <groupId>com.lzkj.server</groupId>
-            <artifactId>agent</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
 
 		<!-- springboot与swagger2的集成_Begin -->
 		<dependency>

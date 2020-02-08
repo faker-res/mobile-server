@@ -1,7 +1,5 @@
 package com.lzkj.mobile.client;
 
-import com.lzkj.agent.vo.CommonPage;
-import com.lzkj.agent.vo.inputVO.ProgramVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -369,12 +367,12 @@ public interface TreasureServiceClient {
     Integer getMyTeamTodayBet(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/treasure/mobile/getMyTeamOrder")
-    CommonPage<MyTeamVO> getMyTeamOrder(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId, @RequestParam("userId") Integer userId,
+    CommonPageVO<MyTeamVO> getMyTeamOrder(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId, @RequestParam("userId") Integer userId,
                                         @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
                                         @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 
     @RequestMapping("/treasure/mobile/getMyTeamBeat")
-    CommonPage<MyTeamVO> getMyTeamBeat(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
+    CommonPageVO<MyTeamVO> getMyTeamBeat(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
                                        @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
                                        @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
 

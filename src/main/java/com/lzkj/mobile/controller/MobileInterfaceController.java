@@ -9,8 +9,6 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.agent.vo.CommonPage;
-import com.lzkj.agent.vo.inputVO.ProgramVO;
 import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
@@ -3097,7 +3095,7 @@ public class MobileInterfaceController {
         if (userId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        CommonPage<MyTeamVO> pageVO = treasureServiceClient.getMyTeamOrder(agentId, userId, gameId, pageIndex, pageSize, startTime, endTime);
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeamOrder(agentId, userId, gameId, pageIndex, pageSize, startTime, endTime);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(pageVO);
         return globeResponse;
@@ -3108,7 +3106,7 @@ public class MobileInterfaceController {
         if (userId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        CommonPage<MyTeamVO> pageVO =  treasureServiceClient.getMyTeamBeat(agentId,userId,pageIndex,pageSize,startTime,endTime);
+        CommonPageVO<MyTeamVO> pageVO =  treasureServiceClient.getMyTeamBeat(agentId,userId,pageIndex,pageSize,startTime,endTime);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(pageVO);
         return globeResponse;
