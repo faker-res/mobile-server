@@ -1,5 +1,6 @@
 package com.lzkj.mobile.v2.inputVO.bank;
 
+import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +19,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "BankAccountUpdVO", description = "修改用户银行卡信息分页数据封装类")
-public class BankAccountUpdVO {
+public class BankAccountUpdVO extends BaseVO {
 
     public final static int TYPE_ONE = 1;
 

@@ -1,5 +1,6 @@
 package com.lzkj.mobile.v2.inputVO.bank;
 
+import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +19,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "BankAccountPageVO", description = "用户银行卡分页数据封装类")
-public class BankAccountPageVO {
+public class BankAccountPageVO  extends BaseVO {
 
     @ApiModelProperty(name = "pageNo", value = "页码", hidden = true)
     private Integer pageNo;
