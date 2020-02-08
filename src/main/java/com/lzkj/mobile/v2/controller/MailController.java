@@ -109,4 +109,15 @@ public class MailController {
         }
         return response;
     }
+
+    @GetMapping("/isOrNotOpenMail")
+    @ApiOperation(value = "是否开启邮箱系统功能", notes = "是否开启邮箱系统功能")
+    @ApiImplicitParams ({
+            @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "agentId", value = "业主ID", paramType = "query", dataType = "int")
+    })
+    public Response<Boolean> isOrNotOpenMail(@RequestParam int agentId) {
+        return accountsServiceClient.isOrNotOpenMail(agentId);
+    }
+
 }

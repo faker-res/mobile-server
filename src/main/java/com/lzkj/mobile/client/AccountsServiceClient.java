@@ -120,6 +120,12 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/getOpenMailList")
     Response<List<InternalMessageVO>> getOpenMailList(@RequestParam("ids")List<Integer> ids);
+
+    @RequestMapping("/accounts/mobile/totalMail")
+    Response<Integer> totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/accounts/mobile/isOrNotOpenMail")
+    Response<Boolean> isOrNotOpenMail(@RequestParam("agentId")Integer agentId);
     /******************  用户邮件接口 end *******************/
 
     @RequestMapping("/accounts/mobile/getCollectionName")
@@ -131,9 +137,6 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/userBankInformation")
     int getUserBankInformation(@RequestParam("bankNo") String bankNo);
-
-    @RequestMapping("/accounts/mobile/totalMail")
-    Response<Integer> totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/getUserVipLevel")
     VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
