@@ -1,6 +1,8 @@
 package com.lzkj.mobile.client;
 
 import com.lzkj.mobile.entity.InternalMessageEntity;
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,20 +102,25 @@ public interface AccountsServiceClient {
     @RequestMapping("/AgentAccControl/getPlayerLevel")
     AccountsLevelVO getPlayerLevel(@RequestParam("userId")Integer userId);
 
+    /******************  用户邮件接口 start *******************/
     @RequestMapping("/accounts/mobile/getMailsInfo")
-    List<InternalMessageEntity> getMailsInfo(@RequestParam("gameId")Integer gameId);
+    Response<List<InternalMessageVO>> getMailsInfo(@RequestParam("gameId")Integer gameId);
 
     @RequestMapping("/accounts/mobile/openMail")
-    Boolean openMail(@RequestParam("ids") List<Integer> ids);
+    Response<Boolean> openMail(@RequestParam("ids") List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/openAllMail")
-    Boolean openAllMail(@RequestParam("gameId")Integer gameId);
+    Response<Boolean> openAllMail(@RequestParam("gameId")Integer gameId);
 
     @RequestMapping("/accounts/mobile/deleteMail")
-    Boolean deleteMail(@RequestParam("ids") List<Integer> ids);
+    Response<Boolean> deleteMail(@RequestParam("ids") List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/deleteAllMail")
-    Boolean deleteAllMail(@RequestParam("gameId")Integer gameId);
+    Response<Boolean> deleteAllMail(@RequestParam("gameId")Integer gameId);
+
+    @RequestMapping("/accounts/mobile/getOpenMailList")
+    Response<List<InternalMessageVO>> getOpenMailList(@RequestParam("ids")List<Integer> ids);
+    /******************  用户邮件接口 end *******************/
 
     @RequestMapping("/accounts/mobile/getCollectionName")
     String getGameItem(@RequestParam("kindId") Integer kindId);
@@ -126,7 +133,7 @@ public interface AccountsServiceClient {
     int getUserBankInformation(@RequestParam("bankNo") String bankNo);
 
     @RequestMapping("/accounts/mobile/totalMail")
-    int totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
+    Response<Integer> totalMail(@RequestParam("gameId")Integer gameId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/accounts/mobile/getUserVipLevel")
     VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
@@ -167,9 +174,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getRedEnvelope")
     List<ActivityRedEnvelopeVO> getRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 
-
-    @RequestMapping("/accounts/mobile/getOpenMailList")
-    List<InternalMessageEntity> getOpenMailList(@RequestParam("ids")List<Integer> ids);
 
     @RequestMapping("/accounts/mobile/getRedEnvepoleRules")
     RedEnvepoleRulesVO getRedEnvepoleRules(@RequestParam("parentId") Integer parentId);

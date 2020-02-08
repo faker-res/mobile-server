@@ -32,50 +32,50 @@ public class BankAccountInfoController {
     @Resource
     private FundServiceClient fundServiceClient;
 
-    @PostMapping("/account/list")
+    @GetMapping("/account/list")
     @ApiOperation(value = "银行卡管理", notes = "银行卡管理分页数据")
-    public Response<PageBean<BankAccountVO>> bankList(@RequestBody @Valid BankAccountPageVO vo){
+    public Response<PageBean<BankAccountVO>> bankList(@Valid BankAccountPageVO vo){
         vo.setPageNo(1);
         vo.setPageSize(3);
         vo.setWeb(true);
         return fundServiceClient.getBankAccountPage(vo);
     }
 
-    @PostMapping("/account/setUse")
+    @GetMapping("/account/setUse")
     @ApiOperation(value = "置为取款卡", notes = "置为取款卡")
-    public Response setAccountUse(@RequestBody @Valid BankAccountUpdVO vo){
+    public Response setAccountUse(@Valid BankAccountUpdVO vo){
         vo.setType(BankAccountUpdVO.TYPE_ONE);
         vo.setIsUse(1);
         return fundServiceClient.updateBankAccount(vo);
     }
 
-    @PostMapping("/record/list")
+    @GetMapping("/record/list")
     @ApiOperation(value = "绑定记录", notes = "绑定记录")
-    public Response recordList(@RequestBody @Valid BankAccountRecordPageVO vo){
+    public Response recordList(@Valid BankAccountRecordPageVO vo){
         return fundServiceClient.getBankAccountRRecordPage(vo);
     }
 
-    @PostMapping("/record/add")
+    @GetMapping("/record/add")
     @ApiOperation(value = "添加银行卡", notes = "添加银行卡")
-    public Response addRecord(@RequestBody @Valid BankAccountRecordAddVO vo){
+    public Response addRecord(@Valid BankAccountRecordAddVO vo){
         return fundServiceClient.addBankAccountRecord(vo);
     }
 
-    @PostMapping("/record/canChange")
+    @GetMapping("/record/canChange")
     @ApiOperation(value = "是否可以更换银行卡", notes = "是否可以更换银行卡")
-    public Response canChangeBankCard(@RequestBody @Valid CanChangeBankCardVO vo){
+    public Response canChangeBankCard(@Valid CanChangeBankCardVO vo){
         return fundServiceClient.canChangeBankCard(vo.getGameId());
     }
 
-    @PostMapping("/record/changeCard")
+    @GetMapping("/record/changeCard")
     @ApiOperation(value = "更换银行卡", notes = "更换银行卡")
-    public Response changeCard(@RequestBody @Valid BankAccountRecordAddVO vo){
+    public Response changeCard(@Valid BankAccountRecordAddVO vo){
         return fundServiceClient.addBankAccountRecord(vo);
     }
 
-    @PostMapping("/record/cancel")
+    @GetMapping("/record/cancel")
     @ApiOperation(value = "撤销申请", notes = "撤销申请")
-    public Response cancelRecord(@RequestBody @Valid BankAccountRecordUpdVO vo){
+    public Response cancelRecord(@Valid BankAccountRecordUpdVO vo){
         vo.setId(vo.getRecordId());
         vo.setStatus(5);
         return fundServiceClient.updateBankAccountRecord(vo);

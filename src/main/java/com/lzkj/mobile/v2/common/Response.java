@@ -22,7 +22,7 @@ import java.io.Serializable;
 @ApiModel(value = "Response", description = "返回数据封装类")
 public class Response<T> implements Serializable {
 
-    public static final String SUCCESS = "200";
+    public static final String SUCCESS = "0";//为了保持跟以前一致
 
     public static final String FAIL = "400";//INVALID REQUEST
 
@@ -45,6 +45,13 @@ public class Response<T> implements Serializable {
 
     @ApiModelProperty(name = "info", value = "扩展字段")
     private Object info;
+
+    public void setCode(String code) {
+        if("200".equals(code)){
+            code = SUCCESS;
+        }
+        this.code = code;
+    }
 
     public Response() {
     }
