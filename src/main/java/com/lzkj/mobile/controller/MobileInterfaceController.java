@@ -2726,7 +2726,7 @@ public class MobileInterfaceController {
     /**
      * 获取红包手气榜
      *
-     * @param userId
+     * @param
      * @param parentId
      * @return
      */
