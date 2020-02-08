@@ -1,5 +1,6 @@
 package com.lzkj.mobile.v2.inputVO.bank;
 
+import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @ApiModel(value = "BankAccountRecordUpdVO", description = "用户银行卡修改封装类")
-public class BankAccountRecordUpdVO {
+public class BankAccountRecordUpdVO extends BaseVO {
 
     @ApiModelProperty(name = "id", value = "主键ID", hidden = true)
     private Integer id;

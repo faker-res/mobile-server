@@ -1,5 +1,6 @@
 package com.lzkj.mobile.v2.inputVO.bank;
 
+import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @ApiModel(value = "BankAccountRecordAddVO", description = "用户银行卡新增封装类")
-public class BankAccountRecordAddVO {
+public class BankAccountRecordAddVO  extends BaseVO {
 
     @ApiModelProperty(name = "gameId", value = "所属用户游戏ID")
     @NotNull(message = "gameId不能为空")
