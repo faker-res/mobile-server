@@ -6,6 +6,7 @@ import com.lzkj.mobile.v2.inputVO.bank.*;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +38,7 @@ public interface FundServiceClient {
     @PostMapping("/bankAccountRecord/getPage")
     Response<PageBean<BankAccountRecordVO>> getBankAccountRRecordPage(@RequestBody BankAccountRecordPageVO vo);
 
-    @PostMapping("/bankAccountRecord/canChange")
+    @GetMapping("/bankAccountRecord/canChange")
     Response<Boolean> canChangeBankCard(@RequestParam("gameId") Integer gameId);
 
     @PostMapping("/bankAccountRecord/add")

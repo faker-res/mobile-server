@@ -22,20 +22,20 @@ import java.io.Serializable;
 @ApiModel(value = "Response", description = "返回数据封装类")
 public class Response<T> implements Serializable {
 
-    public static final int SUCCESS = 200;
+    public static final String SUCCESS = "200";
 
-    public static final int FAIL = 400;//INVALID REQUEST
+    public static final String FAIL = "400";//INVALID REQUEST
 
-    public static final int FAIL_UNAUTHORIZED = 401;//Unauthorized
+    public static final String FAIL_UNAUTHORIZED = "401";//Unauthorized
 
-    public static final int FAIL_TOKEN = 402;//token失效
+    public static final String FAIL_TOKEN = "402";//token失效
 
-    public static final int FAIL_UNAUTHORIZATION = 403;//Forbidden
+    public static final String FAIL_UNAUTHORIZATION = "403";//Forbidden
 
-    public static final int ERROR = 500;//INTERNAL SERVER ERROR
+    public static final String ERROR = "500";//INTERNAL SERVER ERROR
 
     @ApiModelProperty(name = "code", value = "状态")
-    private int code = SUCCESS;
+    private String code = SUCCESS;
 
     @ApiModelProperty(name = "msg", value = "返回消息")
     private String msg = "success";
@@ -49,23 +49,23 @@ public class Response<T> implements Serializable {
     public Response() {
     }
 
-    public Response(T data) {
+    private Response(T data) {
         this.data = data;
     }
 
-    public Response(String msg, int code) {
+    private Response(String msg, String code) {
         this.msg = msg;
         this.code = code;
     }
 
-    public Response(String msg, int code, T data) {
+    private Response(String msg, String code, T data) {
         this.msg = msg;
         this.code = code;
         this.data = data;
     }
 
     public static Response success() {
-        return new Response();
+        return new Response<>();
     }
 
     public static Response success(String msg) {

@@ -1,4 +1,4 @@
-package com.lzkj.mobile.config;
+package com.lzkj.mobile.v2.config;
 
 import com.lzkj.mobile.v2.common.Response;
 import lombok.extern.slf4j.Slf4j;

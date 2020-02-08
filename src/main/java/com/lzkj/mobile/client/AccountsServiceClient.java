@@ -153,7 +153,7 @@ public interface AccountsServiceClient {
     VipLevelRewardVO getUserVipZeroLevel(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/accounts/mobile/getUserCodeDetails")
-    UserCodeDetailsVO cashFlowDetails(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
+    List<UserCodeDetailsVO> cashFlowDetails(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
 
     @RequestMapping("/accounts/mobile/getRedEnvelopeReward")
     List<ActivityRedEnvelopeRewardVO> getRedEnvelopeReward(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
