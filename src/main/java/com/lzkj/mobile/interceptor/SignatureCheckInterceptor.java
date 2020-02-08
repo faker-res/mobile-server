@@ -27,19 +27,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
         response.addHeader("Access-Control-Allow-Methods", "POST,OPTIONS,GET");
         response.addHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
         String path = request.getServletPath();
-        if(path.indexOf("/mobileInterface/payCallBack") > -1
-        		|| path.indexOf("/mobileInterface/payPageLoad/submit") > -1
-        		|| path.indexOf("/mobileInterface/updateMerchantOrderId") > -1
-        		|| path.indexOf("/mobileInterface/updatePassagewayResponse") > -1
-        		|| path.indexOf("/mobileInterface/addGameRecord") > -1
-        		|| path.indexOf("/mobileInterface/getActivityType") > -1
-        		|| path.indexOf("/mobileInterface/getActivityListByMobile") > -1
-        		|| path.indexOf("/mobileInterface/getShareUrl") > -1
-        		|| path.indexOf("/agentSystem/updateResversion") > -1
-        		) {
-        	return true;
-        }
-        String signatureKey = null;
+        String signatureKey;
         try {
 			signatureKey = redisDao.get(RedisKeyPrefix.getSignatureKey(), String.class);
 			if(signatureKey == null || signatureKey.equals("")) {
@@ -70,8 +58,6 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
 		}
 		signatureArgs = path + signatureArgs + signatureKey;
 		String mdSignature = MD5Utils.MD5Encode(signatureArgs, "utf-8");
-		//TODO 测试
-		System.err.println(mdSignature);
 		if(!mdSignature.equals(signature.toLowerCase())) {
 			throw new GlobeException(SystemConstants.FAIL_CODE, "签名错误");
 		}
