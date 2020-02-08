@@ -20,6 +20,7 @@ public class MySpringMVCConfig extends WebMvcConfigurationSupport {
 	@Autowired
 	private SignatureCheckInterceptor signatureCheckInterceptor;
 
+	//拦截器放行的url
 	private final static String[] excludePath = {"/swagger-resources/**", "/swagger-ui.html", "/v2/**", "/webjars/**",
             "/mobileInterface/payCallBack","/mobileInterface/payPageLoad/submit","/mobileInterface/updateMerchantOrderId",
             "/mobileInterface/updatePassagewayResponse","/mobileInterface/addGameRecord","/mobileInterface/getActivityType",
