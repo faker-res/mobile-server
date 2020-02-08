@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  *    
@@ -76,9 +75,8 @@ public class BankAccountInfoController {
 
     @PostMapping("/record/cancel")
     @ApiOperation(value = "撤销申请", notes = "撤销申请")
-    public Response cancelRecord(@RequestParam("recordId") Integer recordId){
-        BankAccountRecordUpdVO vo = new BankAccountRecordUpdVO();
-        vo.setId(recordId);
+    public Response cancelRecord(@RequestBody @Valid BankAccountRecordUpdVO vo){
+        vo.setId(vo.getRecordId());
         vo.setStatus(5);
         return fundServiceClient.updateBankAccountRecord(vo);
     }
