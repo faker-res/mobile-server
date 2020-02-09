@@ -13,11 +13,11 @@ public class AccountsInfoVO {
 	private String underWrite;
 	private int userMedal;
 	private int agentId;
-    private String h5Account;
-    private String h5siteCode;
-    private Integer h5AgentId;
-    private Integer parentId;
-    private Integer level;
+	private String h5Account;
+	private String h5siteCode;
+	private Integer h5AgentId;
+	private Integer parentId;
+	private Integer level;
 //	public int getUserId() {
 //		return userId;
 //	}

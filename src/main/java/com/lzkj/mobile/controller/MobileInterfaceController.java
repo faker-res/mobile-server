@@ -25,11 +25,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,78 +68,6 @@ import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.util.ShortUrlGenerator;
 import com.lzkj.mobile.util.StringUtil;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.AccountChangeStatisticsVO;
-import com.lzkj.mobile.vo.AccountsInfoVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeRewardVO;
-import com.lzkj.mobile.vo.ActivityRedEnvelopeVO;
-import com.lzkj.mobile.vo.AgentAccVO;
-import com.lzkj.mobile.vo.AgentInfoVO;
-import com.lzkj.mobile.vo.AgentIsIosVO;
-import com.lzkj.mobile.vo.ApplyRecordPageVo;
-import com.lzkj.mobile.vo.AwardOrderPageVo;
-import com.lzkj.mobile.vo.BankCardTypeVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.BindPhoneVO;
-import com.lzkj.mobile.vo.ChannelGameUserBetAndScoreVO;
-import com.lzkj.mobile.vo.CleanChipsConfigVO;
-import com.lzkj.mobile.vo.CommonPageVO;
-import com.lzkj.mobile.vo.CompanyPayVO;
-import com.lzkj.mobile.vo.ConfigInfo;
-import com.lzkj.mobile.vo.CustomerServiceConfigVO;
-import com.lzkj.mobile.vo.GameException;
-import com.lzkj.mobile.vo.GameFeedbackVO;
-import com.lzkj.mobile.vo.GameListVO;
-import com.lzkj.mobile.vo.GamePropertyType;
-import com.lzkj.mobile.vo.GatewayInfo;
-import com.lzkj.mobile.vo.GetBankRecordVO;
-import com.lzkj.mobile.vo.GlobalSpreadInfo;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.IndividualDatumVO;
-import com.lzkj.mobile.vo.LoginRedEnvepoleStatusVO;
-import com.lzkj.mobile.vo.LotteryConfigVO;
-import com.lzkj.mobile.vo.LuckyTurntableConfigurationVO;
-import com.lzkj.mobile.vo.LuckyVO;
-import com.lzkj.mobile.vo.MemberRechargeVO;
-import com.lzkj.mobile.vo.MobileAwardOrderVo;
-import com.lzkj.mobile.vo.MobileDayTask;
-import com.lzkj.mobile.vo.MobileKind;
-import com.lzkj.mobile.vo.MobileNoticeVo;
-import com.lzkj.mobile.vo.MobilePropertyTypeVO;
-import com.lzkj.mobile.vo.MobileShareConfigVO;
-import com.lzkj.mobile.vo.NewsVO;
-import com.lzkj.mobile.vo.OnLineOrderVO;
-import com.lzkj.mobile.vo.PayInfoVO;
-import com.lzkj.mobile.vo.PersonalReportVO;
-import com.lzkj.mobile.vo.ProblemConfigVO;
-import com.lzkj.mobile.vo.RecordInsurePageVO;
-import com.lzkj.mobile.vo.RecordInsureVO;
-import com.lzkj.mobile.vo.RedEnvelopeConditionTypeVO;
-import com.lzkj.mobile.vo.RedEnvelopeRecordVO;
-import com.lzkj.mobile.vo.RedEnvelopeVO;
-import com.lzkj.mobile.vo.RedEnvepoleRulesVO;
-import com.lzkj.mobile.vo.RedEnvepoleYuStartTimeAndEndTimeVO;
-import com.lzkj.mobile.vo.ScoreRankVO;
-import com.lzkj.mobile.vo.ShareDetailInfoVO;
-import com.lzkj.mobile.vo.SystemNewsVO;
-import com.lzkj.mobile.vo.SystemStatusInfoVO;
-import com.lzkj.mobile.vo.TpayOwnerInfoVO;
-import com.lzkj.mobile.vo.TransactionTypeVO;
-import com.lzkj.mobile.vo.UserGameScoreInfoVO;
-import com.lzkj.mobile.vo.UserInformationVO;
-import com.lzkj.mobile.vo.UserRankinsVO;
-import com.lzkj.mobile.vo.UserRecordInsureVO;
-import com.lzkj.mobile.vo.UserRewardDetailVO;
-import com.lzkj.mobile.vo.UserScoreRankVO;
-import com.lzkj.mobile.vo.VIPReceiveInfoVO;
-import com.lzkj.mobile.vo.VerificationCodeVO;
-import com.lzkj.mobile.vo.VideoTypeVO;
-import com.lzkj.mobile.vo.ViewPayInfoVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VipRankReceiveVO;
-import com.lzkj.mobile.vo.VisitorBindResultVO;
-import com.lzkj.mobile.vo.YebDescriptionVO;
-import com.lzkj.mobile.vo.YebInterestRateVO;
-import com.lzkj.mobile.vo.YebScoreVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -2815,7 +2745,6 @@ public class MobileInterfaceController {
     /**
      * 获取红包手气榜
      *
-     * @param userId
      * @param parentId
      * @return
      */
@@ -3099,8 +3028,187 @@ public class MobileInterfaceController {
     }
 
     // ----------------签到奖励 end---------------------
-    
-    private void activityBetAmountAdvance(Integer userId, Integer parentId, Integer level, Integer kindId,
+
+    //------------------ 负盈利接口 -----------------
+    @RequestMapping("/getMoney")
+    public GlobeResponse<SelfMoneyVO> getMoney(Integer agentId, Integer userId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<SelfMoneyVO> globeResponse = new GlobeResponse<>();
+        SelfMoneyVO selfMoneyVO = treasureServiceClient.getMoney(agentId, userId);
+        globeResponse.setData(selfMoneyVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyRebate")
+    public GlobeResponse<ProgramVO> getMyRebate(Integer agentId, Integer userId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<ProgramVO> globeResponse = new GlobeResponse<>();
+        ProgramVO programVO = treasureServiceClient.getMyRebate(agentId, userId);
+        globeResponse.setData(programVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/applicationRebate")
+    public GlobeResponse<ApplicationVO> applicationRebate(Integer agentId, Integer userId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<ApplicationVO> globeResponse = new GlobeResponse<>();
+        ApplicationVO applicationVO = treasureServiceClient.applicationRebate(agentId, userId);
+        globeResponse.setData(applicationVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/submitApplication")
+    public GlobeResponse<String> submitApplication(Integer agentId, Integer userId, Integer gameId) {
+        if (userId == null || agentId == null || gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        Boolean flag = treasureServiceClient.submitApplication(agentId, userId, gameId);
+        if (!flag) {
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("申请操作失败,请重试!");
+        }
+        return globeResponse;
+    }
+
+    @RequestMapping("/getRebateTutorial")
+    public GlobeResponse<String> getRebateTutorial(Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        String rebateTutorial = treasureServiceClient.getRebateTutorial(agentId);
+        globeResponse.setData(rebateTutorial);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyTeam")
+    public GlobeResponse<Object> getMyTeam(Integer agentId, Integer userId, Integer pageIndex,
+                                           Integer pageSize, Integer gameId, String dateTime,Integer nullity
+    ) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        List<MyTeamVO> list = treasureServiceClient.getMyTeam(agentId, userId, pageIndex, pageSize, gameId, dateTime,nullity);
+        Integer memberCount = treasureServiceClient.getMyTeamCount(agentId, userId, gameId, dateTime);
+        Integer todayTeamBet = treasureServiceClient.getMyTeamTodayBet(userId);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("list", list);
+        map.put("memberCount", memberCount);
+        map.put("todayTeamBet", todayTeamBet);
+        map.put("total",list.size());
+
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(map);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyTeamOrder")
+    public GlobeResponse<Object> getMyTeamOrder(Integer agentId, Integer userId, Integer pageIndex,
+                                                Integer pageSize, Integer gameId, String startTime, String endTime) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeamOrder(agentId, userId, gameId, pageIndex, pageSize, startTime, endTime);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(pageVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyTeamBeat")
+    public GlobeResponse<Object> getMyTeamBeat(Integer agentId, Integer userId, Integer pageIndex, Integer pageSize, String startTime, String endTime) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        CommonPageVO<MyTeamVO> pageVO =  treasureServiceClient.getMyTeamBeat(agentId,userId,pageIndex,pageSize,startTime,endTime);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(pageVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getSelfReport")
+    public GlobeResponse<SelfReportVO> getSelfReport(Integer agentId,Integer userId,String startTime,String endTime){
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        SelfReportVO selfReportVO = treasureServiceClient.getSelfReport(agentId,userId,startTime,endTime);
+        GlobeResponse<SelfReportVO> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(selfReportVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/submitDomain")
+    public GlobeResponse<String> submitDomain(Integer agentId, Integer userId, String domain, Integer duration, String cost, Integer gameId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        if (domain.equals("")) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请填写域名再申请!");
+        }
+        if (domain.indexOf("www") < 1) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请填写正确的域名!");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        Boolean flag = treasureServiceClient.submitDomain(agentId, userId, domain, duration, cost, gameId);
+        if (flag == null || !flag) {
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("网络波动,请重试!");
+        }
+        return globeResponse;
+    }
+
+    @RequestMapping("/getDomainFee")
+    public GlobeResponse<List<DomainVO>> getDomainFee(Integer agentId){
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<DomainVO>> globeResponse = new GlobeResponse<>();
+        List<DomainVO> list = treasureServiceClient.getDomainFee(agentId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getDomain")
+    public GlobeResponse<List<LinkVO>> getDomain(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<LinkVO>> globeResponse = new GlobeResponse<>();
+        List<LinkVO> list = treasureServiceClient.getDomain(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getRebate")
+    public GlobeResponse<List<RebateInfoVO>> getRebate(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<RebateInfoVO>> globeResponse = new GlobeResponse<>();
+        List<RebateInfoVO> list = treasureServiceClient.getRebate(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getRebateByTime")
+    public GlobeResponse<RebateInfoVO> getRebateByTime(Integer agentId,Integer userId,String startTime,String endTime){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<RebateInfoVO> globeResponse = new GlobeResponse<>();
+        RebateInfoVO rebateInfoVO = treasureServiceClient.getRebateByTime(agentId,userId,startTime,endTime);
+        globeResponse.setData(rebateInfoVO);
+        return globeResponse;
+    }
+
+    @Async
+    public void activityBetAmountAdvance(Integer userId, Integer parentId, Integer level, Integer kindId,
 			BigDecimal betAmount, String betDate, Integer gameKindId) {
     	log.info("用户{}开始推动打码活动，参数：kindId:{}，gameKindId:{}，betAmount:{}，parentId:{}，level:{}，betDate:{}",userId,kindId,gameKindId,betAmount,parentId,level,betDate);
     	nativeWebServiceClient.activityBetAmountAdvanceByTT(userId,parentId,level,kindId,betAmount,betDate,gameKindId);

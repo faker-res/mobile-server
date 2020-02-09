@@ -118,7 +118,7 @@ public class TimeUtil {
 	    list.add(df.format(cld.getTime()) + " 23:59:59");
 	    return list;
     }
-    
+
     public static String getDate(long dateTime) {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
         Date date = new Date(dateTime);
