@@ -25,11 +25,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lzkj.mobile.async.ActiveAsyncUtil;
+import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +48,6 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.mobile.async.ActiveAsyncUtil;
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.AgentServiceClient;
 import com.lzkj.mobile.client.NativeWebServiceClient;
@@ -148,7 +150,34 @@ import com.lzkj.mobile.vo.YebDescriptionVO;
 import com.lzkj.mobile.vo.YebInterestRateVO;
 import com.lzkj.mobile.vo.YebScoreVO;
 
+import com.lzkj.mobile.util.*;
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
+import static com.lzkj.mobile.util.HttpUtil.post;
+import static com.lzkj.mobile.util.IpAddress.getIpAddress;
+import static com.lzkj.mobile.util.MD5Utils.MD5Encode;
+import static com.lzkj.mobile.util.MD5Utils.getAllFields;
+import static com.lzkj.mobile.util.PayUtil.GetOrderIDByPrefix;
 
 @Slf4j
 @RestController
@@ -193,10 +222,10 @@ public class MobileInterfaceController {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    
+
     @Resource(name = "ActiveAsyncUtil")
     private ActiveAsyncUtil activeAsyncUtil;
-        
+
     @RequestMapping("/getScoreRank")
     private GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
         String pageIndexParam = request.getParameter("pageIndex");
@@ -1281,7 +1310,7 @@ public class MobileInterfaceController {
                 redisDao.set(key, accountsInfo);
                 redisDao.expire(key, 60, TimeUnit.MINUTES);
                 accountsInfos(gr, accountsInfo);
-            }            
+            }
             log.info("accountsInfo:" + accountsInfo);
             if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
 					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
@@ -3294,4 +3323,22 @@ public class MobileInterfaceController {
         globeResponse.setData(rebateInfoVO);
         return globeResponse;
     }
+
+    @RequestMapping("/getMemberInfo")
+    public GlobeResponse<String> getMemberInfo(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        String num = treasureServiceClient.getMemberInfo(agentId,userId);
+        globeResponse.setData(num);
+        return globeResponse;
+    }
+
+    @Async
+    public void activityBetAmountAdvance(Integer userId, Integer parentId, Integer level, Integer kindId,
+			BigDecimal betAmount, String betDate, Integer gameKindId) {
+    	log.info("用户{}开始推动打码活动，参数：kindId:{}，gameKindId:{}，betAmount:{}，parentId:{}，level:{}，betDate:{}",userId,kindId,gameKindId,betAmount,parentId,level,betDate);
+    	nativeWebServiceClient.activityBetAmountAdvanceByTT(userId,parentId,level,kindId,betAmount,betDate,gameKindId);
+	}
 }

@@ -403,5 +403,8 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/getRebateByTime")
     RebateInfoVO getRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
                                        @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
+
+    @RequestMapping("/treasure/mobile/getMemberInfo")
+    String getMemberInfo(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId);
 }
 
