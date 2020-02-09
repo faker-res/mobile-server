@@ -1291,6 +1291,12 @@ public class MobileInterfaceController {
 //    	redisDao.set(key, "lock");
 //    	redisDao.expire(key, 3, TimeUnit.SECONDS);
         ViewPayInfoVO payInfoVO = treasureServiceClient.getPayInfo(qudaoId);
+
+        //判断渠道是否打开
+        if("1".equalsIgnoreCase(payInfoVO.getType())){
+            throw new GlobeException(SystemConstants.FAIL_CODE, "渠道刚关闭了,请重新选择支付渠道,谢谢");
+        }
+
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
 
         OnLineOrderVO onLineOrderVO = new OnLineOrderVO();
