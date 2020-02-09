@@ -3268,9 +3268,6 @@ public class MobileInterfaceController {
         if (domain.equals("")) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "请填写域名再申请!");
         }
-        if (domain.indexOf("www") < 1) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "请填写正确的域名!");
-        }
         GlobeResponse<String> globeResponse = new GlobeResponse<>();
         Boolean flag = treasureServiceClient.submitDomain(agentId, userId, domain, duration, cost, gameId);
         if (flag == null || !flag) {
