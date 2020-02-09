@@ -3184,14 +3184,13 @@ public class MobileInterfaceController {
         if (userId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        List<MyTeamVO> list = treasureServiceClient.getMyTeam(agentId, userId, pageIndex, pageSize, gameId, dateTime,nullity);
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeam(agentId, userId, pageIndex, pageSize, gameId, dateTime,nullity);
         Integer memberCount = treasureServiceClient.getMyTeamCount(agentId, userId, gameId, dateTime);
         Integer todayTeamBet = treasureServiceClient.getMyTeamTodayBet(userId);
         HashMap<String, Object> map = new HashMap<>();
-        map.put("list", list);
+        map.put("list", pageVO);
         map.put("memberCount", memberCount);
         map.put("todayTeamBet", todayTeamBet);
-        map.put("total",list.size());
 
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(map);

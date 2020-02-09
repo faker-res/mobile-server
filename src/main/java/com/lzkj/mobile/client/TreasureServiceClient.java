@@ -362,7 +362,7 @@ public interface TreasureServiceClient {
     String getRebateTutorial(@RequestParam("agentId") Integer agentId);
 
     @RequestMapping("/treasure/mobile/getMyTeam")
-    List<MyTeamVO> getMyTeam(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
+    CommonPageVO<MyTeamVO> getMyTeam(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
                              @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
                              @RequestParam("gameId") Integer gameId, @RequestParam("dateTime") String dateTime, @RequestParam("nullity")Integer nullity);
 
