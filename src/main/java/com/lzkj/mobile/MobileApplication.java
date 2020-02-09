@@ -9,11 +9,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.lzkj.mobile.client" )
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableScheduling
-@EnableAsync
+//@EnableAsync
 public class MobileApplication {
 
     public static void main(String[] args) {
