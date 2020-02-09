@@ -12,8 +12,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableCircuitBreaker
-@EnableHystrixDashboard
 @EnableScheduling
 @EnableAsync
 public class MobileApplication {
