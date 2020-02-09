@@ -3228,11 +3228,11 @@ public class MobileInterfaceController {
 
     @RequestMapping("/getMyTeamOrder")
     public GlobeResponse<Object> getMyTeamOrder(Integer agentId, Integer userId, Integer pageIndex,
-                                                Integer pageSize, Integer gameId, String startTime, String endTime) {
+                                                Integer pageSize, Integer gameId, String startTime, String endTime, Integer kindType) {
         if (userId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeamOrder(agentId, userId, gameId, pageIndex, pageSize, startTime, endTime);
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeamOrder(agentId, userId, pageIndex, pageSize, gameId,startTime, endTime,kindType);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(pageVO);
         return globeResponse;
@@ -3329,6 +3329,24 @@ public class MobileInterfaceController {
         GlobeResponse<String> globeResponse = new GlobeResponse<>();
         String num = treasureServiceClient.getMemberInfo(agentId,userId);
         globeResponse.setData(num);
+        return globeResponse;
+    }
+
+    //转账
+    @RequestMapping("/transfer")
+    public GlobeResponse<String> transfer(String Num,String fee,Integer agentId,Integer spGameId,Integer userId){
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        if (spGameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请填写收款人游戏ID!");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        Boolean flag = treasureServiceClient.transfer(Num,fee,agentId,spGameId,userId);
+        if (flag == null || !flag) {
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("网络波动,请重试!");
+        }
         return globeResponse;
     }
 

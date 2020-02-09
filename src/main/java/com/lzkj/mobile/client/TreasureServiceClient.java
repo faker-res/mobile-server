@@ -374,9 +374,9 @@ public interface TreasureServiceClient {
     Integer getMyTeamTodayBet(@RequestParam("userId") Integer userId);
 
     @RequestMapping("/treasure/mobile/getMyTeamOrder")
-    CommonPageVO<MyTeamVO> getMyTeamOrder(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId, @RequestParam("userId") Integer userId,
-                                        @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
-                                        @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime);
+    CommonPageVO<MyTeamVO> getMyTeamOrder(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
+                                          @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize, @RequestParam("gameId") Integer gameId,
+                                          @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime, @RequestParam("kindType")Integer kindType);
 
     @RequestMapping("/treasure/mobile/getMyTeamBeat")
     CommonPageVO<MyTeamVO> getMyTeamBeat(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
@@ -406,5 +406,9 @@ public interface TreasureServiceClient {
 
     @RequestMapping("/treasure/mobile/getMemberInfo")
     String getMemberInfo(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId);
+
+    @RequestMapping("/treasure/mobile/transfer")
+    Boolean transfer(@RequestParam("num")String num, @RequestParam("fee")String fee,
+                     @RequestParam("agentId")Integer agentId, @RequestParam("spGameId")Integer spGameId, @RequestParam("userId")Integer userId);
 }
 

@@ -10,6 +10,8 @@ public class MyTeamVO {
     private Integer userId;
     private Integer gameId;
     private BigDecimal score;
+    private String betTime;
+    private String gameName;
 
     private Integer nullity;
     private Integer beatAmount;
