@@ -18,7 +18,8 @@ public class MySpringMVCConfig extends WebMvcConfigurationSupport {
 	@Override
 	protected void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(signatureCheckInterceptor)
-				.addPathPatterns("/**");
+				.addPathPatterns("/**")
+				.excludePathPatterns("/swagger-resources/**", "/swagger-ui.html", "/v2/**", "/webjars/**");
 	}
 
 	@Bean

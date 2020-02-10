@@ -110,6 +110,7 @@ public class MailController {
         return response;
     }
 
+    //二期需要增加的功能
     @GetMapping("/isOrNotOpenMail")
     @ApiOperation(value = "是否开启邮箱系统功能", notes = "是否开启邮箱系统功能")
     @ApiImplicitParams ({
