@@ -33,50 +33,6 @@ public class CompanyPayConterller {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-//    /**
-//     * 公司充值信息
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/getCompanyPay")
-//    private GlobeResponse<Object> getCompanyPay(Integer agentId) {
-//        if (agentId == null) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-//        }
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        List<Object> list = treasureServiceClient.getCompanyPay(agentId);
-//
-//        List<PayTypeList> lists = new ArrayList<>();
-//        if (list != null) {
-//            list.forEach(type -> {
-//                PayTypeList typeList = new PayTypeList();
-//                if ("AliPay".equals(type)) {
-//                    typeList.setId(0);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("WeChatPay".equals(type)) {
-//                    typeList.setId(1);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("BankPay".equals(type)) {
-//                    typeList.setId(2);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("CloudPay".equals(type)) {
-//                    typeList.setId(3);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("redPwd".equals(type)) {
-//                    typeList.setId(4);
-//                    typeList.setPayType((String) type);
-//                }
-//                lists.add(typeList);
-//            });
-//        }
-//        globeResponse.setData(lists);
-//        return globeResponse;
-//    }
-
     /**
      * 充值层级信息
      *
