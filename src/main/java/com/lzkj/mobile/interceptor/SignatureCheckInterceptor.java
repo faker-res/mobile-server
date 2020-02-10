@@ -37,7 +37,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
 			}
 		}catch (Exception e){
 			e.printStackTrace();
-			System.out.println("请求异常:"+e.getMessage());
+			log.info("请求异常:{}", e.getMessage());
 			throw new GlobeException(SystemConstants.FAIL_CODE, "请求异常");
 		}
 		String signature = request.getParameter("s");

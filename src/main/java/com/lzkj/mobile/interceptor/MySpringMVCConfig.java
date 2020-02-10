@@ -15,7 +15,7 @@ public class MySpringMVCConfig extends WebMvcConfigurationSupport {
 	@Autowired
 	private SignatureCheckInterceptor signatureCheckInterceptor;
 
-	//拦截器放行的url
+	//签名拦截器放行的url
 	private final static String[] excludePath = {"/swagger-resources/**", "/swagger-ui.html", "/v2/**", "/webjars/**",
 			"/mobileInterface/payCallBack","/mobileInterface/payPageLoad/submit","/mobileInterface/updateMerchantOrderId",
 			"/mobileInterface/updatePassagewayResponse","/mobileInterface/addGameRecord","/mobileInterface/getActivityType",
@@ -24,20 +24,12 @@ public class MySpringMVCConfig extends WebMvcConfigurationSupport {
 
 	@Override
 	protected void addInterceptors(InterceptorRegistry registry) {
+		//跨域拦截器必须在前面
+		registry.addInterceptor(new CoreInterceptor())
+				.addPathPatterns("/**");
 		registry.addInterceptor(signatureCheckInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns(excludePath);
-	}
-
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")
-				.allowedOrigins("*")
-				.allowCredentials(true)
-				.allowedMethods("GET", "POST", "OPTIONS")
-				.allowedHeaders("x-requested-with,content-type")
-				//.exposedHeaders(HttpHeaders.SET_COOKIE) sessionId不会被传过去
-				.maxAge(3600);
 	}
 
 	@Bean
