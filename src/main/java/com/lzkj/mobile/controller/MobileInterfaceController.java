@@ -3269,11 +3269,7 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "请填写域名再申请!");
         }
         GlobeResponse<String> globeResponse = new GlobeResponse<>();
-        Boolean flag = treasureServiceClient.submitDomain(agentId, userId, domain, duration, cost, gameId);
-        if (flag == null || !flag) {
-            globeResponse.setCode(SystemConstants.FAIL_CODE);
-            globeResponse.setMsg("网络波动,请重试!");
-        }
+        globeResponse.setMsg(treasureServiceClient.submitDomain(agentId, userId, domain, duration, cost, gameId));
         return globeResponse;
     }
 

@@ -388,7 +388,7 @@ public interface TreasureServiceClient {
                                  @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
 
     @RequestMapping("/treasure/mobile/submitDomain")
-    Boolean submitDomain(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId, @RequestParam("domain")String domain,
+    String submitDomain(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId, @RequestParam("domain")String domain,
                          @RequestParam("duration")Integer duration, @RequestParam("cost")String cost,@RequestParam("gameId")Integer gameId);
 
     @RequestMapping("/treasure/mobile/getDomainFee")
