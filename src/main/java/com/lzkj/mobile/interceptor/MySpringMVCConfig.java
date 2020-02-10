@@ -15,21 +15,10 @@ public class MySpringMVCConfig extends WebMvcConfigurationSupport {
 	@Autowired
 	private SignatureCheckInterceptor signatureCheckInterceptor;
 
-	//签名拦截器放行的url
-	private final static String[] excludePath = {"/swagger-resources/**", "/swagger-ui.html", "/v2/**", "/webjars/**",
-			"/mobileInterface/payCallBack","/mobileInterface/payPageLoad/submit","/mobileInterface/updateMerchantOrderId",
-			"/mobileInterface/updatePassagewayResponse","/mobileInterface/addGameRecord","/mobileInterface/getActivityType",
-			"/mobileInterface/getActivityListByMobile","/mobileInterface/getShareUrl","/agentSystem/updateResversion"
-	};
-
 	@Override
 	protected void addInterceptors(InterceptorRegistry registry) {
-		//跨域拦截器必须在前面
-		registry.addInterceptor(new CoreInterceptor())
-				.addPathPatterns("/**");
 		registry.addInterceptor(signatureCheckInterceptor)
-				.addPathPatterns("/**")
-				.excludePathPatterns(excludePath);
+				.addPathPatterns("/**");
 	}
 
 	@Bean

@@ -27,7 +27,22 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Methods", "POST,OPTIONS,GET");
+		response.addHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 		String path = request.getServletPath();
+		if(path.indexOf("/mobileInterface/payCallBack") > -1
+				|| path.indexOf("/mobileInterface/payPageLoad/submit") > -1
+				|| path.indexOf("/mobileInterface/updateMerchantOrderId") > -1
+				|| path.indexOf("/mobileInterface/updatePassagewayResponse") > -1
+				|| path.indexOf("/mobileInterface/addGameRecord") > -1
+				|| path.indexOf("/mobileInterface/getActivityType") > -1
+				|| path.indexOf("/mobileInterface/getActivityListByMobile") > -1
+				|| path.indexOf("/mobileInterface/getShareUrl") > -1
+				|| path.indexOf("/agentSystem/updateResversion") > -1
+		) {
+			return true;
+		}
 		String signatureKey;
 		try {
 			signatureKey = redisDao.get(RedisKeyPrefix.getSignatureKey(), String.class);
