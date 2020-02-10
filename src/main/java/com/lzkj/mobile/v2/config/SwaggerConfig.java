@@ -45,9 +45,9 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
-                .title("量子棋牌-业主管理后台V1.0版本--基于RESTful风格API接口文档")
+                .title("量子棋牌-Mobile后台V1.0版本--基于RESTful风格API接口文档")
                 //描述
-                .description("量子棋牌-业主管理后台API接口服务（API）V1.0版本")
+                .description("量子棋牌-Mobile后台API接口服务（API）V1.0版本")
                 //创建人
                 .contact(new Contact("Horus", "", ""))
                 //版本号
