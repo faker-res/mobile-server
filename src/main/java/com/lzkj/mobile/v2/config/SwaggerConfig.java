@@ -27,6 +27,7 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         Predicate<RequestHandler> selector1 = RequestHandlerSelectors.basePackage("com.lzkj.mobile.v2.controller");
+        Predicate<RequestHandler> selector2 = RequestHandlerSelectors.basePackage("com.lzkj.mobile.controller");
         boolean enable = true;
         log.info("SwaggerConfig获取spring.cloud.config.profile={}", profile);
         if("prod".equals(profile)){
@@ -37,7 +38,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 //为当前包路径
-                .apis(Predicates.or(selector1))
+                .apis(Predicates.or(selector1, selector2))
                 .paths(PathSelectors.any())
                 .build();
     }

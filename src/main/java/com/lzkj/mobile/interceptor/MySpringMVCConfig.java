@@ -3,17 +3,12 @@ package com.lzkj.mobile.interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.CacheControl;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class MySpringMVCConfig extends WebMvcConfigurationSupport {
@@ -32,6 +27,17 @@ public class MySpringMVCConfig extends WebMvcConfigurationSupport {
 		registry.addInterceptor(signatureCheckInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns(excludePath);
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedOrigins("*")
+				.allowCredentials(true)
+				.allowedMethods("GET", "POST", "OPTIONS")
+				.allowedHeaders("x-requested-with,content-type")
+				//.exposedHeaders(HttpHeaders.SET_COOKIE) sessionId不会被传过去
+				.maxAge(3600);
 	}
 
 	@Bean
