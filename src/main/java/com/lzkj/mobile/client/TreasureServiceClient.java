@@ -101,6 +101,14 @@ public interface TreasureServiceClient {
 	List<AgentCompanyRecordVO> getRecordList(@RequestParam("userId") Integer userId);
 
 	/**
+	 * 公司支付 判断使用过程中通道是否被关闭了
+	 * @param payId
+	 * @return
+	 */
+	@RequestMapping("treasure/mobile/checkPayIdIsOpen")
+	Integer checkPayIdIsOpen(@RequestParam("agentId") Integer agentId,@RequestParam("payId") Integer payId);
+
+	/**
 	 * 生成公司充值订单
 	 */
 	@RequestMapping("treasure/mobile/insertRecord")
@@ -283,5 +291,7 @@ public interface TreasureServiceClient {
 	@RequestMapping("/treasure/mobile/insertThirdPayRecord")
 	Boolean insertThirdPayRecord(@RequestBody ThirdAppPayRecordVO vo);
 	// ------------------------第三方APP支付 end--------------------------------
+
+
 }
 
