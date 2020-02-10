@@ -3213,7 +3213,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @Async
     public void activityBetAmountAdvance(Integer userId, Integer parentId, Integer level, Integer kindId,
 			BigDecimal betAmount, String betDate, Integer gameKindId) {
     	log.info("用户{}开始推动打码活动，参数：kindId:{}，gameKindId:{}，betAmount:{}，parentId:{}，level:{}，betDate:{}",userId,kindId,gameKindId,betAmount,parentId,level,betDate);
