@@ -151,6 +151,8 @@ public class CompanyPayConterller {
                 type =  treasureServiceClient.getPayId(agentId,payName);
                 map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account);
             } else {
+                //判断使用过程中通道是否被关闭了
+                Integer isopen = treasureServiceClient.checkPayIdIsOpen(agentId,payId);
                 map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             }
             Integer ret = (Integer) map.get("ret");

@@ -105,11 +105,19 @@ public interface TreasureServiceClient {
     @RequestMapping("treasure/mobile/getRecordList")
     List<AgentCompanyRecordVO> getRecordList(@RequestParam("userId") Integer userId);
 
-    /**
-     * 生成公司充值订单
-     */
-    @RequestMapping("treasure/mobile/insertRecord")
-    Map insertRecord(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId, @RequestParam("gameId") Integer gameId,
+	/**
+	 * 公司支付 判断使用过程中通道是否被关闭了
+	 * @param payId
+	 * @return
+	 */
+	@RequestMapping("treasure/mobile/checkPayIdIsOpen")
+	Integer checkPayIdIsOpen(@RequestParam("agentId") Integer agentId,@RequestParam("payId") Integer payId);
+
+	/**
+	 * 生成公司充值订单
+	 */
+	@RequestMapping("treasure/mobile/insertRecord")
+	Map insertRecord(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId, @RequestParam("gameId") Integer gameId,
                      @RequestParam("payId") Integer payId, @RequestParam("orderAmount") BigDecimal orderAmount, @RequestParam("remarks") String remarks, @RequestParam("account") String account);
 
     @RequestMapping("treasure/mobile/getPayId")
