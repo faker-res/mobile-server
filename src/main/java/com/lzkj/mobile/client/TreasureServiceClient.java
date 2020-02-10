@@ -17,20 +17,20 @@ import java.util.Map;
 @FeignClient(name = "treasure-service")
 public interface TreasureServiceClient {
 
-    @RequestMapping("treasure/mobile/getUserGameScoreInfoList")
-    List<UserGameScoreInfoVO> getUserGameScoreInfoList(@RequestParam("userId") Integer userId);
+	@RequestMapping("treasure/mobile/getUserGameScoreInfoList")
+	List<UserGameScoreInfoVO> getUserGameScoreInfoList(@RequestParam("userId") Integer userId);
 
-    @RequestMapping("treasure/mobile/getScoreRankList")
-    ScoreRankPageVO getScoreRankList(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize);
+	@RequestMapping("treasure/mobile/getScoreRankList")
+	ScoreRankPageVO getScoreRankList(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize);
 
-    @RequestMapping("treasure/mobile/getLotteryConfig")
-    LotteryConfigVO getLotteryConfig();
+	@RequestMapping("treasure/mobile/getLotteryConfig")
+	 LotteryConfigVO getLotteryConfig();
 
-    @RequestMapping("treasure/mobile/getGlobalSpreadInfo")
+	@RequestMapping("treasure/mobile/getGlobalSpreadInfo")
     GlobalSpreadInfo getGlobalSpreadInfo();
 
-    @RequestMapping("treasure/mobile/getInsureTradeRecord")
-    RecordInsurePageVO getInsureTradeRecord(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize, @RequestParam("userId") Integer userId);
+	@RequestMapping("treasure/mobile/getInsureTradeRecord")
+	RecordInsurePageVO getInsureTradeRecord(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize, @RequestParam("userId") Integer userId);
 
     /**
      * 获取支付商列表(第三方)
@@ -317,7 +317,6 @@ public interface TreasureServiceClient {
     Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
     // -------------------幸运注单 end-----------------------
-
     @RequestMapping("/treasure/mobile/winAndLose")
     TodayWinOrLoseVO winAndLose(@RequestParam("userId") Integer userId, @RequestParam("beginTime") String beginTime, @RequestParam("endTime") String endTime);
 
