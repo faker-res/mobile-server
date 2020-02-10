@@ -26,11 +26,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
 	private String profile;
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.addHeader("Access-Control-Allow-Methods", "POST,OPTIONS,GET");
-		response.addHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		String path = request.getServletPath();
 		String signatureKey;
 		try {
