@@ -153,6 +153,9 @@ public class CompanyPayConterller {
             } else {
                 //判断使用过程中通道是否被关闭了
                 Integer isopen = treasureServiceClient.checkPayIdIsOpen(agentId,payId);
+                if(1 == isopen){
+                    throw new GlobeException(SystemConstants.FAIL_CODE, "支付通道已关闭,请选择其他通道,谢谢");
+                }
                 map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
             }
             Integer ret = (Integer) map.get("ret");
