@@ -1229,8 +1229,6 @@ public class MobileInterfaceController {
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
-        log.info("kindId:"+kindId);
-        log.info("detailList:"+detailList);
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
@@ -1281,6 +1279,8 @@ public class MobileInterfaceController {
                 redisDao.expire(key, 60, TimeUnit.MINUTES);
                 accountsInfos(gr, accountsInfo);
             }
+            log.info("kindId:"+kindId);
+            log.info("detailList:"+detailList);
             log.info("accountsInfo:" + accountsInfo);
             if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
 					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
