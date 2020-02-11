@@ -1,9 +1,10 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.util.TimeUtil;
+import com.lzkj.mobile.entity.AccountsInfoEntity;
+import com.lzkj.mobile.util.bean.BeanUtils;
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.returnVO.user.UserInformationVO;
 import com.lzkj.mobile.v2.service.PersonCenterService;
 import com.lzkj.mobile.vo.*;
 import io.swagger.annotations.Api;
@@ -12,15 +13,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,11 +61,11 @@ public class PersonCenterController {
             @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "userId", value = "用户ID", paramType = "query", dataType = "int"),
     })
-    public GlobeResponse<UserInformationVO> getVipUserInfo(@RequestParam Integer userId) {
-        GlobeResponse<UserInformationVO> globeResponse = new GlobeResponse<>();
-        UserInformationVO userInfo = accountsServiceClient.getUsersInfo(userId);
-        globeResponse.setData(userInfo);
-        return globeResponse;
+    public Response<UserInformationVO> getVipUserInfo(@RequestParam Integer userId) {
+        AccountsInfoEntity accountsInfoEntity = accountsServiceClient.getUsersInfo(userId);
+        UserInformationVO userInfo = BeanUtils.copyProperties(accountsInfoEntity, UserInformationVO::new);
+        userInfo.setMobilePhone(accountsInfoEntity.getRegisterMobile());
+        return Response.successData(userInfo);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.entity.AccountsInfoEntity;
 import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
@@ -144,8 +145,8 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getVipLevelConfig")
     List<VipLevelRewardVO> getVipLevelConfig(@RequestParam("parentId")Integer parentId);
 
-    @RequestMapping("/accounts/mobile/getUsersInfo")
-    UserInformationVO getUsersInfo(@RequestParam("userId")Integer userId);
+    @RequestMapping("/accounts/common/getUsersInfo")
+    AccountsInfoEntity getUsersInfo(@RequestParam("userId")Integer userId);
 
     @RequestMapping("/accounts/mobile/updateUserBasicInfo")
     int updateUserBasicInfo(@RequestParam("nickName") String nickName,@RequestParam("gender") Integer gender,@RequestParam("userId") Integer userId);

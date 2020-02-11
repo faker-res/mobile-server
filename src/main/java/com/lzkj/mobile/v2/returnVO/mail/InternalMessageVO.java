@@ -22,28 +22,28 @@ import java.util.Date;
 @ApiModel(value = "InternalMessageVO", description = "游戏用户邮件数据返回封装类")
 public class InternalMessageVO {
 
-	@ApiModelProperty(name = "id", value = "主键ID")
+	@ApiModelProperty(value = "主键ID")
 	private int id;
 
-	@ApiModelProperty(name = "subject", value = "标题")
+	@ApiModelProperty(value = "标题")
 	private String subject;
 
-	@ApiModelProperty(name = "content", value = "内容")
+	@ApiModelProperty(value = "内容")
 	private String content;
 
-	@ApiModelProperty(name = "userId", value = "所属用户ID")
+	@ApiModelProperty(value = "所属用户ID")
 	private Integer userId;
 
-	@ApiModelProperty(name = "userId", value = "用户ID")
+	@ApiModelProperty(value = "用户ID")
 	private Integer gameId;
 
-	@ApiModelProperty(name = "agentId", value = "业主ID")
+	@ApiModelProperty(value = "业主ID")
 	private Integer agentId;
 
-	@ApiModelProperty(name = "status", value = "状态: -1:删除 0:未读,1:已读")
+	@ApiModelProperty(value = "状态: -1:删除 0:未读,1:已读")
 	private Integer status;
 
-	@ApiModelProperty(name = "createTime", value = "创建时间")
+	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
 
 }
