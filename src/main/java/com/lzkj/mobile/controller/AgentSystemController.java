@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -1079,6 +1081,10 @@ public class AgentSystemController {
                 data.put("HOT_UPDATE_URL", update);
             }
         }
+        //判断业主是否开启负盈利
+        Integer rewardStatus = treasureServiceClient.getRewardStatus(agentId);
+        data.put("rewardStatus",rewardStatus);
+
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);
