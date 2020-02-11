@@ -2847,16 +2847,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/getNoticeTitile")
-    private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
-        return globeResponse;
-    }
-
     @RequestMapping("/getNoticeDetail")
     private GlobeResponse<String> getNoticeDetail(Integer newsId) {
         if (newsId == null) {
@@ -2933,22 +2923,6 @@ public class MobileInterfaceController {
             redisDao.set(RedisKeyPrefix.getShareParamKey(shortParam), j);
             globeResponse.setData(shareUrl + "/" + shortParam);
         }
-        return globeResponse;
-    }
-
-    /**
-     * 游戏公告
-     *
-     * @param agentId
-     * @return
-     */
-    @RequestMapping("/getGameNews")
-    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(accountsServiceClient.getGameNews(agentId));
         return globeResponse;
     }
 
