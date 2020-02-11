@@ -1229,7 +1229,7 @@ public class MobileInterfaceController {
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
-        log.info("record:"+record);
+        log.info("kindId:"+kindId);
         log.info("detailList:"+detailList);
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
