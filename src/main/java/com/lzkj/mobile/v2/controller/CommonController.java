@@ -54,7 +54,7 @@ public class CommonController {
         return globeResponse;
     }
 
-    @RequestMapping("/mobileInterface/getNoticeTitile")
+    @GetMapping("/mobileInterface/getNoticeTitile")
     @ApiOperation(value = "游戏公告", notes = "游戏公告")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
