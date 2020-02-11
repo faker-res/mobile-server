@@ -410,5 +410,8 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/transfer")
     Boolean transfer(@RequestParam("num")String num, @RequestParam("fee")String fee,
                      @RequestParam("agentId")Integer agentId, @RequestParam("spGameId")Integer spGameId, @RequestParam("userId")Integer userId);
+
+    @RequestMapping("/treasure/mobile/getRewardStatus")
+    Integer getRewardStatus(@RequestParam("agentId")Integer agentId);
 }
 
