@@ -45,7 +45,7 @@ public class ActiveCenterController {
      * 玩家手动申请活动
      */
     @RequestMapping("/userApply")
-    private GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount, Integer agentId,String memo) {
+    public GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount, Integer agentId,String memo) {
         if (activeId == 0 || userId == 0 || amount == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "请先登录");
         }
@@ -59,7 +59,7 @@ public class ActiveCenterController {
      * 查看玩家申请的记录
      */
     @RequestMapping("/getApplyList")
-    private GlobeResponse getApplyList(Integer userId, Integer pageIndex, Integer pageSize,Integer kindType) {
+    public GlobeResponse getApplyList(Integer userId, Integer pageIndex, Integer pageSize,Integer kindType) {
         if (pageIndex == 0 || userId == 0 || pageSize == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }

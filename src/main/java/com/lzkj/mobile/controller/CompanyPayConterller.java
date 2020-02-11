@@ -39,7 +39,7 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/getCompanyPayType")
-    private GlobeResponse<Object> getCompanyPayType(Integer agentId, String payType) {
+    public GlobeResponse<Object> getCompanyPayType(Integer agentId, String payType) {
         if (agentId == null || StringUtils.isBlank(payType)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -56,7 +56,7 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/getCompanyRecord")
-    private GlobeResponse<Object> getCompanyRecord(Integer userId) {
+    public GlobeResponse<Object> getCompanyRecord(Integer userId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -79,7 +79,7 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/insertRecord")
-    private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
+    public GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
                                        String remarks, String account) {
         if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
@@ -146,7 +146,7 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/getRebateInfo")
-    private GlobeResponse getRebateInfo(Integer agentId, Integer userId) {
+    public GlobeResponse getRebateInfo(Integer agentId, Integer userId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }

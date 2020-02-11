@@ -100,7 +100,7 @@ public class MobileInterfaceController {
 
 
     @RequestMapping("/getScoreRank")
-    private GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
+    public GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
         String userIdParam = request.getParameter("userId");
@@ -156,7 +156,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getGameList")
-    private GlobeResponse<GameListVO> getGameList(HttpServletRequest request, HttpServletResponse response) {
+    public GlobeResponse<GameListVO> getGameList(HttpServletRequest request, HttpServletResponse response) {
         String typeIdParam = request.getParameter("typeId");
 
         int typeId = typeIdParam == null ? 1 : Integer.parseInt(typeIdParam);
@@ -247,7 +247,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getMobileProperty")
-    private GlobeResponse<MobilePropertyTypeVO> getMobileProperty(HttpServletRequest request) {
+    public GlobeResponse<MobilePropertyTypeVO> getMobileProperty(HttpServletRequest request) {
         String typeIdParam = request.getParameter("typeId");
         Integer typeId = typeIdParam == null ? 0 : Integer.valueOf(typeIdParam);
         List<GamePropertyType> mobilePropertyTypeList = platformServiceClient.getMobilePropertyType(typeId);
@@ -260,7 +260,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getBankRecord")
-    private GlobeResponse<Object> getBankRecord(HttpServletRequest request) throws Exception {
+    public GlobeResponse<Object> getBankRecord(HttpServletRequest request) throws Exception {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -329,7 +329,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getWithdrawalRecord")
-    private GlobeResponse<Object> getTiXianRecord(HttpServletRequest request) {
+    public GlobeResponse<Object> getTiXianRecord(HttpServletRequest request) {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -348,7 +348,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getMobileRollNotice")
-    private GlobeResponse<List<MobileNoticeVo>> getMobileRollNotice(HttpServletRequest request, Integer agentId) {
+    public GlobeResponse<List<MobileNoticeVo>> getMobileRollNotice(HttpServletRequest request, Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -368,7 +368,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getServerConfig")
-    private GlobeResponse<Object> getServerConfig(HttpServletRequest request) {
+    public GlobeResponse<Object> getServerConfig(HttpServletRequest request) {
         SiteConfigKey serverConfigKey = SiteConfigKey.ServerConfig;
         ConfigInfo configInfo = nativeWebServiceClient.getConfigInfo(serverConfigKey.toString());
         String value = "";
@@ -403,7 +403,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getOrderRecord")
-    private GlobeResponse<Object> getOrderRecord(HttpServletRequest request) {
+    public GlobeResponse<Object> getOrderRecord(HttpServletRequest request) {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -457,7 +457,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/adsNotice")
-    private GlobeResponse<List<NewsVO>> getGameNotice(Integer agentId) {
+    public GlobeResponse<List<NewsVO>> getGameNotice(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -470,7 +470,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getMobileShareConfig")
-    private GlobeResponse<MobileShareConfigVO> getMobileShareConfig(HttpServletRequest request) {
+    public GlobeResponse<MobileShareConfigVO> getMobileShareConfig(HttpServletRequest request) {
         int systemStatus = 0;
         SystemConfigKey systemConfigKey = SystemConfigKey.SharePresent;
         SystemStatusInfoVO systemStatusInfo = accountsServiceClient.getSystemStatusInfo(systemConfigKey.toString());
@@ -542,7 +542,7 @@ public class MobileInterfaceController {
      * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元   15 百家  26开元
      */
     @RequestMapping("/getCode")
-    private GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
+    public GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
         if (phone == null || phone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
         }
@@ -976,7 +976,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/bindOrModifyPayInfo")
-    private GlobeResponse<Object> bindOrModifyPayInfo(Integer userId, String bankRealName, String bankNo, String bankName, String bankAddress, String alipayRealName, String alipay,
+    public GlobeResponse<Object> bindOrModifyPayInfo(Integer userId, String bankRealName, String bankNo, String bankName, String bankAddress, String alipayRealName, String alipay,
                                                       String phone, String verifyCode, String zpass) {
         if (phone == null || phone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
@@ -1007,7 +1007,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getAgentPay")
-    private GlobeResponse<Object> getAgentPay(Integer agentId) {
+    public GlobeResponse<Object> getAgentPay(Integer agentId) {
         List<AgentInfoVO> list = agentServiceClient.getAgentPay(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Map<String, Object> data = new HashMap<>();
@@ -1024,7 +1024,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getPayList")
-    private GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
+    public GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
         long startMillis = System.currentTimeMillis();
         log.info("/getPayList,参数:userId={},agentId={}", userId, agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
@@ -1066,7 +1066,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getActivityList")
-    private GlobeResponse<Object> getActivityList(Integer agentId) {
+    public GlobeResponse<Object> getActivityList(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1076,7 +1076,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getGameRecord")
-    private GlobeResponse<Object> getGameRecord(int pageIndex, int pageSize, Integer userId, Integer kindId) {
+    public GlobeResponse<Object> getGameRecord(int pageIndex, int pageSize, Integer userId, Integer kindId) {
         if (pageSize > 50) {
             pageSize = 50;
         }
@@ -1213,14 +1213,14 @@ public class MobileInterfaceController {
     }
 
 	//设置账户信息
-    private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
+    public void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
         gr.setAccount(accountsInfo.getAccount());
         gr.setH5Account(accountsInfo.getH5Account());
         gr.setH5SiteCode(accountsInfo.getH5siteCode());
     }
 
     @RequestMapping("/getIp")
-    private GlobeResponse<Object> getIp(String ip) {
+    public GlobeResponse<Object> getIp(String ip) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //long now = System.currentTimeMillis();
 //    	long number = StringUtil.ip2Number(ip);
@@ -1239,7 +1239,7 @@ public class MobileInterfaceController {
      * @param code
      * @return
      */
-    private String sendCode(String phone, String code) {
+    public String sendCode(String phone, String code) {
         String message = "您的验证码是： " + code + "。请不要把验证码泄露给其他人。";
         String param = "account=" + phoneName + "&password=" + phonePwd + "&mobile=" + phone + "&content=" + message;
         String resTxt = HttpRequest.sendPost(phonePostUrl, param);
@@ -1275,7 +1275,7 @@ public class MobileInterfaceController {
      */
 //    @Deprecated
 //    @RequestMapping("/payPageLoad")
-//    private String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+//    public String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
 //        if (amount.equals(null) || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
 //            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
 //        }
@@ -1302,7 +1302,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+    public String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
         if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -1388,7 +1388,7 @@ public class MobileInterfaceController {
      * @param paramMap
      * @return
      */
-    private String getParam(Map<String, String> paramMap) {
+    public String getParam(Map<String, String> paramMap) {
         String str = "";
         try {
             for (String key : paramMap.keySet()) {
@@ -1415,7 +1415,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/payCallBack")
     @ResponseBody
-    private Object payCallBack(String orderId, String ownerOrderId, String orderType, String amount, String ownerId, String ownerSign, HttpServletRequest request) {
+    public Object payCallBack(String orderId, String ownerOrderId, String orderType, String amount, String ownerId, String ownerSign, HttpServletRequest request) {
         log.info("接收到订单支付结果：" + orderId + ", " + ownerOrderId + ", " + orderType + ", " + amount + ", " + ownerId + ", " + ownerSign);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
         String param = "orderId=" + orderId + "&ownerOrderId=" + ownerOrderId + "&orderType="
@@ -1455,7 +1455,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getGateway")
-    private Map<String, Object> getGatewayInfo(String account, String passWord, int type, Integer agentId) {
+    public Map<String, Object> getGatewayInfo(String account, String passWord, int type, Integer agentId) {
         if (type < 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误，请确认");
         }
@@ -1510,7 +1510,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/verificationPhoneCode")
-    private GlobeResponse<Object> verificationPhoneCode(String phone, String verifyCode) {
+    public GlobeResponse<Object> verificationPhoneCode(String phone, String verifyCode) {
         if (phone == null || phone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
         }
@@ -1541,7 +1541,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/replacePhoneCode")
-    private GlobeResponse<Object> replacePhoneCode(Integer userId, String originalPhone, String originalCode, String replacePhone, String verifyCode) {
+    public GlobeResponse<Object> replacePhoneCode(Integer userId, String originalPhone, String originalCode, String replacePhone, String verifyCode) {
         if (replacePhone == null || replacePhone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
         }
@@ -1671,7 +1671,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getCustomerInfo")
-    private GlobeResponse<Object> getCustomerInfo(Integer agentId) {
+    public GlobeResponse<Object> getCustomerInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1692,7 +1692,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getMinBalanceInfo")
-    private GlobeResponse<Object> getMinBalanceInfo(Integer agentId, Integer userId) {
+    public GlobeResponse<Object> getMinBalanceInfo(Integer agentId, Integer userId) {
         long startMillis = System.currentTimeMillis();
         log.info("/getMinBalanceInfo,参数agentId={}", agentId);
         if (agentId == null) {
@@ -1720,7 +1720,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getAgentContactInfo")
-    private GlobeResponse<Object> getAgentContactInfo(Integer agentId) {
+    public GlobeResponse<Object> getAgentContactInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1740,7 +1740,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getAgentCustomerServiceInfo")
-    private GlobeResponse<Object> getAgentCustomerServiceInfo(Integer agentId) {
+    public GlobeResponse<Object> getAgentCustomerServiceInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1759,7 +1759,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getBankCardTypeInfo")
-    private GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
+    public GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1785,7 +1785,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getLucky")
-    private GlobeResponse<Object> getLucky(Integer agentId) {
+    public GlobeResponse<Object> getLucky(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1806,7 +1806,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/updateUserBasicInfo")
-    private GlobeResponse<Object> updateUserBasicInfo(String nickName, Integer gender, Integer userId) {
+    public GlobeResponse<Object> updateUserBasicInfo(String nickName, Integer gender, Integer userId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1826,7 +1826,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/updateUserContactInfo")
-    private GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
+    public GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1848,7 +1848,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getVideoType")
-    private GlobeResponse<Object> getVideoType() {
+    public GlobeResponse<Object> getVideoType() {
         List<VideoTypeVO> list = treasureServiceClient.getVideoType();
         VideoTypeVO videoTypeVO = new VideoTypeVO();
         videoTypeVO.setKindId(10000);
@@ -1872,7 +1872,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getDate")
-    private GlobeResponse<Object> getDate() {
+    public GlobeResponse<Object> getDate() {
         List<Map<String, String>> data = new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
         map.put("code", "0");
@@ -1909,7 +1909,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getChannelGameUserBetAndScore")
-    private GlobeResponse<Object> getChannelGameUserBetAndScore(Integer kindType, Integer date, Integer kindId, Integer userId, Integer pageIndex, Integer pageSize) {
+    public GlobeResponse<Object> getChannelGameUserBetAndScore(Integer kindType, Integer date, Integer kindId, Integer userId, Integer pageIndex, Integer pageSize) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1928,7 +1928,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getTransactionType")
-    private GlobeResponse<Object> getTransactionType() {
+    public GlobeResponse<Object> getTransactionType() {
         List<TransactionTypeVO> list = treasureServiceClient.getTransactionType();
         Collections.sort(list, Comparator.comparing(TransactionTypeVO::getTypeId));
         Map<String, Object> data = new HashMap<>();
@@ -1949,7 +1949,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getAccountDetails")
-    private GlobeResponse<Object> getAccountDetails(Integer userId, Integer typeId, Integer date, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<Object> getAccountDetails(Integer userId, Integer typeId, Integer date, Integer pageSize, Integer pageIndex) {
     	 if (userId == null) {
              throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
          }
@@ -2003,7 +2003,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getPersonalReport")
-    private GlobeResponse<Object> getPersonalReport(Integer userId, Integer kindType, Integer date) {
+    public GlobeResponse<Object> getPersonalReport(Integer userId, Integer kindType, Integer date) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2052,7 +2052,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getRedEnvelopeReward")
-    private GlobeResponse<Object> getRedEnvelopeReward(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getRedEnvelopeReward(Integer userId, Integer parentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2077,7 +2077,7 @@ public class MobileInterfaceController {
      * @return
      */
 //    @RequestMapping("/getReceivingRedEnvelope")
-//    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
+//    public GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
 //    	if (userId == null) {
 //            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
 //        }
@@ -2103,7 +2103,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getYebScore")
-    private GlobeResponse<Object> getYebScore(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getYebScore(Integer userId, Integer parentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2131,7 +2131,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserRewardDetail")
-    private GlobeResponse<Object> getUserRewardDetail(Integer userId, Integer parentId, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<Object> getUserRewardDetail(Integer userId, Integer parentId, Integer pageSize, Integer pageIndex) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2156,7 +2156,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserYebInfo")
-    private GlobeResponse<Object> getUserYebInfo(Integer userId, Integer date, Integer pageSize, Integer pageIndex, Integer typeId) {
+    public GlobeResponse<Object> getUserYebInfo(Integer userId, Integer date, Integer pageSize, Integer pageIndex, Integer typeId) {
         if (userId == null || typeId == null || date == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2399,7 +2399,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getReceivingRedEnvelopes")
-    private GlobeResponse<Object> getReceivingRedEnvelopes(Integer userId, BigDecimal score, String machineId, Integer typeId, Integer activityId, HttpServletRequest request) {
+    public GlobeResponse<Object> getReceivingRedEnvelopes(Integer userId, BigDecimal score, String machineId, Integer typeId, Integer activityId, HttpServletRequest request) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2463,7 +2463,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getDateTime")
-    private GlobeResponse<Object> getDateTime() {
+    public GlobeResponse<Object> getDateTime() {
         List<Map<String, String>> data = new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
 //        map.put("code", "0");
@@ -2530,16 +2530,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/getNoticeDetail")
-    private GlobeResponse<String> getNoticeDetail(Integer newsId) {
-        if (newsId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
-        globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
-        return globeResponse;
-    }
-
     /**
      * 绑定银行卡
      * @param userId
@@ -2552,7 +2542,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/saveBankCardRawData")
-    private GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
+    public GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
         if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2565,7 +2555,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getBankCardRawData")
-    private GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId, Integer agentId) {
+    public GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId, Integer agentId) {
         if (gameId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2589,7 +2579,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getShareUrl")
-    private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
+    public GlobeResponse<String> getShareUrl(Integer g, Integer p) {
         if (g == null || p == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }

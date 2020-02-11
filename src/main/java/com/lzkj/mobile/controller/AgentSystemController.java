@@ -64,7 +64,7 @@ public class AgentSystemController {
      * @return
      */
     @RequestMapping("/getAgentMyPlayer")
-    private GlobeResponse getAgentMyPlayer(Integer userId, Integer memberId, Integer pageIndex) {
+    public GlobeResponse getAgentMyPlayer(Integer userId, Integer memberId, Integer pageIndex) {
         if (memberId == null) memberId = 0;
         List<MyPlayerVO> list = agentClient.getAgentMyPlayer(userId, memberId, pageIndex);
         Integer count = accountsClient.getMyDirectlyPlayer(userId);
@@ -94,7 +94,7 @@ public class AgentSystemController {
      * @return
      */
     @RequestMapping("/getAgentMyTeam")
-    private GlobeResponse<List<MyPlayerVO>> getAgentMyPlayer(Integer userId, Integer agentId, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<List<MyPlayerVO>> getAgentMyPlayer(Integer userId, Integer agentId, Integer pageSize, Integer pageIndex) {
 
         List<MyPlayerVO> list = agentClient.getAgentMyTeam(userId, agentId, pageSize, pageIndex);
         log.info("全民代理数据{}", list);
@@ -115,7 +115,7 @@ public class AgentSystemController {
      * 推广-我的业绩
      */
     @RequestMapping("/getAchievement")
-    private GlobeResponse<Object> getAchievement(Integer userId) {
+    public GlobeResponse<Object> getAchievement(Integer userId) {
         List<QmAchievementVO> list = agentClient.getAchievement(userId);
         BigDecimal weekTotalAchievement = BigDecimal.ZERO;
         BigDecimal weekTeamAchievement = BigDecimal.ZERO;
@@ -146,7 +146,7 @@ public class AgentSystemController {
      * 推广-我的奖励
      */
     @RequestMapping("/getMyRewardRecord")
-    private GlobeResponse<Object> getMyRewardRecord(Integer userId) {
+    public GlobeResponse<Object> getMyRewardRecord(Integer userId) {
         List<MyRewardRecordVO> list = agentClient.getMyRewardRecord(userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(list);
@@ -157,7 +157,7 @@ public class AgentSystemController {
      * 推广-我的提现
      */
     @RequestMapping("/myTxRecord")
-    private GlobeResponse<Object> getMyTxRecord(Integer userId, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<Object> getMyTxRecord(Integer userId, Integer pageSize, Integer pageIndex) {
         if (pageSize == null || pageSize > 20) pageSize = 50;
         if (pageIndex == null || pageSize < 1) pageIndex = 1;
         List<MyQmTxRecord> list = agentClient.getMyQmTxRecord(userId, pageSize, pageIndex);
@@ -176,7 +176,7 @@ public class AgentSystemController {
      * 查询推广佣金
      */
     @RequestMapping("/zzSysRatio")
-    private GlobeResponse<Object> getZzSysRatio(Integer agentId, Integer userId) {
+    public GlobeResponse<Object> getZzSysRatio(Integer agentId, Integer userId) {
         if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }

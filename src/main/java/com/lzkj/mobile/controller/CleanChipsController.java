@@ -33,7 +33,7 @@ public class CleanChipsController {
      * @return
      */
     @RequestMapping("/chips")
-    private GlobeResponse<Object> getCleanChips(Integer userId, Integer agentId) {
+    public GlobeResponse<Object> getCleanChips(Integer userId, Integer agentId) {
         //获取第三方除捕鱼外的数据
         CleanChipsTotalVO cleanChipsTotalVO  = platformServiceClient.getCleanChips(userId, agentId);
         GlobeResponse globeResponse = new GlobeResponse();
@@ -50,7 +50,7 @@ public class CleanChipsController {
      * @return
      */
     @RequestMapping("/washBet")
-    private GlobeResponse<Object> washBet(Integer userId,Integer agentId,Integer vipLevel){
+    public GlobeResponse<Object> washBet(Integer userId,Integer agentId,Integer vipLevel){
         Boolean flag =false;
         if (vipLevel==0){
             flag =true;
@@ -78,7 +78,7 @@ public class CleanChipsController {
      * 获取洗码记录
      */
     @RequestMapping("/getWashRecord")
-    private GlobeResponse<Object> getWashRecord(Integer userId){
+    public GlobeResponse<Object> getWashRecord(Integer userId){
          List<CleanChipsRecordVO> list = platformServiceClient.getWashRecord(userId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
@@ -90,7 +90,7 @@ public class CleanChipsController {
      * 获取洗码记录详情
      */
     @RequestMapping("/getCleanChipsRecord")
-    private GlobeResponse<Object> getCleanChipsRecord(Integer userId,String recordDate){
+    public GlobeResponse<Object> getCleanChipsRecord(Integer userId,String recordDate){
         List<CleanChipsRecordVO> list = platformServiceClient.getCleanChipsRecord(userId,recordDate);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
@@ -101,7 +101,7 @@ public class CleanChipsController {
      * 洗码比列
      */
     @RequestMapping("/getCleanConfig")
-    private GlobeResponse<Object> getCleanConfig(Integer agentId,int kindType){
+    public GlobeResponse<Object> getCleanConfig(Integer agentId,int kindType){
         List<CleanChipsConfigVO> list =platformServiceClient.getCleanChipsConfig(agentId);
         List<ThirdKindConfigVO> getThirdConfig = platformServiceClient.getThirdConfig(kindType);
 

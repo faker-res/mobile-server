@@ -55,7 +55,7 @@ public class CommonController {
     }
 
     @GetMapping("/mobileInterface/getNoticeTitile")
-    @ApiOperation(value = "游戏公告", notes = "游戏公告")
+    @ApiOperation(value = "游戏公告标题", notes = "游戏公告标题")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "agentId", value = "业主ID", paramType = "query", dataType = "int")
@@ -63,6 +63,18 @@ public class CommonController {
     public GlobeResponse<List<NewsVO>> getNoticeTitile(@RequestParam Integer agentId) {
         GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
         globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
+        return globeResponse;
+    }
+
+    @GetMapping("/mobileInterface/getNoticeDetail")
+    @ApiOperation(value = "游戏公告详情", notes = "游戏公告详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "newsId", value = "消息主键ID", paramType = "query", dataType = "int")
+    })
+    public GlobeResponse<String> getNoticeDetail(@RequestParam Integer newsId) {
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
         return globeResponse;
     }
 
