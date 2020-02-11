@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,11 +39,7 @@ public class MailController {
         @ApiImplicitParam(name = "gameId", value = "用户游戏ID", paramType = "query", dataType = "int", required = true)
     })
     public Response<List<InternalMessageVO>> getMailsInfo(@RequestParam Integer gameId) {
-    	long startMillis = System.currentTimeMillis();
-        //获取该用户可以看的邮件
-        Response<List<InternalMessageVO>> response = accountsServiceClient.getMailsInfo(gameId);
-        log.info("/getMailsInfo,耗时:{}", System.currentTimeMillis() - startMillis);
-        return response;
+        return accountsServiceClient.getMailsInfo(gameId);
     }
 
     @GetMapping("/openMail")

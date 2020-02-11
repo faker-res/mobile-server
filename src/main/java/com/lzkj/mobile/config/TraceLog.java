@@ -1,4 +1,4 @@
-package com.lzkj.mobile.v2.config;
+package com.lzkj.mobile.config;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
@@ -17,18 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *    
- *  *  
- *  * @Project: agent 
- *  * @Package: com.lzkj.agent.v2.config 
- *  * @Description: TODO   
- *  * @Author:   horus   
- *  * @CreateDate:  2020/2/7 15:05  
- *  * @Version:   v1.0
- *  *    
- *  
- */
 @Slf4j
 @Aspect
 @Component
@@ -43,8 +31,7 @@ public class TraceLog {
         SPECIAL.add("ackPassword");
     }
 
-    //不依赖web模块所有controller变红，代码在web运行没问题
-    @Pointcut("execution(* com.lzkj.mobile.v2.controller.*.*.*(..))")
+    @Pointcut("execution(* com.lzkj.mobile.v2.controller.*.*(..))")
     public void traceLogAspect() {
     }
 
