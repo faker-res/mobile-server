@@ -48,11 +48,8 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.client.AgentServiceClient;
-import com.lzkj.mobile.client.NativeWebServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.client.TreasureServiceClient;
+import com.lzkj.mobile.async.ActiveAsyncUtil;
+import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
 import com.lzkj.mobile.config.SystemConfigKey;
@@ -223,8 +220,6 @@ public class MobileInterfaceController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @Resource(name = "ActiveAsyncUtil")
-    private ActiveAsyncUtil activeAsyncUtil;
 
     @RequestMapping("/getScoreRank")
     private GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
