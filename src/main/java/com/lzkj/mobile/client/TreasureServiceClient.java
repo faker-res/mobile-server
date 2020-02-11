@@ -413,5 +413,8 @@ public interface TreasureServiceClient {
 
     @RequestMapping("/treasure/mobile/getRewardStatus")
     Integer getRewardStatus(@RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/treasure/mobile/getPlayerStatus")
+    Integer getPlayerStatus(@RequestParam("userId") Integer userId, @RequestParam("agentId")Integer agentId);
 }
 
