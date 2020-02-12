@@ -12,6 +12,7 @@ public class MyTeamVO {
     private BigDecimal score;
     private String betTime;
     private String gameName;
+    private String account;
 
     private Integer nullity;
     private Integer betAmount;
