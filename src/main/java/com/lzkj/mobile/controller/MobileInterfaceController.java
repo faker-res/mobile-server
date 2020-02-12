@@ -2890,7 +2890,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-
     @Async
     public void activityBetAmountAdvance(Integer userId, Integer parentId, Integer level, Integer kindId,
 			BigDecimal betAmount, String betDate, Integer gameKindId) {
