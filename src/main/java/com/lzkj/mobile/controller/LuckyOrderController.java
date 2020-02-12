@@ -117,6 +117,40 @@ public class LuckyOrderController {
     }
 
     /**
+     * 幸运注单明细
+     *
+     * @param agentId
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/luckyOrderDetailList")
+    public GlobeResponse<Object> luckyOrderDetailList(Integer agentId, Integer userId, Integer pageIndex, Integer pageSize) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "业主标识不能为空");
+        }
+        if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "用户标识不能为空");
+        }
+        if (pageIndex == null || pageSize == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "分页参数不能为空");
+        }
+        CommonPageVO<LuckyOrderDetailVo> pageVO = treasureServiceClient.luckyOrderDetailList(agentId, userId, pageIndex, pageSize);
+        Map<String, Object> data = new HashMap<>(100);
+        if(pageVO == null){
+            data.put("list", new ArrayList());
+            data.put("total", 0);
+        }else{
+            data.put("list", pageVO.getLists());
+            data.put("total", pageVO.getRecordCount());
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
+
+    /**
      * 手动领奖
      */
     @RequestMapping("/receiveLuckyOrderInfo")

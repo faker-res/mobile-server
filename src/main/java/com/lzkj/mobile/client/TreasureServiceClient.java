@@ -269,6 +269,21 @@ public interface TreasureServiceClient {
 			@RequestParam("startDate")String startDate,@RequestParam("endDate")String endDate,
 			@RequestParam("kindId")Integer kindId,@RequestParam("kindType")Integer kindType,@RequestParam("gameId")Integer gameId);
 
+	/**
+	 * 幸运注单明细
+	 *
+	 * @param agentId
+	 * @param userId
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping("/agentControl/luckyOrderDetailList")
+	CommonPageVO<LuckyOrderDetailVo> luckyOrderDetailList(@RequestParam("agentId") Integer agentId,
+														  @RequestParam("userId") Integer userId,
+														  @RequestParam("pageIndex") Integer pageIndex,
+														  @RequestParam("pageSize") Integer pageSize);
+
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
 	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
