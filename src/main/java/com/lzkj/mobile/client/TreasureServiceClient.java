@@ -364,11 +364,13 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/getMyTeam")
     CommonPageVO<MyTeamVO> getMyTeam(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
                              @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize,
-                             @RequestParam("gameId") Integer gameId, @RequestParam("dateTime") String dateTime, @RequestParam("nullity")Integer nullity);
+                             @RequestParam("gameId") Integer gameId, @RequestParam("startTime") String startTime,
+                             @RequestParam("endTime") String endTime, @RequestParam("nullity")Integer nullity);
 
     @RequestMapping("/treasure/mobile/getMyTeamCount")
     Integer getMyTeamCount(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId,
-                           @RequestParam("gameId") Integer gameId, @RequestParam("dateTime") String dateTime);
+                           @RequestParam("gameId") Integer gameId, @RequestParam("startTime") String startTime,
+                           @RequestParam("endTime") String endTime);
 
     @RequestMapping("/treasure/mobile/getMyTeamTodayBet")
     Integer getMyTeamTodayBet(@RequestParam("userId") Integer userId);

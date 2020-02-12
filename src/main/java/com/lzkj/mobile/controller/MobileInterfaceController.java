@@ -2728,13 +2728,13 @@ public class MobileInterfaceController {
 
     @RequestMapping("/getMyTeam")
     public GlobeResponse<Object> getMyTeam(Integer agentId, Integer userId, Integer pageIndex,
-                                           Integer pageSize, Integer gameId, String dateTime,Integer nullity
+                                           Integer pageSize, Integer gameId, String startTime,String endTime,Integer nullity
     ) {
         if (userId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeam(agentId, userId, pageIndex, pageSize, gameId, dateTime,nullity);
-        Integer memberCount = treasureServiceClient.getMyTeamCount(agentId, userId, gameId, dateTime);
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeam(agentId, userId, pageIndex, pageSize, gameId, startTime,endTime,nullity);
+        Integer memberCount = treasureServiceClient.getMyTeamCount(agentId, userId, gameId, startTime,endTime);
         Integer todayTeamBet = treasureServiceClient.getMyTeamTodayBet(userId);
         HashMap<String, Object> map = new HashMap<>();
         map.put("list", pageVO);
