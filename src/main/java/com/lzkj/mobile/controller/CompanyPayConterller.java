@@ -5,10 +5,7 @@ import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
-import com.lzkj.mobile.vo.AgentCompanyRecordVO;
-import com.lzkj.mobile.vo.AgentRebateConfigVO;
-import com.lzkj.mobile.vo.CompanyPayVO;
-import com.lzkj.mobile.vo.GlobeResponse;
+import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,57 +30,13 @@ public class CompanyPayConterller {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-//    /**
-//     * 公司充值信息
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/getCompanyPay")
-//    private GlobeResponse<Object> getCompanyPay(Integer agentId) {
-//        if (agentId == null) {
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-//        }
-//        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-//        List<Object> list = treasureServiceClient.getCompanyPay(agentId);
-//
-//        List<PayTypeList> lists = new ArrayList<>();
-//        if (list != null) {
-//            list.forEach(type -> {
-//                PayTypeList typeList = new PayTypeList();
-//                if ("AliPay".equals(type)) {
-//                    typeList.setId(0);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("WeChatPay".equals(type)) {
-//                    typeList.setId(1);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("BankPay".equals(type)) {
-//                    typeList.setId(2);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("CloudPay".equals(type)) {
-//                    typeList.setId(3);
-//                    typeList.setPayType((String) type);
-//                }
-//                if ("redPwd".equals(type)) {
-//                    typeList.setId(4);
-//                    typeList.setPayType((String) type);
-//                }
-//                lists.add(typeList);
-//            });
-//        }
-//        globeResponse.setData(lists);
-//        return globeResponse;
-//    }
-
     /**
      * 充值层级信息
      *
      * @return
      */
     @RequestMapping("/getCompanyPayType")
-    private GlobeResponse<Object> getCompanyPayType(Integer agentId, String payType) {
+    public GlobeResponse<Object> getCompanyPayType(Integer agentId, String payType) {
         if (agentId == null || StringUtils.isBlank(payType)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -100,7 +53,7 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/getCompanyRecord")
-    private GlobeResponse<Object> getCompanyRecord(Integer userId) {
+    public GlobeResponse<Object> getCompanyRecord(Integer userId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -114,32 +67,26 @@ public class CompanyPayConterller {
     /**
      * 生成公司充值订单
      *
-     * @param agentId
-     * @param userId
-     * @param gameId
-     * @param payId  此处的payid 是指：通道id, 不是公司充值配置id
-     * @param orderAmount
-     * @param remarks
      * @return
      */
     @RequestMapping("/insertRecord")
-    private GlobeResponse insertRecord(Integer agentId, Integer userId, Integer gameId, Integer payId, BigDecimal orderAmount,
-                                       String remarks, String account) {
-        if (agentId == null || userId == null || gameId == null || payId == null || orderAmount == BigDecimal.ZERO) {
+    public GlobeResponse insertRecord(CompanyOnlineOrderVO vo) {
+        if (vo.getAgentId() == null || vo.getUserId() == null || vo.getGameId() == null || vo.getPayId() == null
+                || vo.getOrderAmount() .equals(BigDecimal.ZERO) ) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        RedisLock redisLock = new RedisLock(RedisKeyPrefix.payLock(""+userId+orderAmount), redisTemplate, 10);
+        RedisLock redisLock = new RedisLock(RedisKeyPrefix.payLock(""+vo.getUserId()+vo.getOrderAmount()), redisTemplate, 10);
         Boolean hasLock = redisLock.tryLock();
         if (!hasLock) {
-            log.error("公司支付没有下单成功,", userId);
+            log.error("公司支付没有下单成功,", vo.getUserId());
             throw new GlobeException(SystemConstants.FAIL_CODE, "下单失败，请稍后重试");
         }
         try {
             Map map = new HashMap();
             String payName = "";
             Integer type = null;
-            if (0 <= payId && payId <= 6) {
-                switch (payId) {
+            if (0 <= vo.getPayId() && vo.getPayId() <= 6) {
+                switch (vo.getPayId()) {
                     case 0 : payName = "AliPay"; break;
                     case 1 : payName = "WeChatPay";break;
                     case 2 : payName = "BankPay";break;
@@ -148,15 +95,17 @@ public class CompanyPayConterller {
                     case 5 : payName = "JinDongPay";break;
                     case 6 : payName = "redPwd";break;
                 }
-                type =  treasureServiceClient.getPayId(agentId,payName);
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId,type, orderAmount, remarks, account);
+                type =  treasureServiceClient.getPayId(vo.getAgentId(),payName);
+                map = treasureServiceClient.insertRecord(vo.getAgentId(), vo.getUserId(), vo.getGameId(),type,
+                        vo.getOrderAmount(), vo.getRemarks(), vo.getAccount());
             } else {
                 //判断使用过程中通道是否被关闭了
-                Integer isopen = treasureServiceClient.checkPayIdIsOpen(agentId,payId);
+                Integer isopen = treasureServiceClient.checkPayIdIsOpen(vo.getAgentId(),vo.getPayId());
                 if(1 == isopen){
                     throw new GlobeException(SystemConstants.FAIL_CODE, "支付通道已关闭,请选择其他通道,谢谢");
                 }
-                map = treasureServiceClient.insertRecord(agentId, userId, gameId, payId, orderAmount, remarks, account);
+                map = treasureServiceClient.insertRecord(vo.getAgentId(), vo.getUserId(), vo.getGameId(), vo.getPayId(),
+                        vo.getOrderAmount(), vo.getRemarks(), vo.getAccount());
             }
             Integer ret = (Integer) map.get("ret");
             String strErrorDescribe = (String) map.get("strErrorDescribe");
@@ -190,7 +139,7 @@ public class CompanyPayConterller {
      * @return
      */
     @RequestMapping("/getRebateInfo")
-    private GlobeResponse getRebateInfo(Integer agentId, Integer userId) {
+    public GlobeResponse getRebateInfo(Integer agentId, Integer userId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }

@@ -11,7 +11,7 @@ import java.util.Date;
  *  * @Package: com.lzkj.mobile.entity 
  *  * @Description: TODO   
  *  * @Author:   horus   
- *  * @CreateDate:  2020/1/23 10:50  
+ *  * @CreateDate:  2020/2/11 20:52  
  *  * @Version:   v1.0
  *  *    
  *  

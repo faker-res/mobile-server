@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -64,7 +66,7 @@ public class AgentSystemController {
      * @return
      */
     @RequestMapping("/getAgentMyPlayer")
-    private GlobeResponse getAgentMyPlayer(Integer userId, Integer memberId, Integer pageIndex) {
+    public GlobeResponse getAgentMyPlayer(Integer userId, Integer memberId, Integer pageIndex) {
         if (memberId == null) memberId = 0;
         List<MyPlayerVO> list = agentClient.getAgentMyPlayer(userId, memberId, pageIndex);
         Integer count = accountsClient.getMyDirectlyPlayer(userId);
@@ -94,7 +96,7 @@ public class AgentSystemController {
      * @return
      */
     @RequestMapping("/getAgentMyTeam")
-    private GlobeResponse<List<MyPlayerVO>> getAgentMyPlayer(Integer userId, Integer agentId, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<List<MyPlayerVO>> getAgentMyPlayer(Integer userId, Integer agentId, Integer pageSize, Integer pageIndex) {
 
         List<MyPlayerVO> list = agentClient.getAgentMyTeam(userId, agentId, pageSize, pageIndex);
         log.info("全民代理数据{}", list);
@@ -115,7 +117,7 @@ public class AgentSystemController {
      * 推广-我的业绩
      */
     @RequestMapping("/getAchievement")
-    private GlobeResponse<Object> getAchievement(Integer userId) {
+    public GlobeResponse<Object> getAchievement(Integer userId) {
         List<QmAchievementVO> list = agentClient.getAchievement(userId);
         BigDecimal weekTotalAchievement = BigDecimal.ZERO;
         BigDecimal weekTeamAchievement = BigDecimal.ZERO;
@@ -146,7 +148,7 @@ public class AgentSystemController {
      * 推广-我的奖励
      */
     @RequestMapping("/getMyRewardRecord")
-    private GlobeResponse<Object> getMyRewardRecord(Integer userId) {
+    public GlobeResponse<Object> getMyRewardRecord(Integer userId) {
         List<MyRewardRecordVO> list = agentClient.getMyRewardRecord(userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(list);
@@ -157,7 +159,7 @@ public class AgentSystemController {
      * 推广-我的提现
      */
     @RequestMapping("/myTxRecord")
-    private GlobeResponse<Object> getMyTxRecord(Integer userId, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<Object> getMyTxRecord(Integer userId, Integer pageSize, Integer pageIndex) {
         if (pageSize == null || pageSize > 20) pageSize = 50;
         if (pageIndex == null || pageSize < 1) pageIndex = 1;
         List<MyQmTxRecord> list = agentClient.getMyQmTxRecord(userId, pageSize, pageIndex);
@@ -176,7 +178,7 @@ public class AgentSystemController {
      * 查询推广佣金
      */
     @RequestMapping("/zzSysRatio")
-    private GlobeResponse<Object> getZzSysRatio(Integer agentId, Integer userId) {
+    public GlobeResponse<Object> getZzSysRatio(Integer agentId, Integer userId) {
         if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -733,21 +735,21 @@ public class AgentSystemController {
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
-        UserCodeDetailsVO param = this.accountsClient.cashFlowDetails(userId, agentId);
-        if (param == null) {
-            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
-            //是否可提现状态
-            userCodeDetailsVO.setStatus(1);
-            //需求打码量
-            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
-            //实际打码量
-            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
-            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
-            globeResponse.setData(userCodeDetailsVO);
-
-
-            return globeResponse;
-        }
+        List<UserCodeDetailsVO> param = this.accountsClient.cashFlowDetails(userId, agentId);
+//        if (param == null) {
+//            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
+//            //是否可提现状态
+//            userCodeDetailsVO.setStatus(1);
+//            //需求打码量
+//            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
+//            //实际打码量
+//            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
+//            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
+//            globeResponse.setData(userCodeDetailsVO);
+//
+//
+//            return globeResponse;
+//        }
         globeResponse.setData(param);
         return globeResponse;
     }
@@ -1079,6 +1081,10 @@ public class AgentSystemController {
                 data.put("HOT_UPDATE_URL", update);
             }
         }
+        //判断业主是否开启负盈利
+        Integer rewardStatus = treasureServiceClient.getRewardStatus(agentId);
+        data.put("rewardStatus",rewardStatus);
+
         data.put("Maitance", flag);
         redisService.set(dataKey, data);
         redisService.expire(dataKey, 5, TimeUnit.SECONDS);

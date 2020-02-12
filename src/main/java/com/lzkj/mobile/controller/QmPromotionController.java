@@ -40,7 +40,7 @@ public class QmPromotionController {
      * @return
      */
     @RequestMapping("/getAgentMyPopularize")
-    private GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
+    public GlobeResponse<Object> getAgentMyPopularize(Integer userId) {
         MyPopularizeVO agentSystemVO = qmPromotionServiceClient.getAgentMyPopularize(userId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(agentSystemVO);
@@ -96,7 +96,7 @@ public class QmPromotionController {
      * 1.视讯，2.电子，3.棋牌,4.捕鱼,5.体育,6.彩票
      */
     @RequestMapping("/zzSysRatio")
-    private GlobeResponse<Object> getZzSysRatio(Integer agentId) {
+    public GlobeResponse<Object> getZzSysRatio(Integer agentId) {
         if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -113,7 +113,7 @@ public class QmPromotionController {
      * code：0:所有，1：今日，2：昨日，3本周，4，本月
      */
     @RequestMapping("/directQuery")
-    private GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code,int page) {
+    public GlobeResponse<Object> getDirectQuery(Integer userId, Integer gameId, int code,int page) {
         String date = new String();
         switch (code) {
             case 0:
@@ -148,7 +148,7 @@ public class QmPromotionController {
      * 全民代理-直属玩家-直属玩家详情
      */
     @RequestMapping("/directPromotionDetail")
-    private GlobeResponse<Object> getDirectPromotionDetail(Integer userId) {
+    public GlobeResponse<Object> getDirectPromotionDetail(Integer userId) {
         QmDayPromotionDetailVO qmDayPromotionDetailVO = qmPromotionServiceClient.getDirectPromotionDetail(userId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(qmDayPromotionDetailVO);
@@ -161,7 +161,7 @@ public class QmPromotionController {
      * 根据玩家gameId查询
      */
     @RequestMapping("/getDirectAchieve")
-    private GlobeResponse<Object> getDirectAchieve(Integer userId, Integer gameId) {
+    public GlobeResponse<Object> getDirectAchieve(Integer userId, Integer gameId) {
         List<QmPromotionDetailVO> list = qmPromotionServiceClient.getDirectAchieve(userId, gameId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
@@ -172,7 +172,7 @@ public class QmPromotionController {
      * 全民代理-业绩来源
      */
     @RequestMapping("/getAchieveDetail")
-    private GlobeResponse<Object> getAchieveDetail(Integer userId, Integer kindType) {
+    public GlobeResponse<Object> getAchieveDetail(Integer userId, Integer kindType) {
         List<QmPromotionDetailVO> list = qmPromotionServiceClient.getAchieveDetail(userId, kindType);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(list);
@@ -185,7 +185,7 @@ public class QmPromotionController {
      * @return
      */
     @RequestMapping("/receiveCommission")
-    private GlobeResponse<Object> receiveCommission(Integer userId) {
+    public GlobeResponse<Object> receiveCommission(Integer userId) {
         BigDecimal score = qmPromotionServiceClient.receiveCommission(userId);
         GlobeResponse globeResponse = new GlobeResponse();
         globeResponse.setData(score);
@@ -196,7 +196,7 @@ public class QmPromotionController {
      * 获取该玩家的保底返佣
      */
      @RequestMapping("/getGuaranteedRatio")
-     private  GlobeResponse<Object> getGuaranteedRatio(Integer gameId)  {
+     public  GlobeResponse<Object> getGuaranteedRatio(Integer gameId)  {
          BigDecimal userRation = accountsServiceClient.queryRatioUserInfo(gameId);
          GlobeResponse<Object> globeResponse = new GlobeResponse<>();
          globeResponse.setData(userRation.multiply(new BigDecimal(10000)));
@@ -207,7 +207,7 @@ public class QmPromotionController {
      * 保底返佣设置
      */
     @RequestMapping("/editRatio")
-    private GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio) throws ParseException {
+    public GlobeResponse<Object> editRatio(Integer gameId, BigDecimal ratio) throws ParseException {
 
         ratio = ratio.divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
         //获取上级代理返佣比例

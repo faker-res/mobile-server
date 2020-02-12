@@ -26,7 +26,7 @@ public class IpController {
 	
 	//TODO 导数据专用
 	@RequestMapping("/initIp")
-	private GlobeResponse<Object> initIp() {
+	public GlobeResponse<Object> initIp() {
 		GlobeResponse<Object> globeResponse = new GlobeResponse<>();
 		String lineTxt = null;
 		try {
@@ -71,7 +71,7 @@ public class IpController {
 	}
 
 	@RequestMapping("/getIp")
-	private GlobeResponse<Object> getIp(String ip) {
+	public GlobeResponse<Object> getIp(String ip) {
 		GlobeResponse<Object> globeResponse = new GlobeResponse<>();
 		long now = System.currentTimeMillis();
 		long number = StringUtil.ip2Number(ip);

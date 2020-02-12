@@ -47,4 +47,5 @@ public class LuckyOrderDetailVo {
      * 派奖方式：1自动，2人工(来自配置)
      */
     private Integer prizeType;
+
 }
