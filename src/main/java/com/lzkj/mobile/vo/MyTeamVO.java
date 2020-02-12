@@ -14,7 +14,7 @@ public class MyTeamVO {
     private String gameName;
 
     private Integer nullity;
-    private Integer beatAmount;
+    private Integer betAmount;
 
     private Integer loseOrWin;
     private BigDecimal backWater;
