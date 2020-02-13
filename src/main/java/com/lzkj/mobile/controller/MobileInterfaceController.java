@@ -2866,18 +2866,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-/*    //判断业主是否为新业主
-    @RequestMapping("/getRewardStatus")
-    public GlobeResponse<Integer> getRewardStatus(Integer agentId){
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<Integer> globeResponse = new GlobeResponse<>();
-        Integer rewardStatus = treasureServiceClient.getRewardStatus(agentId);
-        globeResponse.setData(rewardStatus);
-        return globeResponse;
-    }*/
-
     //获取当前玩家状态
     @RequestMapping("/getPlayerStatus")
     public GlobeResponse<Integer> getPlayerStatus(Integer userId,Integer agentId){
