@@ -146,7 +146,12 @@
 			<artifactId>springfox-swagger2</artifactId>
 			<version>2.7.0</version>
 		</dependency>
-		<!-- springboot与swagger2的集成_End -->
+		<!-- elasticsearch -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+			<version>2.2.2.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
