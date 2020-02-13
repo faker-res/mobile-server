@@ -29,4 +29,5 @@ public class ProgramVO {
     private Integer userDefinition;  //用户定义,1为存款额度,2为打码量
     private BigDecimal userDefinitionValue;  //有效用户定义值
     private String remarks; //备注
+    private String newProgramID;
 }
