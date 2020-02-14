@@ -3,6 +3,7 @@ package com.lzkj.mobile.client;
 import com.lzkj.mobile.entity.AccountsInfoEntity;
 import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.dto.InternalMessageDto;
 import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -127,6 +128,10 @@ public interface AccountsServiceClient {
 
     @RequestMapping("/accounts/mobile/isOrNotOpenMail")
     Response<Boolean> isOrNotOpenMail(@RequestParam("agentId")Integer agentId);
+
+    //动态发邮件接口
+    @RequestMapping("/accounts/common/sendMail")
+    Response<InternalMessageEntity> sendMail(@RequestBody InternalMessageDto dto);
     /******************  用户邮件接口 end *******************/
 
     @RequestMapping("/accounts/mobile/getCollectionName")
