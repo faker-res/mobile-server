@@ -34,7 +34,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@Api(value = "CommonController", tags = "公共(公告/轮播等)接口")
+@Api(tags = "公共(公告/轮播等)接口")
 public class CommonController {
 
     @Resource
