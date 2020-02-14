@@ -223,5 +223,11 @@ public interface AccountsServiceClient {
      */
     @RequestMapping("/accounts/mobile/getGameNews")
     List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId);
+    
+    @RequestMapping("/accounts/mobile/saveGameRecordOther")
+	void saveGameRecordOther(@RequestParam("gameCode") String gameCode);
+    
+    @RequestMapping("/accounts/mobile/saveGameRecord")
+	void saveGameRecord(@RequestParam("gameCode") String gameCode);
 
 }
