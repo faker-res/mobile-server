@@ -33,7 +33,8 @@ public class ActiveAsyncUtil {
 		log.info("将数据添加到es GameRecordOther中去,局号:{}",gameCode);
 		accountsServiceClient.saveGameRecordOther(gameCode);
 	}
-
+	
+  	@Async
 	public void saveEsGameRecord(String gameCode) {
 		log.info("将数据添加到es GameRecordOther中去,局号:{}",gameCode);
 		accountsServiceClient.saveGameRecord(gameCode);
