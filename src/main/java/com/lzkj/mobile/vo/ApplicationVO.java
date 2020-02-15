@@ -13,5 +13,5 @@ public class ApplicationVO {
     private Integer effectiveUserNullity;            //有效用户数达成状态,1为未满足,2为满足
     private Integer userDefinitionValueNullity;    //有效用户定义值达成状态,1为未满足,2为满足
     private Integer nullity = 0;
-
+    private String dateTime;
 }
