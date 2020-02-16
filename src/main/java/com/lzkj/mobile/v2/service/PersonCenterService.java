@@ -2,11 +2,11 @@ package com.lzkj.mobile.v2.service;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.PlatformServiceClient;
+import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.CleanChipsConfigVO;
-import com.lzkj.mobile.vo.VIPReceiveInfoVO;
-import com.lzkj.mobile.vo.VipLevelRewardVO;
-import com.lzkj.mobile.vo.VipRankReceiveVO;
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.vo.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +36,8 @@ public class PersonCenterService {
     private PlatformServiceClient platformServiceClient;
     @Resource
     private AccountsServiceClient accountsServiceClient;
+    @Resource
+    private TreasureServiceClient treasureServiceClient;
 
     public Map<String, Object> getUserVipLevel(Integer userId, Integer parentId) {
         Map<String, Object> data = new HashMap<>();
@@ -325,4 +327,42 @@ public class PersonCenterService {
         return data;
     }
 
+    public Map<String, Object> getAccountDetails(Integer userId, Integer typeId, Integer date, Integer pageSize, Integer pageIndex) {
+        Map<String, Object> data = new HashMap<>();
+        CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId, date, pageSize, pageIndex);
+        List<MemberRechargeVO> l = page.getLists();
+        List<MemberRechargeVO> temp = new ArrayList<>();
+        if (typeId.equals(10)) {
+            for (int i = 0; i < l.size(); i++) {
+                MemberRechargeVO vo = new MemberRechargeVO();
+                if (!StringUtils.isBlank(l.get(i).getCollectNote())) {
+                    vo.setTypeName(l.get(i).getCollectNote());
+                } else {
+                    vo.setTypeName(l.get(i).getTypeName());
+                }
+                vo.setBalance(l.get(i).getBalance());
+                vo.setCollectDate(l.get(i).getCollectDate());
+                if (l.get(i).getPresentScore().signum() == -1) {
+                    vo.setExpenditureScore(l.get(i).getPresentScore().abs());
+                } else {
+                    vo.setPresentScore(l.get(i).getPresentScore());
+                }
+                temp.add(vo);
+                page.setLists(temp);
+            }
+        } else if (typeId.equals(8)) {
+            if (page.getLists() != null && page.getLists().size() > 0) {
+                page.getLists().forEach(object -> {
+                    if (!StringUtils.isBlank(object.getCollectNote())) {
+                        object.setTypeName(object.getCollectNote());
+                    }
+                });
+            }
+        }
+        AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId, date);
+        data.put("list", page.getLists());
+        data.put("total", page.getPageCount());
+        data.put("count", list);
+        return data;
+    }
 }
