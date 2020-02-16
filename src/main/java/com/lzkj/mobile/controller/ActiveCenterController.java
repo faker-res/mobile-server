@@ -1,6 +1,5 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +19,6 @@ import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.ActivityRecordVO;
 import com.lzkj.mobile.vo.ActivityReviewRecordVO;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GlobeResponse;
@@ -40,41 +38,47 @@ public class ActiveCenterController {
     
     @Autowired
     private RedisDao redisService;
-    
-    /**
-     * 玩家手动申请活动
-     */
-    @RequestMapping("/userApply")
-    public GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount, Integer agentId,String memo) {
-        if (activeId == 0 || userId == 0 || amount == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "请先登录");
-        }
-        Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount,agentId,memo);
-        GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(param);
-        return globeResponse;
-    }
-
-    /**
-     * 查看玩家申请的记录
-     */
-    @RequestMapping("/getApplyList")
-    public GlobeResponse getApplyList(Integer userId, Integer pageIndex, Integer pageSize,Integer kindType) {
-        if (pageIndex == 0 || userId == 0 || pageSize == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-
-        CommonPageVO<ActivityRecordVO> pageVO =  nativeWebServiceClient.getApplyList(userId,pageIndex,pageSize,kindType);
-        Map<String,Object> param = new HashMap<>();
-        param.put("list",pageVO.getLists());
-        param.put("record",pageVO.getRecordCount());
-        GlobeResponse globeResponse = new GlobeResponse();
-        globeResponse.setData(param);
-        return globeResponse;
-    }
-    
+   
+//    /*
+//    /**
+//     * 玩家手动申请活动
+//     */
+//   @RequestMapping("/userApply")
+//    public GlobeResponse userApply(Integer userId, Integer activeId, BigDecimal amount, Integer agentId,String memo) {
+//        if (activeId == 0 || userId == 0 || amount == null) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "请先登录");
+//        }
+//        Map<String, Object> param = nativeWebServiceClient.userApply(userId, activeId, amount,agentId,memo);
+//        GlobeResponse globeResponse = new GlobeResponse();
+//        globeResponse.setData(param);
+//        return globeResponse;
+//    }
+//
+//    /**
+//     * 查看玩家申请的记录
+//     */
+//    //@RequestMapping("/getApplyList")
+//    public GlobeResponse getApplyList(Integer userId, Integer pageIndex, Integer pageSize,Integer kindType) {
+//        if (pageIndex == 0 || userId == 0 || pageSize == null) {
+//            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+//        }
+//
+//        CommonPageVO<ActivityRecordVO> pageVO =  nativeWebServiceClient.getApplyList(userId,pageIndex,pageSize,kindType);
+//        Map<String,Object> param = new HashMap<>();
+//        param.put("list",pageVO.getLists());
+//        param.put("record",pageVO.getRecordCount());
+//        GlobeResponse globeResponse = new GlobeResponse();
+//        globeResponse.setData(param);
+//        return globeResponse;
+//    }
+//    
     /**
      * 用户触发活动
+     * @param userId
+     * @param agentId
+     * @param method
+     * @param device
+     * @return
      */
     @RequestMapping("/getActivityByTrigger")
     public GlobeResponse<Object> getActivityByTrigger(Integer userId,Integer agentId,Integer method,Integer device){
@@ -88,6 +92,11 @@ public class ActiveCenterController {
     
     /**
      * 根据活动id显示用户的进度
+     * @param userId
+     * @param activityId
+     * @param agentId
+     * @param ruleType
+     * @return
      */
     @RequestMapping("/getAccountsActivity")
     public GlobeResponse<Object> getAccountsActivity(Integer userId,Integer activityId,Integer agentId,Integer ruleType){
@@ -99,6 +108,12 @@ public class ActiveCenterController {
     	return globeResponse;
     }
     
+    /**
+     * 得到用户申请次数
+     * @param activityId
+     * @param agentId
+     * @return
+     */
     @RequestMapping("/getActivityApplication")
     public GlobeResponse<Object> getActivityApplication(Integer activityId,Integer agentId){
     	if(null == activityId || activityId == 0 || null == agentId || agentId == 0) {
@@ -109,6 +124,17 @@ public class ActiveCenterController {
     	return globeResponse;
     }
     
+    /**
+     * 用户点击申请奖励
+     * @param id
+     * @param userId
+     * @param activityId
+     * @param agentId
+     * @param ruleType
+     * @param ruleId
+     * @param request
+     * @return
+     */
     @RequestMapping("/getAccountsApplication")
     public GlobeResponse<Object> getAccountsApplication(Integer id,Integer userId,Integer activityId,Integer agentId,Integer ruleType,Integer ruleId,HttpServletRequest request){
     	if(null == activityId || activityId == 0 || null == agentId || agentId == 0 || null == userId || userId == 0 || null == id || id == 0 || null == ruleType || ruleType == 0 || null == ruleId || ruleId == 0) {
@@ -135,6 +161,14 @@ public class ActiveCenterController {
     	return globeResponse;
     }
     
+    /**
+     * 用户审核记录
+     * @param userId
+     * @param agentId
+     * @param pageIndex
+     * @param status
+     * @return
+     */
     @RequestMapping("/getActivityReviewRecordByUser")
     public GlobeResponse<Object> getActivityReviewRecordByUser(Integer userId,Integer agentId,Integer pageIndex,Integer status){
     	if(null == userId || userId == 0 || null == agentId || agentId == 0 || null == status || status < -1) {
@@ -151,4 +185,27 @@ public class ActiveCenterController {
     	globeResponse.setData(map);
     	return globeResponse;
     }
+    
+    /**
+     * 是否可以点击活动页面的申请按钮
+     * @param userId
+     * @param activityId
+     * @return
+     */
+    @RequestMapping("/isOrNotApplication")
+	public GlobeResponse<Object> isOrNotApplication(Integer userId, Integer activityId, Integer ruleType,
+			Integer agentId) {
+		if (null == userId || userId == 0 || null == activityId || activityId == 0 || null == ruleType || ruleType == 0
+				|| null == agentId || agentId == 0) {
+			throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+		}
+		GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
+		boolean flag = nativeWebServiceClient.getIsOrNotApplication(userId, activityId, ruleType, agentId);
+		if (!flag) {
+			globeResponse.setCode(SystemConstants.NO_Application_CODE);
+			globeResponse.setMsg("您当前的层级不允许参加这个活动");
+		}
+		return globeResponse;
+
+	}
 }
