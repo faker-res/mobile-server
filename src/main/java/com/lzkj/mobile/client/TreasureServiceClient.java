@@ -197,7 +197,7 @@ public interface TreasureServiceClient {
      * @param pageIndex
      * @return
      */
-    @RequestMapping("/treasure/mobile/getAccountDetails")
+    @RequestMapping("/mobile/person/getAccountDetails")
     CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId") Integer userId,
                                                      @RequestParam("typeId") Integer typeId,
                                                      @RequestParam("date") Integer date,

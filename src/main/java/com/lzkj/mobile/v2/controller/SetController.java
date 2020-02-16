@@ -11,6 +11,8 @@ import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.vo.GlobeResponse;
 import com.lzkj.mobile.vo.VerificationCodeVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,9 @@ public class SetController {
 
     @GetMapping("/mobileInterface/resetInsurePwd")
     @ApiOperation(value = "修改余额宝密码", notes = "修改余额宝密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
+    })
     public Response resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
         /*String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
