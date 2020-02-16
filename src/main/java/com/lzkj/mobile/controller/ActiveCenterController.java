@@ -125,7 +125,7 @@ public class ActiveCenterController {
     	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
     	String str = nativeWebServiceClient.getAccountsApplication(id,userId,activityId,agentId,ruleType,ruleId,appDate,ip);
     	String [] args = str.split("!");
-    	globeResponse.setData(args[0]);
+    	globeResponse.setMsg(args[0]);
     	if(args.length > 1) {
     		String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + args[1] + ",\"insuranceScore\":" + 0 +
                     ", \"VipLevel\":" + args[2] + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
