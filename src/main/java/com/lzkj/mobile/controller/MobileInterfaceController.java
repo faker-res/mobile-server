@@ -934,37 +934,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 修改绑定密码
-     */
-    @RequestMapping("/resetInsurePwd")
-    public GlobeResponse<Object> resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
-        String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
-        VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
-       /* if (verificationCode == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
-        }
-        if (!verificationCode.getCode().equals(verifyCode)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码错误");
-        }
-        if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
-        }*/
-        if (oldPwd.equals(newPwd)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "新密码与旧密码一致");
-        }
-        String n = MD5Utils.MD5Encode(newPwd, "UTF-8").toUpperCase();
-        String o = MD5Utils.MD5Encode(oldPwd, "UTF-8").toUpperCase();
-        Map<String, Object> resultMap = this.accountsServiceClient.resetInsurePwd(userId, o, n);
-        if (((Integer) resultMap.get("ret")).intValue() != 0) {
-            redisDao.delete(key);
-            throw new GlobeException(SystemConstants.FAIL_CODE, resultMap.get("msg").toString());
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        redisDao.delete(key);
-        return globeResponse;
-    }
-
-    /**
      * 绑定或修改银行与支付宝信息
      *
      * @param userId

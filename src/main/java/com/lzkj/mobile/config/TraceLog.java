@@ -65,12 +65,12 @@ public class TraceLog {
         return maps;
     }
 
-    @AfterReturning(returning = "returnValue", pointcut = "traceLogAspect()")
+    /*@AfterReturning(returning = "returnValue", pointcut = "traceLogAspect()")
     public void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
         log.info("\n 执行方法：[{}] \n 返回结果：{}",
                 joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName(),
                 JSON.toJSONString(returnValue));
-    }
+    }*/
 
     @AfterThrowing(value = "traceLogAspect()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
