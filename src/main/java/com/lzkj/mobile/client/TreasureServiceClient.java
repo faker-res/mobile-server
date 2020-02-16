@@ -403,7 +403,7 @@ public interface TreasureServiceClient {
     List<RebateInfoVO> getRebate(@RequestParam("agentId")Integer agentId,@RequestParam("userId")Integer userId);
 
     @RequestMapping("/treasure/mobile/getRebateByTime")
-    RebateInfoVO getRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
+    Map<String, Object> getRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
                                        @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
 
     @RequestMapping("/treasure/mobile/getMemberInfo")
@@ -418,5 +418,8 @@ public interface TreasureServiceClient {
 
     @RequestMapping("/treasure/mobile/getPlayerStatus")
     Integer getPlayerStatus(@RequestParam("userId") Integer userId, @RequestParam("agentId")Integer agentId);
+
+    @RequestMapping("/treasure/mobile/getFYLRebateByTime")
+    Map<String, Object> getFYLRebateByTime(Integer agentId, Integer userId, String startTime, String endTime);
 }
 
