@@ -137,8 +137,8 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getCollectionName")
     String getGameItem(@RequestParam("kindId") Integer kindId);
 
-    @RequestMapping("/accounts/mobile/resetInsurePwd")
-    Map<String, Object> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
+    @RequestMapping("/mobile/set/resetInsurePwd")
+    Response<Map<String, Object>> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
                                        @RequestParam("newPwd") String newPwd);
 
     @RequestMapping("/accounts/mobile/userBankInformation")
