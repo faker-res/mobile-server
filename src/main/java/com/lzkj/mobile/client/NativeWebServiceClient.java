@@ -74,4 +74,7 @@ public interface NativeWebServiceClient {
     
     @RequestMapping("/nativeWeb/mobile/getActivityReviewRecordByUser")
     CommonPageVO<ActivityReviewRecordVO> getActivityReviewRecordByUser(@RequestParam("userId")Integer userId, @RequestParam("agentId")Integer agentId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("status") Integer status);
+    
+    @RequestMapping("/nativeWeb/mobile/getIsOrNotApplication")
+	Boolean getIsOrNotApplication(@RequestParam("userId") Integer userId,@RequestParam("activityId") Integer activityId,@RequestParam("ruleType") Integer ruleType,@RequestParam("agentId") Integer agentId);
 }

@@ -13,4 +13,8 @@ public class SystemConstants {
      * 异常失败标识
      */
     public static final String EXCEPTION_CODE = "-1";
+    /**
+     * 不允许点击申请活动
+     */
+    public static final String NO_Application_CODE = "21";
 }
