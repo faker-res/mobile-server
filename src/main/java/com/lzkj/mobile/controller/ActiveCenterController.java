@@ -1,5 +1,6 @@
 package com.lzkj.mobile.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +20,7 @@ import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.TimeUtil;
+import com.lzkj.mobile.vo.ActivityRecordVO;
 import com.lzkj.mobile.vo.ActivityReviewRecordVO;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GlobeResponse;
@@ -38,7 +40,7 @@ public class ActiveCenterController {
     
     @Autowired
     private RedisDao redisService;
-   
+
 //    /*
 //    /**
 //     * 玩家手动申请活动
@@ -71,7 +73,7 @@ public class ActiveCenterController {
 //        globeResponse.setData(param);
 //        return globeResponse;
 //    }
-//    
+//
     /**
      * 用户触发活动
      * @param userId
@@ -185,7 +187,7 @@ public class ActiveCenterController {
     	globeResponse.setData(map);
     	return globeResponse;
     }
-    
+
     /**
      * 是否可以点击活动页面的申请按钮
      * @param userId

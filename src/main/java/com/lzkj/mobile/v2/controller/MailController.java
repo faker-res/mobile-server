@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/mail")
-@Api(value = "MailController", tags = "用户邮件接口")
+@Api(tags = "用户邮件接口")
 public class MailController {
 
     @Autowired

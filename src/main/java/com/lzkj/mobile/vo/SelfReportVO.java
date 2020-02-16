@@ -31,13 +31,13 @@ public class SelfReportVO {
     private BigDecimal tyScore;             //体育总中奖
     private BigDecimal cpScore;             //彩票总中奖
 
-    private BigDecimal totalReward;         //总佣金
-    private BigDecimal qpReward;           //棋牌总佣金
-    private BigDecimal byReward;           //捕鱼总佣金
-    private BigDecimal sxReward;           //视讯总佣金
-    private BigDecimal dzReward;           //电子总佣金
-    private BigDecimal tyReward;            //体育总佣金
-    private BigDecimal cpReward;            //彩票总佣金
+    private BigDecimal totalBackWater;         //总返水
+    private BigDecimal qpBackWater;           //棋牌总返水
+    private BigDecimal byBackWater;           //捕鱼总返水
+    private BigDecimal sxBackWater;           //视讯总返水
+    private BigDecimal dzBackWater;           //电子总返水
+    private BigDecimal tyBackWater;            //体育总返水
+    private BigDecimal cpBackWater;            //彩票总返水
 
     private BigDecimal discount;      //彩金
     private BigDecimal payAmount;     //存款
