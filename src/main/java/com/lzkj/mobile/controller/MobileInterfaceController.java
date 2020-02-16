@@ -2753,12 +2753,12 @@ public class MobileInterfaceController {
 
     //获取负盈利分佣详情
     @RequestMapping("/getFYLRebateByTime")
-    public GlobeResponse<Object> getFYLRebateByTime(Integer agentId,Integer userId,String startTime,String endTime){
+    public GlobeResponse<Object> getFYLRebateByTime(Integer agentId,Integer userId,Integer num){
         if (agentId == null || userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Map<String,Object> map = treasureServiceClient.getFYLRebateByTime(agentId,userId,startTime,endTime);
+        Map<String,Object> map = treasureServiceClient.getFYLRebateByTime(agentId,userId,num);
         globeResponse.setData(map);
         return globeResponse;
     }

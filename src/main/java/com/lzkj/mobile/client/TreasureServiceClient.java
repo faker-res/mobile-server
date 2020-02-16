@@ -421,6 +421,6 @@ public interface TreasureServiceClient {
 
     @RequestMapping("/treasure/mobile/getFYLRebateByTime")
     Map<String, Object> getFYLRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
-                                           @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
+                                           @RequestParam("num")Integer num);
 }
 
