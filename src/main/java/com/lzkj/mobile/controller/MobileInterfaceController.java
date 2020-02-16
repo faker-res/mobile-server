@@ -1908,62 +1908,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 获取账户明细
-     *
-     * @param userId
-     * @param typeId
-     * @param date
-     * @param pageSize
-     * @param pageIndex
-     * @return
-     */
-    @RequestMapping("/getAccountDetails")
-    public GlobeResponse<Object> getAccountDetails(Integer userId, Integer typeId, Integer date, Integer pageSize, Integer pageIndex) {
-    	 if (userId == null) {
-             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-         }
-         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-         Map<String, Object> data = new HashMap<>();
-         CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId, date, pageSize, pageIndex);
-         List<MemberRechargeVO> l = page.getLists();
-         List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
-         if (typeId.equals(10)) {
-             for (int i = 0; i < l.size(); i++) {
-                 MemberRechargeVO vo = new MemberRechargeVO();
-                 if (!StringUtils.isBlank(l.get(i).getCollectNote())) {
-                     vo.setTypeName(l.get(i).getCollectNote());
-                 } else {
-                     vo.setTypeName(l.get(i).getTypeName());
-                 }
-                 vo.setBalance(l.get(i).getBalance());
-                 vo.setCollectDate(l.get(i).getCollectDate());
-                 if (l.get(i).getPresentScore().signum() == -1) {
-                     vo.setExpenditureScore(l.get(i).getPresentScore().abs());
-                 } else {
-                     vo.setPresentScore(l.get(i).getPresentScore());
-                 }
-                 temp.add(vo);
-                 page.setLists(temp);
-             }
-         } else if (typeId.equals(8)) {
-             if (page.getLists() != null && page.getLists().size() > 0) {
-                 page.getLists().forEach(object -> {
-                     if (!StringUtils.isBlank(object.getCollectNote())) {
-                         object.setTypeName(object.getCollectNote());
-                     }
-                 });
-             }
-         }
-         AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId, date);
-         data.put("list", page.getLists());
-         data.put("total", page.getPageCount());
-         data.put("count", list);
-         globeResponse.setData(data);
-         return globeResponse;
-    }
-
-
-    /**
      * 获取个人报表
      *
      * @param userId
