@@ -420,6 +420,7 @@ public interface TreasureServiceClient {
     Integer getPlayerStatus(@RequestParam("userId") Integer userId, @RequestParam("agentId")Integer agentId);
 
     @RequestMapping("/treasure/mobile/getFYLRebateByTime")
-    Map<String, Object> getFYLRebateByTime(Integer agentId, Integer userId, String startTime, String endTime);
+    Map<String, Object> getFYLRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
+                                           @RequestParam("startTime")String startTime, @RequestParam("endTime")String endTime);
 }
 
