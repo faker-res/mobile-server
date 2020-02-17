@@ -4,10 +4,9 @@ import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.PlatformServiceClient;
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.AccountsDetailPageVO;
 import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -327,9 +326,13 @@ public class PersonCenterService {
         return data;
     }
 
-    public Map<String, Object> getAccountDetails(Integer userId, Integer typeId, Integer date, Integer pageSize, Integer pageIndex) {
+    public Map<String, Object> getAccountDetails(AccountsDetailPageVO pageVo) {
+        Integer userId = pageVo.getUserId();
+        Integer date = pageVo.getDate();
+        Integer typeId = pageVo.getTypeId();
+
         Map<String, Object> data = new HashMap<>();
-        CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId, date, pageSize, pageIndex);
+        CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(pageVo);
         List<MemberRechargeVO> l = page.getLists();
         List<MemberRechargeVO> temp = new ArrayList<>();
         if (typeId.equals(10)) {

@@ -18,7 +18,7 @@ import lombok.Data;
  *  
  */
 @Data
-@ApiModel(value = "BankAccountUpdVO", description = "修改用户银行卡信息分页数据封装类")
+@ApiModel(description = "修改用户银行卡信息分页数据封装类")
 public class BankAccountUpdVO extends BaseVO {
 
     public final static int TYPE_ONE = 1;

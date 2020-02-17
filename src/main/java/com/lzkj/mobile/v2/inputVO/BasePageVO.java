@@ -21,8 +21,8 @@ import javax.validation.constraints.NotNull;
 public class BasePageVO extends BaseVO{
 
     @ApiModelProperty(name = "pageNo", value = "页码", required = true)
-    @NotNull(message = "pageNo不能为空")
-    private Integer pageNo;
+    @NotNull(message = "pageIndex不能为空")
+    private Integer pageIndex;
 
     @ApiModelProperty(name = "pageSize", value = "页面大小", required = true)
     @NotNull(message = "pageSize不能为空")
