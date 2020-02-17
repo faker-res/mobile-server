@@ -2096,7 +2096,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/getActivityListByMobile")
+//    @RequestMapping("/getActivityListByMobile")
     public GlobeResponse<Object> getActivityListByMobile(Integer gameCategory, Integer agentId, Integer pageIndex) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         if (agentId == null) {
