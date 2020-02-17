@@ -210,4 +210,24 @@ public class ActiveCenterController {
 		return globeResponse;
 
 	}
+    
+    /**
+     * 查询活动
+     * @param gameCategory
+     * @param agentId
+     * @param pageIndex
+     * @return
+     */
+    @RequestMapping("/getActivityListByMobile")
+    public GlobeResponse<Object> getActivityListByMobile(Integer gameCategory, Integer agentId, Integer pageIndex,Integer userId) {
+    	if (agentId == null || gameCategory == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+    	GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+    	CommonPageVO page = nativeWebServiceClient.getActivityListByUser(agentId, gameCategory, userId);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("list", page.getLists());
+        globeResponse.setData(data);
+        return globeResponse;
+    }
 }
