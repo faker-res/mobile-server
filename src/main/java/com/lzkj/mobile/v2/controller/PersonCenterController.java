@@ -4,6 +4,7 @@ import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.entity.AccountsInfoEntity;
 import com.lzkj.mobile.util.bean.BeanUtils;
 import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.AccountsDetailPageVO;
 import com.lzkj.mobile.v2.returnVO.user.UserInformationVO;
 import com.lzkj.mobile.v2.service.PersonCenterService;
 import io.swagger.annotations.Api;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -68,12 +70,8 @@ public class PersonCenterController {
 
     @GetMapping("/mobileInterface/getAccountDetails")
     @ApiOperation(value = "获取账户明细", notes = "获取账户明细")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
-    })
-    public Response<Object> getAccountDetails(@RequestParam Integer userId, Integer typeId, Integer date,
-                                                   @RequestParam Integer pageSize,@RequestParam  Integer pageIndex) {
-        Map<String, Object> map = personCenterService.getAccountDetails(userId, typeId, date, pageSize, pageIndex);
+    public Response<Object> getAccountDetails(@Valid AccountsDetailPageVO vo) {
+        Map<String, Object> map = personCenterService.getAccountDetails(vo);
         return Response.successData(map);
     }
 

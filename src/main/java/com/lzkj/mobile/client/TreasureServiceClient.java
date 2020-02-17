@@ -1,5 +1,6 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.v2.inputVO.AccountsDetailPageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -189,20 +190,11 @@ public interface TreasureServiceClient {
 
     /**
      * 账户明细
-     *
-     * @param userId
-     * @param typeId
-     * @param date
-     * @param pageSize
-     * @param pageIndex
+     * @param vo
      * @return
      */
     @RequestMapping("/mobile/person/getAccountDetails")
-    CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestParam("userId") Integer userId,
-                                                     @RequestParam("typeId") Integer typeId,
-                                                     @RequestParam("date") Integer date,
-                                                     @RequestParam("pageSize") Integer pageSize,
-                                                     @RequestParam("pageIndex") Integer pageIndex);
+    CommonPageVO<MemberRechargeVO> getAccountDetails(@RequestBody AccountsDetailPageVO vo);
 
     @RequestMapping("treasure/mobile/accountChangeStatistics")
     AccountChangeStatisticsVO accountChangeStatistics(@RequestParam("userId") Integer userId,
