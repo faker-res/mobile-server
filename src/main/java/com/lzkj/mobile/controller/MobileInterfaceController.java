@@ -2763,6 +2763,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    //获取用户当前层级设置的转账比例
     @RequestMapping("/getMemberInfo")
     public GlobeResponse<String> getMemberInfo(Integer agentId,Integer userId){
         if (agentId == null || userId == null) {
