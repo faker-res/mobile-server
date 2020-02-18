@@ -5,6 +5,7 @@ import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.dto.InternalMessageDto;
 import com.lzkj.mobile.v2.enums.SendMailSourceEnum;
 import com.lzkj.mobile.v2.enums.SendTemplateCodeEnum;
+import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,26 @@ public class MailService {
         InternalMessageDto dto = new InternalMessageDto();
         dto.setCode(SendTemplateCodeEnum.INSURE_PASS_CHANGE.getCode());
         dto.setUserId(userId);
+        dto.setType(SendMailSourceEnum.ONE.getCode());
+        accountsServiceClient.sendMail(dto);
+    }
+
+    /**
+     * 新版领取红包奖励
+     * @param vo
+     * @param response
+     */
+    public void send(ReceivingRedEnvelopeVO vo, Response<Map<String, Object>> response) {
+        if (!Response.SUCCESS.equals(response.getCode())) {
+            return;
+        }
+        Map<String, String> map = SendTemplateCodeEnum.getMapByKey(SendTemplateCodeEnum.RED);
+        String code = map.get(String.valueOf(vo.getTypeId()));
+
+        InternalMessageDto dto = new InternalMessageDto();
+        dto.setCode(code);
+        dto.setUserId(vo.getUserId());
+        dto.setAward(vo.getScore());
         dto.setType(SendMailSourceEnum.ONE.getCode());
         accountsServiceClient.sendMail(dto);
     }

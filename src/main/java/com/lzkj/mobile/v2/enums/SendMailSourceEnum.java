@@ -18,6 +18,7 @@ import java.util.Map;
 public enum SendMailSourceEnum {
 
     ONE(11, "余额宝密码修改"),
+    TWO(12, "新版领取红包奖励"),
     ;
 
     private int code;
