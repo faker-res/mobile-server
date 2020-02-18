@@ -1,5 +1,8 @@
 package com.lzkj.mobile.v2.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *    
  *  *  
@@ -17,15 +20,25 @@ package com.lzkj.mobile.v2.enums;
  */
 public enum SendTemplateCodeEnum {
 
-    INSURE_PASS_CHANGE("insurePassChange", "安全密码修改"),
+    INSURE_PASS_CHANGE("insurePassChange", "安全密码修改", "", ""),
+    LOGON_RED_REWARD("logonRedReward", "登录红包", SendTemplateCodeEnum.RED, "1"),
+    CHARGE_RED_REWARD("chargeRedReward", "每日充值红包", SendTemplateCodeEnum.RED, "2"),
+    CHARGE_RED_REWARD_CUMULATIVE("chargeRedRewardCumulative", "累计充值红包", SendTemplateCodeEnum.RED, "3"),
+    BET_RED_REWARD("betRedReward", "每日打码量红包", SendTemplateCodeEnum.RED, "4"),
+    BET_RED_REWARD_CUMULATIVE("betRedRewardCumulative", "累计打码量红包", SendTemplateCodeEnum.RED, "5"),
     ;
 
+    public static final String RED = "red";
     private String code;
     private String name;
+    private String key;
+    private String value;
 
-    SendTemplateCodeEnum(String code, String name) {
+    SendTemplateCodeEnum(String code, String name, String key, String value) {
         this.code = code;
         this.name = name;
+        this.key = key;
+        this.value = value;
     }
 
     public String getCode() {
@@ -36,6 +49,24 @@ public enum SendTemplateCodeEnum {
         return name;
     }
 
+    public String getKey() {
+        return key;
+    }
 
+    public String getValue() {
+        return value;
+    }
+
+    public static Map<String, String> getMapByKey(String key){
+        Map<String, String> map = new HashMap<>();
+        if(key != null){
+            for (SendTemplateCodeEnum temp : SendTemplateCodeEnum.values()) {
+                if(key.equals(temp.getKey())){
+                    map.put(temp.getValue(), temp.getCode());
+                }
+            }
+        }
+        return map;
+    }
 
 }

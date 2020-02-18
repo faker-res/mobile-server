@@ -2300,35 +2300,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-
-    /**
-     * 新版领取红包奖励
-     *
-     * @param userId
-     * @param score
-     * @param machineId
-     * @param typeId
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getReceivingRedEnvelopes")
-    public GlobeResponse<Object> getReceivingRedEnvelopes(Integer userId, BigDecimal score, String machineId, Integer typeId, Integer activityId, HttpServletRequest request) {
-        if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Map<String, Object> data = new HashMap<>();
-        String ip = getIpAddress(request);
-        Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId, score, ip, machineId, typeId, activityId);  //activityId
-        switch (ret) {
-            case -1:
-                throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
-        }
-        data.put("code", ret);
-        globeResponse.setData(data);
-        return globeResponse;
-    }
-
     /**
      * 获取红包手气榜
      *

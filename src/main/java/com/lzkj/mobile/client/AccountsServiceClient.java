@@ -4,6 +4,7 @@ import com.lzkj.mobile.entity.AccountsInfoEntity;
 import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.dto.InternalMessageDto;
+import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
 import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -174,8 +175,8 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getRedEnvelopeReward")
     List<ActivityRedEnvelopeRewardVO> getRedEnvelopeReward(@RequestParam("userId") Integer userId,@RequestParam("parentId") Integer parentId);
 
-    @RequestMapping("/accounts/mobile/getReceivingRedEnvelope")
-    Integer getReceivingRedEnvelope(@RequestParam("userId") Integer userId,@RequestParam("score") BigDecimal score,@RequestParam("ip") String ip,@RequestParam("machineId") String machineId,@RequestParam("typeId") Integer typeId,@RequestParam("activityId") Integer activityId);
+    @RequestMapping("/mobile/activity/getReceivingRedEnvelope")
+    Response<Map<String, Object>> getReceivingRedEnvelope(@RequestBody ReceivingRedEnvelopeVO vo);
 
     @RequestMapping("/accounts/mobile/verifyPassword")
     String verifyPassword(@RequestParam("userId") Integer userId);
