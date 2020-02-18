@@ -4,11 +4,9 @@ import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.PlatformServiceClient;
 import com.lzkj.mobile.client.TreasureServiceClient;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.AccountsDetailPageVO;
 import com.lzkj.mobile.vo.*;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

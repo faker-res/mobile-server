@@ -133,7 +133,7 @@ public class SystemConfigService {
             //是否系统维护
             if (!flag) {
                 if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
-                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                         flag = true;
                     }
                 }
