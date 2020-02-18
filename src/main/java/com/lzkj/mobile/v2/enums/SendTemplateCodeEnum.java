@@ -21,6 +21,7 @@ import java.util.Map;
 public enum SendTemplateCodeEnum {
 
     INSURE_PASS_CHANGE("insurePassChange", "安全密码修改", "", ""),
+    RED_RAIN_REWARD("redRainReward", "红包雨", "", ""),
     LOGON_RED_REWARD("logonRedReward", "登录红包", SendTemplateCodeEnum.RED, "1"),
     CHARGE_RED_REWARD("chargeRedReward", "每日充值红包", SendTemplateCodeEnum.RED, "2"),
     CHARGE_RED_REWARD_CUMULATIVE("chargeRedRewardCumulative", "累计充值红包", SendTemplateCodeEnum.RED, "3"),

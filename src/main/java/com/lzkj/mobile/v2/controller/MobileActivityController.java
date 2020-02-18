@@ -1,10 +1,15 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
+import com.lzkj.mobile.client.AgentServiceClient;
+import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeRainVO;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
 import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.v2.util.IPUtils;
+import com.lzkj.mobile.vo.GlobeResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +39,8 @@ public class MobileActivityController {
     @Resource
     private AccountsServiceClient accountsServiceClient;
     @Resource
+    private AgentServiceClient agentServiceClient;
+    @Resource
     private MailService mailService;
 
 
@@ -43,6 +50,18 @@ public class MobileActivityController {
         vo.setIp(IPUtils.getIp(request));
         Response<Map<String, Object>> response = accountsServiceClient.getReceivingRedEnvelope(vo);
         mailService.send(vo, response);
+        return response;
+    }
+
+    @GetMapping("/receiveRedEnvelopeRain")
+    @ApiOperation(value = "领取红包雨红包", notes = "领取红包雨红包")
+    public Response receiveRedEnvelopeRain(ReceivingRedEnvelopeRainVO vo, HttpServletRequest request) {
+        vo.setIp(IPUtils.getIp(request));
+        Response<Map<String, Object>> response = this.agentServiceClient.receiveRedEnvelopeRain(vo);
+        if(Response.SUCCESS.equals(response.getCode())){
+            mailService.send(vo, response);
+            return Response.successData(response.getData().get("money"), response.getData());
+        }
         return response;
     }
 

@@ -1,7 +1,10 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeRainVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -169,8 +172,8 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/getCurrentDate")
     Long getCurrentDate();
 
-    @RequestMapping("/agent/mobile/receiveRedEnvelopeRain")
-    Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") String machineId, @RequestParam("ip") String ip);
+    @RequestMapping("/mobile/activity/receiveRedEnvelopeRain")
+    Response<Map<String, Object>> receiveRedEnvelopeRain(@RequestBody ReceivingRedEnvelopeRainVO vo);
     
     @RequestMapping("/agent/mobile/getUserRankings")
     List<UserRankinsVO> getUserRankings(@RequestParam("parentId") Integer parentId);

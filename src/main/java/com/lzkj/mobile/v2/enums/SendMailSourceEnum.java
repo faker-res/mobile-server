@@ -19,6 +19,7 @@ public enum SendMailSourceEnum {
 
     ONE(11, "余额宝密码修改"),
     TWO(12, "新版领取红包奖励"),
+    THREE(13, "红包雨奖励"),
     ;
 
     private int code;
