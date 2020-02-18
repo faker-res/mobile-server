@@ -77,4 +77,7 @@ public interface NativeWebServiceClient {
     
     @RequestMapping("/nativeWeb/mobile/getIsOrNotApplication")
 	Boolean getIsOrNotApplication(@RequestParam("userId") Integer userId,@RequestParam("activityId") Integer activityId,@RequestParam("ruleType") Integer ruleType,@RequestParam("agentId") Integer agentId);
+    
+    @RequestMapping("/nativeWeb/mobile/getActivityListByUser")
+	CommonPageVO getActivityListByUser(@RequestParam("agentId") Integer agentId,@RequestParam("gameCategory") Integer gameCategory,@RequestParam("userId") Integer userId);
 }
