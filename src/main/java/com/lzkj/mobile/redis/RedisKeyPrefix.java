@@ -104,4 +104,8 @@ public class RedisKeyPrefix {
 	public static String getShareParamKey(String param) {
 		return "ShareParam:" + param;
 	}
+	
+	public static String getNullity(Integer agentId,Integer kindId) {
+		return MOBILE_SERVER + agentId + ":" + kindId;
+	}
 }

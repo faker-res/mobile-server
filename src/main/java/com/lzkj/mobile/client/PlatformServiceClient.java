@@ -165,5 +165,8 @@ public interface PlatformServiceClient {
 	 */
 	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
 	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
+	
+	@RequestMapping("/platform/mobile/getisOrNotEnter")
+	Boolean getisOrNotEnter(@RequestParam("agentId") Integer agentId,@RequestParam("kindId") Integer kindId);
 }
 
