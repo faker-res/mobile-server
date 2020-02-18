@@ -133,7 +133,7 @@ public class SystemConfigService {
             //是否系统维护
             if (!flag) {
                 if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
-                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
                         flag = true;
                     }
                 }
@@ -144,10 +144,10 @@ public class SystemConfigService {
             }
             //注册填写真实姓名
             if (vo.getStatusName().equals(AgentSystemEnum.ShowRealName.getName())) {
-                if (vo.getIsShow() == 1) {
-                    data.put("ShowRealName", false);
-                } else {
+                if (vo.getIsShow() == 0) {
                     data.put("ShowRealName", true);
+                } else {
+                    data.put("ShowRealName", false);
                 }
             }
             //注册时银行卡开关
