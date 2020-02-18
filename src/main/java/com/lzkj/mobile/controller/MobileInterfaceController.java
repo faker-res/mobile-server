@@ -23,6 +23,7 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.*;
+import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -96,6 +97,9 @@ public class MobileInterfaceController {
 
     @Resource(name = "ActiveAsyncUtil")
     private ActiveAsyncUtil activeAsyncUtil;
+
+    @Resource
+    private MailService mailService;
     
     @RequestMapping("/getScoreRank")
     public GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
@@ -1412,6 +1416,8 @@ public class MobileInterfaceController {
         String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                 ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
+        //发送邮件
+        mailService.send(userId, new BigDecimal(amount));
         return "success";
     }
 
