@@ -196,6 +196,6 @@ public interface PlatformServiceClient {
 	Integer getTaskinfoCount(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId);
 
 	@RequestMapping("/platform/mobile/getisOrNotEnter")
-	boolean getisOrNotEnter(@RequestParam("agentId") Integer agentId,@RequestParam("kindId") Integer kindId);
+	Boolean getisOrNotEnter(@RequestParam("agentId") Integer agentId,@RequestParam("kindId") Integer kindId);
 }
 
