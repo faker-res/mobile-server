@@ -110,4 +110,8 @@ public class RedisKeyPrefix {
 	public static String getActivityApplication(Integer userId,Integer ruleId) {
 		return ACTIVITY + userId + ":" + ruleId;
 	}
+	
+	public static String getNullity(Integer agentId,Integer kindId) {
+		return MOBILE_SERVER + agentId + ":" + kindId;
+	}
 }
