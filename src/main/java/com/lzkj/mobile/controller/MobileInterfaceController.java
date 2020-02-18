@@ -2145,33 +2145,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 领取红包雨红包
-     *
-     * @param request
-     * @param id
-     * @param userId
-     * @param machineId
-     * @return
-     */
-    @RequestMapping("/receiveRedEnvelopeRain")
-    public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        String ip = getIpAddress(request);
-        Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
-        if (param == null) {
-            throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
-        }
-        Integer ret = (Integer) param.get("ret");
-        String msg = param.get("msg").toString();
-        if (ret.intValue() == 0) {
-            globeResponse.setMsg("领取成功");
-            globeResponse.setData(param.get("money"));
-            return globeResponse;
-        }
-        throw new GlobeException(SystemConstants.FAIL_CODE, msg);
-    }
-
-    /**
      * 提现信息审核开关
      */
     @RequestMapping("/getIndividualDatumStatus")
