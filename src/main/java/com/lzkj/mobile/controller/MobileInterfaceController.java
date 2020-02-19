@@ -2689,6 +2689,17 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+    @RequestMapping("/getFYLRebate")
+    public GlobeResponse<List<RebateInfoVO>> getFYLRebate(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<RebateInfoVO>> globeResponse = new GlobeResponse<>();
+        List<RebateInfoVO> list = treasureServiceClient.getFYLRebate(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
     //获取天天返佣分佣详情
     @RequestMapping("/getRebateByTime")
     public GlobeResponse<Object> getRebateByTime(Integer agentId,Integer userId,String startTime,String endTime){
