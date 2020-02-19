@@ -2473,7 +2473,7 @@ public class MobileInterfaceController {
         GlobeResponse<Map> globeResponse = new GlobeResponse<>();
         Map responseData = new HashMap(50);
         responseData.put("configList", platformServiceClient.getUserSignAwardConfigList(agentId, userId));
-        responseData.put("serverTime", System.currentTimeMillis());
+        responseData.put("serverTime", DateTransUtil.dateToStr(new Date()));
         globeResponse.setData(responseData);
         return globeResponse;
     }
@@ -2689,6 +2689,17 @@ public class MobileInterfaceController {
         }
         GlobeResponse<List<RebateInfoVO>> globeResponse = new GlobeResponse<>();
         List<RebateInfoVO> list = treasureServiceClient.getRebate(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getFYLRebate")
+    public GlobeResponse<List<RebateInfoVO>> getFYLRebate(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<RebateInfoVO>> globeResponse = new GlobeResponse<>();
+        List<RebateInfoVO> list = treasureServiceClient.getFYLRebate(agentId,userId);
         globeResponse.setData(list);
         return globeResponse;
     }

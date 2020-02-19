@@ -53,7 +53,7 @@ public class MobileActivityController {
         return response;
     }
 
-    @GetMapping("/receiveRedEnvelopeRain")
+    @GetMapping("/mobileInterface/receiveRedEnvelopeRain")
     @ApiOperation(value = "领取红包雨红包", notes = "领取红包雨红包")
     public Response receiveRedEnvelopeRain(ReceivingRedEnvelopeRainVO vo, HttpServletRequest request) {
         vo.setIp(IPUtils.getIp(request));
