@@ -38,7 +38,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
 				|| path.indexOf("/mobileInterface/addGameRecord") > -1
 				|| path.indexOf("/mobileInterface/getActivityType") > -1
 				|| path.indexOf("/mobileInterface/getActivityListByMobile") > -1
-				|| path.indexOf("/active/getActivityListByMobile") > -1
+//				|| path.indexOf("/active/getActivityListByMobile") > -1
 				|| path.indexOf("/mobileInterface/getShareUrl") > -1
 				|| path.indexOf("/agentSystem/updateResversion") > -1
 		) {
