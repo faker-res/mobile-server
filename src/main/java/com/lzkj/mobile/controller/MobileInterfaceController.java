@@ -1104,6 +1104,7 @@ public class MobileInterfaceController {
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
         log.info("kindId:"+kindId);
         log.info("detailList:"+detailList);
+        List<String> codeList = new ArrayList<String>();
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
@@ -1120,7 +1121,8 @@ public class MobileInterfaceController {
                 }
                 continue;
             }
-            log.info("d:"+d);
+//            log.info("d:"+d);
+            codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
             GameRecord gr = new GameRecord();
             if (Integer.parseInt(gameRoomInfo.get("ServerType").toString()) == 16) {
                 gr.setGamePersonal(record.getJSONObject("game_personal").toJSONString());
@@ -1155,14 +1157,12 @@ public class MobileInterfaceController {
                 redisDao.expire(key, 60, TimeUnit.MINUTES);
                 accountsInfos(gr, accountsInfo);
             }
-            log.info("accountsInfo:" + accountsInfo);
+//            log.info("accountsInfo:" + accountsInfo);
             if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
 					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
 				activeAsyncUtil.activityBetAmountAdvance(accountsInfo.getUserId(), accountsInfo.getParentId(), accountsInfo.getLevel(),
 						kindId, dJson.getBigDecimal("betTotal"), betDate, 10000);
 			}
-            activeAsyncUtil.saveEsGameRecordOther(gr.getGameCode());
-            activeAsyncUtil.saveEsGameRecord(gr.getGameCode());
             gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
@@ -1180,6 +1180,10 @@ public class MobileInterfaceController {
                     mongoTemplate.save(luckyVO, "Lucky");
                 }
             }
+        }
+        if(codeList.size() > 0) {
+	        activeAsyncUtil.saveEsGameRecordOther(codeList);
+	        activeAsyncUtil.saveEsGameRecord(codeList);
         }
         log.info("detail执行完毕");
         return globeResponse;

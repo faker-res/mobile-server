@@ -231,9 +231,9 @@ public interface AccountsServiceClient {
     List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId);
     
     @RequestMapping("/accounts/mobile/saveGameRecordOther")
-	void saveGameRecordOther(@RequestParam("gameCode") String gameCode);
+	void saveGameRecordOtherByList(@RequestParam("codeList") List<String> codeList);
     
     @RequestMapping("/accounts/mobile/saveGameRecord")
-	void saveGameRecord(@RequestParam("gameCode") String gameCode);
+	void saveGameRecordByList(@RequestParam("codeList") List<String> codeList);
 
 }
