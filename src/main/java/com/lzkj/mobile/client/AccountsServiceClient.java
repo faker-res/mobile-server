@@ -236,4 +236,23 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/saveGameRecord")
 	void saveGameRecordByList(@RequestParam("codeList") List<String> codeList);
 
+    /**
+     * 游戏公告
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/accounts/mobile/insertUserInfoEs")
+    AccountsInfoEs insertUserInfoEs(@RequestParam("userId") Integer userId);
+
+    /**
+     * 游戏公告
+     *
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/accounts/mobile/insertApplyOrderEs")
+    ApplyOrderEs insertApplyOrderEs(@RequestParam("orderId")String orderId);
+
+
 }

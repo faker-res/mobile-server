@@ -2769,4 +2769,31 @@ public class MobileInterfaceController {
         globeResponse.setData(fylStatus);
         return globeResponse;
     }
+
+
+
+    /**
+     * 插入ES库
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/insertUserInfoEs")
+     public AccountsInfoEs insertUserInfoEs(@RequestParam("userId") Integer userId) {
+        AccountsInfoEs accountsInfoEs = accountsServiceClient.insertUserInfoEs(userId);
+         return accountsInfoEs;
+    }
+
+
+    /**
+     * 插入ES库
+     *
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/insertApplyOrderEs")
+     public ApplyOrderEs insertApplyOrderEs(@RequestParam("orderId") String orderId) {
+        ApplyOrderEs applyOrderEs = accountsServiceClient.insertApplyOrderEs(orderId);
+         return applyOrderEs;
+    }
 }
