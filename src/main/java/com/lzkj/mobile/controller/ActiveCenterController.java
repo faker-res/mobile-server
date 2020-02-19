@@ -147,7 +147,7 @@ public class ActiveCenterController {
     		throw new GlobeException(SystemConstants.FAIL_CODE, "操作太频繁");
     	}
     	redisService.set(redisKey, "lock");
-    	redisService.expire(redisKey, 3, TimeUnit.SECONDS);
+    	redisService.expire(redisKey, 5, TimeUnit.SECONDS);
     	String appDate = TimeUtil.getNow();
     	String ip = request.getRemoteHost();
     	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();
