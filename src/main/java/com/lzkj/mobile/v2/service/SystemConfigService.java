@@ -90,7 +90,7 @@ public class SystemConfigService {
             redisService.expire(controllerKey, 2, TimeUnit.HOURS);
         }
         boolean flag = false;
-        if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {//statusValue为0时开启系统维护
+        if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {//statusValue为0时开启系统维护
             flag = true;
         }
         Map<String, Object> data = new HashMap<>();
@@ -133,7 +133,7 @@ public class SystemConfigService {
             //是否系统维护
             if (!flag) {
                 if (vo.getStatusName().equals(AgentSystemEnum.EnjoinLogon.getName())) {
-                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 1) {
+                    if (vo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {
                         flag = true;
                     }
                 }
