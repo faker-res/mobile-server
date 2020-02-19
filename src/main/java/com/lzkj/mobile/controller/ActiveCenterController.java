@@ -1,46 +1,40 @@
 package com.lzkj.mobile.controller;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lzkj.mobile.async.ActiveAsyncUtil;
 import com.lzkj.mobile.client.NativeWebServiceClient;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.redis.RedisDao;
 import com.lzkj.mobile.redis.RedisKeyPrefix;
-import com.lzkj.mobile.util.HttpRequest;
 import com.lzkj.mobile.util.TimeUtil;
-import com.lzkj.mobile.vo.ActivityRecordVO;
 import com.lzkj.mobile.vo.ActivityReviewRecordVO;
 import com.lzkj.mobile.vo.CommonPageVO;
 import com.lzkj.mobile.vo.GlobeResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/active")
-@Slf4j
 public class ActiveCenterController {
 
     @Autowired
     private NativeWebServiceClient nativeWebServiceClient;
     
-    @Value("${server.url}")
-    private String serverUrl;
-    
     @Autowired
     private RedisDao redisService;
-
+    
+    @Resource(name = "ActiveAsyncUtil")
+    private ActiveAsyncUtil activeAsyncUtil;
 //    /*
 //    /**
 //     * 玩家手动申请活动
@@ -155,9 +149,7 @@ public class ActiveCenterController {
     	String [] args = str.split("!");
     	globeResponse.setMsg(args[0]);
     	if(args.length > 1) {
-    		String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + args[1] + ",\"insuranceScore\":" + 0 +
-                    ", \"VipLevel\":" + args[2] + ", \"type\":" + 0 + ", \"Charge\":" + 0 + "}";
-            log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
+    		activeAsyncUtil.goldChanges(userId,args[1],args[2]);
     	}
     	redisService.delete(redisKey);
     	return globeResponse;
