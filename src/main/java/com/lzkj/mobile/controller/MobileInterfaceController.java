@@ -2469,7 +2469,7 @@ public class MobileInterfaceController {
         GlobeResponse<Map> globeResponse = new GlobeResponse<>();
         Map responseData = new HashMap(50);
         responseData.put("configList", platformServiceClient.getUserSignAwardConfigList(agentId, userId));
-        responseData.put("serverTime", System.currentTimeMillis());
+        responseData.put("serverTime", DateTransUtil.dateToStr(new Date()));
         globeResponse.setData(responseData);
         return globeResponse;
     }
