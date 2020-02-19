@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @RestControllerAdvice
+@Order
 public class GlobalExceptionHandler {
 
     //validate框架效验异常
