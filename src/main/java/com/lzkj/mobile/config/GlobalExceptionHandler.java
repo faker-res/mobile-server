@@ -2,6 +2,8 @@ package com.lzkj.mobile.config;
 
 import com.lzkj.mobile.v2.common.Response;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @RestControllerAdvice
+@Order
 public class GlobalExceptionHandler {
 
     //validate框架效验异常
