@@ -231,10 +231,10 @@ public interface AccountsServiceClient {
     List<SystemNewsVO> getGameNews(@RequestParam("agentId")Integer agentId);
     
     @RequestMapping("/accounts/mobile/saveGameRecordOther")
-	void saveGameRecordOtherByList(@RequestParam("codeList") List<String> codeList);
+	void saveGameRecordOtherByList(@RequestBody List<String> codeList);
     
     @RequestMapping("/accounts/mobile/saveGameRecord")
-	void saveGameRecordByList(@RequestParam("codeList") List<String> codeList);
+	void saveGameRecordByList(@RequestBody List<String> codeList);
 
     /**
      * 游戏公告
