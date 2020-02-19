@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 @Slf4j
-@Order(1)
 public class MobileException {
     /**
      * 所有异常报错
