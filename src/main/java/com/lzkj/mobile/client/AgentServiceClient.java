@@ -1,7 +1,10 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeRainVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -89,11 +92,27 @@ public interface AgentServiceClient {
     List<MyPlayerVO> getAgentMyTeam(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,
                                     @RequestParam("pageSize") Integer pageSize, @RequestParam("pageIndex") Integer pageIndex);
 
-    /**\
+    /**
      * 验证电话号是否存在黑名单
+     *
+     * @param mobilePhone
+     * @param agentId
+     * @return
      */
     @RequestMapping("/agent/mobile/getPhoneCount")
-    Integer getPhoneCount(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("agentId") Integer agentId);
+    Integer getPhoneCount(@RequestParam("mobilePhone") String mobilePhone,
+                          @RequestParam("agentId") Integer agentId);
+
+    /**
+     * 校验该手机号是否已经在平台注册过
+     *
+     * @param phone
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/agent/mobile/isAlreadyRegister")
+    boolean isAlreadyRegister(@RequestParam("phone") String phone,
+                              @RequestParam("agentId") Integer agentId);
 
     @RequestMapping("/agent/mobile/getBindMobileSendInfo")
     List<AgentSystemStatusInfoVO> getBindMobileSendInfo(@RequestParam("agentId") Integer agentId);
@@ -153,8 +172,8 @@ public interface AgentServiceClient {
     @RequestMapping("/agent/mobile/getCurrentDate")
     Long getCurrentDate();
 
-    @RequestMapping("/agent/mobile/receiveRedEnvelopeRain")
-    Map<String, Object> receiveRedEnvelopeRain(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId, @RequestParam("machineId") String machineId, @RequestParam("ip") String ip);
+    @RequestMapping("/mobile/activity/receiveRedEnvelopeRain")
+    Response<Map<String, Object>> receiveRedEnvelopeRain(@RequestBody ReceivingRedEnvelopeRainVO vo);
     
     @RequestMapping("/agent/mobile/getUserRankings")
     List<UserRankinsVO> getUserRankings(@RequestParam("parentId") Integer parentId);

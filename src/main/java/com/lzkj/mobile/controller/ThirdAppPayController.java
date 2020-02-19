@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 第三方APP支付Controller
+ *
+ * @author xxx
+ */
 @RestController
 @RequestMapping("/thirdAppPay")
 @Slf4j
@@ -30,18 +35,35 @@ public class ThirdAppPayController {
         List<ThirdAppPayConfigVO> configListRet = new ArrayList<>();
         // 过滤掉不可用数据
         configList.stream().forEach(obj -> {
-            if(new Integer(1).equals(obj.getEnableState())){
+            if(new Integer(0).equals(obj.getEnableState())){
                 configListRet.add(obj);
             }
         });
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(configList);
+        globeResponse.setData(configListRet);
         return globeResponse;
     }
 
+    /**
+     * 新增第三方APP支付记录
+     *
+     * @param gameId
+     * @param payType
+     * @param payName
+     * @param orderAmount
+     * @param realAmount
+     * @param reserveMsg
+     * @param userAccount
+     * @param userId
+     * @param agentId
+     * @return
+     */
     @RequestMapping("/insertThirdPayRecord")
-    public GlobeResponse<Object> insertThirdPayRecord(Integer gameId, Integer payType, String payName, BigDecimal orderAmount,
-                                                      BigDecimal realAmount,String reserveMsg,String userAccount,Integer userId,Integer agentId){
+    public GlobeResponse<Object> insertThirdPayRecord(Integer gameId, Integer payType,
+                                                      String payName, BigDecimal orderAmount,
+                                                      BigDecimal realAmount, String reserveMsg,
+                                                      String userAccount, Integer userId, Integer agentId,
+                                                      Integer id){
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         try{
             ThirdAppPayRecordVO vo = new ThirdAppPayRecordVO();
@@ -50,17 +72,18 @@ public class ThirdAppPayController {
             vo.setPayType(payType);
             vo.setPayName(payName);
             vo.setOrderAmount(orderAmount);
-            vo.setRealAmount(realAmount);
+            vo.setRealAmount(orderAmount);
             vo.setReserveMsg(reserveMsg);
             vo.setUserAccount(userAccount);
             vo.setAgentId(agentId);
+            vo.setId(id);
             Boolean success = treasureServiceClient.insertThirdPayRecord(vo);
             if(!success){
                 globeResponse.setCode(SystemConstants.FAIL_CODE);
                 globeResponse.setMsg("操作失败：该奖励已失效或不满足领奖条件");
             }else{
                 globeResponse.setCode(SystemConstants.SUCCESS_CODE);
-                globeResponse.setMsg("保存成功");
+                globeResponse.setMsg("充值记录提交成功");
             }
         }catch (Exception e){
             globeResponse.setCode(SystemConstants.FAIL_CODE);

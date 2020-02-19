@@ -3,6 +3,8 @@ package com.lzkj.mobile.exception;
 import com.lzkj.mobile.config.SystemConstants;
 import com.lzkj.mobile.vo.GlobeResponse;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 @Slf4j
+@Order(1)
 public class MobileException {
     /**
      * 所有异常报错

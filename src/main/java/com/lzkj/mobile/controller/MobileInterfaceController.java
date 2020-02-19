@@ -9,6 +9,7 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.lzkj.mobile.async.ActiveAsyncUtil;
 import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
@@ -22,6 +23,7 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.*;
+import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -93,9 +95,14 @@ public class MobileInterfaceController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Resource(name = "ActiveAsyncUtil")
+    private ActiveAsyncUtil activeAsyncUtil;
 
+    @Resource
+    private MailService mailService;
+    
     @RequestMapping("/getScoreRank")
-    private GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
+    public GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
         String userIdParam = request.getParameter("userId");
@@ -151,7 +158,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getGameList")
-    private GlobeResponse<GameListVO> getGameList(HttpServletRequest request, HttpServletResponse response) {
+    public GlobeResponse<GameListVO> getGameList(HttpServletRequest request, HttpServletResponse response) {
         String typeIdParam = request.getParameter("typeId");
 
         int typeId = typeIdParam == null ? 1 : Integer.parseInt(typeIdParam);
@@ -242,7 +249,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getMobileProperty")
-    private GlobeResponse<MobilePropertyTypeVO> getMobileProperty(HttpServletRequest request) {
+    public GlobeResponse<MobilePropertyTypeVO> getMobileProperty(HttpServletRequest request) {
         String typeIdParam = request.getParameter("typeId");
         Integer typeId = typeIdParam == null ? 0 : Integer.valueOf(typeIdParam);
         List<GamePropertyType> mobilePropertyTypeList = platformServiceClient.getMobilePropertyType(typeId);
@@ -255,7 +262,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getBankRecord")
-    private GlobeResponse<Object> getBankRecord(HttpServletRequest request) throws Exception {
+    public GlobeResponse<Object> getBankRecord(HttpServletRequest request) throws Exception {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -324,7 +331,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getWithdrawalRecord")
-    private GlobeResponse<Object> getTiXianRecord(HttpServletRequest request) {
+    public GlobeResponse<Object> getTiXianRecord(HttpServletRequest request) {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -343,7 +350,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getMobileRollNotice")
-    private GlobeResponse<List<MobileNoticeVo>> getMobileRollNotice(HttpServletRequest request, Integer agentId) {
+    public GlobeResponse<List<MobileNoticeVo>> getMobileRollNotice(HttpServletRequest request, Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -363,7 +370,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getServerConfig")
-    private GlobeResponse<Object> getServerConfig(HttpServletRequest request) {
+    public GlobeResponse<Object> getServerConfig(HttpServletRequest request) {
         SiteConfigKey serverConfigKey = SiteConfigKey.ServerConfig;
         ConfigInfo configInfo = nativeWebServiceClient.getConfigInfo(serverConfigKey.toString());
         String value = "";
@@ -398,7 +405,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getOrderRecord")
-    private GlobeResponse<Object> getOrderRecord(HttpServletRequest request) {
+    public GlobeResponse<Object> getOrderRecord(HttpServletRequest request) {
         String userIdParam = request.getParameter("userId");
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
@@ -452,7 +459,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/adsNotice")
-    private GlobeResponse<List<NewsVO>> getGameNotice(Integer agentId) {
+    public GlobeResponse<List<NewsVO>> getGameNotice(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -465,7 +472,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getMobileShareConfig")
-    private GlobeResponse<MobileShareConfigVO> getMobileShareConfig(HttpServletRequest request) {
+    public GlobeResponse<MobileShareConfigVO> getMobileShareConfig(HttpServletRequest request) {
         int systemStatus = 0;
         SystemConfigKey systemConfigKey = SystemConfigKey.SharePresent;
         SystemStatusInfoVO systemStatusInfo = accountsServiceClient.getSystemStatusInfo(systemConfigKey.toString());
@@ -537,18 +544,25 @@ public class MobileInterfaceController {
      * 8 联众短信        9 为金鼎国际短信   10 为广发短信   11 为金利来   12为大发  13为117   14 为开元   15 百家  26开元
      */
     @RequestMapping("/getCode")
-    private GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
+    public GlobeResponse<Object> getCode(String phone, String type, Integer agentId) {
         if (phone == null || phone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
         }
         if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "代理参数错误");
         }
-
         //验证手机号码是否存在黑名单中
         Integer phoneNum = agentServiceClient.getPhoneCount(phone, agentId);
         if (phoneNum > 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "您的手机号码无权限获取，请联系客服！");
+        }
+        //校验手机号是否已在该平台注册
+        if (agentServiceClient.isAlreadyRegister(phone, agentId) && "BindPhone".equals(type)) {
+            GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("该手机号已被使用");
+            globeResponse.setData(phone + ", 该手机号已被使用");
+            return globeResponse;
         }
         if (type == null) {
             type = "Register";
@@ -924,37 +938,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 修改绑定密码
-     */
-    @RequestMapping("/resetInsurePwd")
-    public GlobeResponse<Object> resetInsurePwd(Integer userId, String phone, String oldPwd, String newPwd, String verifyCode) {
-        String key = RedisKeyPrefix.getKey(phone + ":BindPhone");
-        VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
-       /* if (verificationCode == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
-        }
-        if (!verificationCode.getCode().equals(verifyCode)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码错误");
-        }
-        if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
-        }*/
-        if (oldPwd.equals(newPwd)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "新密码与旧密码一致");
-        }
-        String n = MD5Utils.MD5Encode(newPwd, "UTF-8").toUpperCase();
-        String o = MD5Utils.MD5Encode(oldPwd, "UTF-8").toUpperCase();
-        Map<String, Object> resultMap = this.accountsServiceClient.resetInsurePwd(userId, o, n);
-        if (((Integer) resultMap.get("ret")).intValue() != 0) {
-            redisDao.delete(key);
-            throw new GlobeException(SystemConstants.FAIL_CODE, resultMap.get("msg").toString());
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        redisDao.delete(key);
-        return globeResponse;
-    }
-
-    /**
      * 绑定或修改银行与支付宝信息
      *
      * @param userId
@@ -964,7 +947,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/bindOrModifyPayInfo")
-    private GlobeResponse<Object> bindOrModifyPayInfo(Integer userId, String bankRealName, String bankNo, String bankName, String bankAddress, String alipayRealName, String alipay,
+    public GlobeResponse<Object> bindOrModifyPayInfo(Integer userId, String bankRealName, String bankNo, String bankName, String bankAddress, String alipayRealName, String alipay,
                                                       String phone, String verifyCode, String zpass) {
         if (phone == null || phone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
@@ -995,7 +978,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getAgentPay")
-    private GlobeResponse<Object> getAgentPay(Integer agentId) {
+    public GlobeResponse<Object> getAgentPay(Integer agentId) {
         List<AgentInfoVO> list = agentServiceClient.getAgentPay(agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         Map<String, Object> data = new HashMap<>();
@@ -1012,7 +995,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getPayList")
-    private GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
+    public GlobeResponse<Object> getPayList(Integer userId, Integer agentId) {
         long startMillis = System.currentTimeMillis();
         log.info("/getPayList,参数:userId={},agentId={}", userId, agentId);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
@@ -1054,7 +1037,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getActivityList")
-    private GlobeResponse<Object> getActivityList(Integer agentId) {
+    public GlobeResponse<Object> getActivityList(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1064,7 +1047,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getGameRecord")
-    private GlobeResponse<Object> getGameRecord(int pageIndex, int pageSize, Integer userId, Integer kindId) {
+    public GlobeResponse<Object> getGameRecord(int pageIndex, int pageSize, Integer userId, Integer kindId) {
         if (pageSize > 50) {
             pageSize = 50;
         }
@@ -1114,10 +1097,14 @@ public class MobileInterfaceController {
         String detailString = detailList.toJSONString();
         long startTime = record.getLongValue("startTime") * 1000;
         long endTime = record.getLongValue("endTime") * 1000;
+        String betDate = TimeUtil.getDate(endTime);
         String shortGameCode = record.getString("gameCode");
         Integer kindId = record.getInteger("kindId");
         Integer serverId = record.getInteger("serverId");
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
+        log.info("kindId:"+kindId);
+        log.info("detailList:"+detailList);
+        List<String> codeList = new ArrayList<String>();
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
@@ -1134,6 +1121,8 @@ public class MobileInterfaceController {
                 }
                 continue;
             }
+//            log.info("d:"+d);
+            codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
             GameRecord gr = new GameRecord();
             if (Integer.parseInt(gameRoomInfo.get("ServerType").toString()) == 16) {
                 gr.setGamePersonal(record.getJSONObject("game_personal").toJSONString());
@@ -1168,6 +1157,12 @@ public class MobileInterfaceController {
                 redisDao.expire(key, 60, TimeUnit.MINUTES);
                 accountsInfos(gr, accountsInfo);
             }
+//            log.info("accountsInfo:" + accountsInfo);
+            if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
+					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
+				activeAsyncUtil.activityBetAmountAdvance(accountsInfo.getUserId(), accountsInfo.getParentId(), accountsInfo.getLevel(),
+						kindId, dJson.getBigDecimal("betTotal"), betDate, 10000);
+			}
             gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
             //获取相对应游戏数据库表名
@@ -1186,18 +1181,23 @@ public class MobileInterfaceController {
                 }
             }
         }
+        if(codeList.size() > 0) {
+	        activeAsyncUtil.saveEsGameRecordOther(codeList);
+	        activeAsyncUtil.saveEsGameRecord(codeList);
+        }
+        log.info("detail执行完毕");
         return globeResponse;
     }
 
-    //设置账户信息
-    private void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
+	//设置账户信息
+    public void accountsInfos(GameRecord gr, AccountsInfoVO accountsInfo) {
         gr.setAccount(accountsInfo.getAccount());
         gr.setH5Account(accountsInfo.getH5Account());
         gr.setH5SiteCode(accountsInfo.getH5siteCode());
     }
 
     @RequestMapping("/getIp")
-    private GlobeResponse<Object> getIp(String ip) {
+    public GlobeResponse<Object> getIp(String ip) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         //long now = System.currentTimeMillis();
 //    	long number = StringUtil.ip2Number(ip);
@@ -1216,7 +1216,7 @@ public class MobileInterfaceController {
      * @param code
      * @return
      */
-    private String sendCode(String phone, String code) {
+    public String sendCode(String phone, String code) {
         String message = "您的验证码是： " + code + "。请不要把验证码泄露给其他人。";
         String param = "account=" + phoneName + "&password=" + phonePwd + "&mobile=" + phone + "&content=" + message;
         String resTxt = HttpRequest.sendPost(phonePostUrl, param);
@@ -1252,7 +1252,7 @@ public class MobileInterfaceController {
      */
 //    @Deprecated
 //    @RequestMapping("/payPageLoad")
-//    private String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+//    public String payPageLoad(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
 //        if (amount.equals(null) || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
 //            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
 //        }
@@ -1279,7 +1279,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/payPageLoad/submit")
-    private String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
+    public String payPageLoadSubmit(int userId, String account, BigDecimal amount, int qudaoId, HttpServletRequest request) throws YunpianException {
         if (amount == null || qudaoId <= 0 || userId <= 0 || StringUtil.isEmpty(account)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }
@@ -1365,7 +1365,7 @@ public class MobileInterfaceController {
      * @param paramMap
      * @return
      */
-    private String getParam(Map<String, String> paramMap) {
+    public String getParam(Map<String, String> paramMap) {
         String str = "";
         try {
             for (String key : paramMap.keySet()) {
@@ -1392,7 +1392,7 @@ public class MobileInterfaceController {
      */
     @RequestMapping("/payCallBack")
     @ResponseBody
-    private Object payCallBack(String orderId, String ownerOrderId, String orderType, String amount, String ownerId, String ownerSign, HttpServletRequest request) {
+    public Object payCallBack(String orderId, String ownerOrderId, String orderType, String amount, String ownerId, String ownerSign, HttpServletRequest request) {
         log.info("接收到订单支付结果：" + orderId + ", " + ownerOrderId + ", " + orderType + ", " + amount + ", " + ownerId + ", " + ownerSign);
         TpayOwnerInfoVO payOwnerInfo = treasureServiceClient.getPayOwnerInfo();
         String param = "orderId=" + orderId + "&ownerOrderId=" + ownerOrderId + "&orderType="
@@ -1420,6 +1420,8 @@ public class MobileInterfaceController {
         String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                 ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
+        //发送邮件
+        mailService.send(userId, new BigDecimal(amount));
         return "success";
     }
 
@@ -1432,7 +1434,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getGateway")
-    private Map<String, Object> getGatewayInfo(String account, String passWord, int type, Integer agentId) {
+    public Map<String, Object> getGatewayInfo(String account, String passWord, int type, Integer agentId) {
         if (type < 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误，请确认");
         }
@@ -1487,7 +1489,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/verificationPhoneCode")
-    private GlobeResponse<Object> verificationPhoneCode(String phone, String verifyCode) {
+    public GlobeResponse<Object> verificationPhoneCode(String phone, String verifyCode) {
         if (phone == null || phone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
         }
@@ -1518,7 +1520,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/replacePhoneCode")
-    private GlobeResponse<Object> replacePhoneCode(Integer userId, String originalPhone, String originalCode, String replacePhone, String verifyCode) {
+    public GlobeResponse<Object> replacePhoneCode(Integer userId, String originalPhone, String originalCode, String replacePhone, String verifyCode) {
         if (replacePhone == null || replacePhone.length() < 11) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
         }
@@ -1648,7 +1650,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getCustomerInfo")
-    private GlobeResponse<Object> getCustomerInfo(Integer agentId) {
+    public GlobeResponse<Object> getCustomerInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1669,7 +1671,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getMinBalanceInfo")
-    private GlobeResponse<Object> getMinBalanceInfo(Integer agentId, Integer userId) {
+    public GlobeResponse<Object> getMinBalanceInfo(Integer agentId, Integer userId) {
         long startMillis = System.currentTimeMillis();
         log.info("/getMinBalanceInfo,参数agentId={}", agentId);
         if (agentId == null) {
@@ -1697,7 +1699,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getAgentContactInfo")
-    private GlobeResponse<Object> getAgentContactInfo(Integer agentId) {
+    public GlobeResponse<Object> getAgentContactInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1717,7 +1719,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getAgentCustomerServiceInfo")
-    private GlobeResponse<Object> getAgentCustomerServiceInfo(Integer agentId) {
+    public GlobeResponse<Object> getAgentCustomerServiceInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1736,7 +1738,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getBankCardTypeInfo")
-    private GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
+    public GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1762,7 +1764,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getLucky")
-    private GlobeResponse<Object> getLucky(Integer agentId) {
+    public GlobeResponse<Object> getLucky(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -1771,323 +1773,6 @@ public class MobileInterfaceController {
         data.put("Lucky", Lucky);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
-        return globeResponse;
-    }
-
-
-    /**
-     * 查询玩家VIP等级
-     *
-     * @param userId
-     * @param parentId
-     * @return
-     */
-    @RequestMapping("/getUserVipLevel")
-    private GlobeResponse<Object> getUserVipLevel(Integer userId, Integer parentId) {
-        if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        Map<String, Object> data = new HashMap<>();
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Integer vipLevelCount = platformServiceClient.getVipLevelCount(parentId);
-        List<VipRankReceiveVO> levelss = platformServiceClient.getUserLevelReceive(userId);
-        //新创建用户添加VIP等级奖励
-        if (levelss == null || levelss.size() == 0) {
-            List<VipRankReceiveVO> lists = new ArrayList<>();
-            for (int i = 1; i <= vipLevelCount; i++) {
-                VipRankReceiveVO vo = new VipRankReceiveVO();
-                vo.setVipRank(i);
-                vo.setUserId(userId);
-                vo.setNullity(false);
-                vo.setRankMoney(BigDecimal.ZERO);
-                vo.setReceiveDate(TimeUtil.getNow());
-                lists.add(vo);
-
-            }
-            platformServiceClient.insertVipRankReceive(lists);
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-            }
-
-        } else if (levelss.size() < vipLevelCount) {
-
-            List<VipRankReceiveVO> lists = new ArrayList<>();
-            for (int i = levelss.size() + 1; i <= vipLevelCount; i++) {
-                VipRankReceiveVO vo = new VipRankReceiveVO();
-                vo.setVipRank(i);
-                vo.setUserId(userId);
-                vo.setNullity(false);
-                vo.setRankMoney(BigDecimal.ZERO);
-                vo.setReceiveDate(TimeUtil.getNow());
-                lists.add(vo);
-
-            }
-            platformServiceClient.insertVipRankReceive(lists);
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-            }
-        }
-
-        List<VipLevelRewardVO> w1 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w2 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w3 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w4 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w5 = new ArrayList<VipLevelRewardVO>();
-        List<VipLevelRewardVO> w6 = new ArrayList<VipLevelRewardVO>();
-        VipLevelRewardVO vipLevel = accountsServiceClient.getUserVipLevel(userId);
-        List<VipLevelRewardVO> vipConfig = accountsServiceClient.getVipLevelConfig(parentId);
-        //用户VIP等级   当前VIP积分 还差下一级需要多少积分
-        int size = vipConfig.size() - 1;
-        for (int i = 0; i < vipConfig.size(); i++) {
-            if (vipLevel.getVipIntegral().compareTo(vipConfig.get(size).getVipIntegral()) == 1) {
-                vipLevel.setVipIntegral(new BigDecimal("0"));
-                vipLevel.setTotal(new BigDecimal("0"));
-                break;
-            }
-            if (i == size) {
-                vipLevel.setVipIntegral(new BigDecimal("0"));
-                vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
-                break;
-            }
-            if (vipLevel.getVipLevel() == 0) {
-                vipLevel.setVipIntegral(vipConfig.get(i).getVipIntegral().subtract(vipLevel.getVipIntegral()));
-                vipLevel.setTotal(vipConfig.get(i).getVipIntegral());
-                break;
-            }
-            if (vipLevel.getVipLevel() == vipConfig.get(i).getVipLevel()) {
-                vipLevel.setVipIntegral(vipConfig.get(i + 1).getVipIntegral().subtract(vipLevel.getVipIntegral()));
-                vipLevel.setTotal(vipConfig.get(i + 1).getVipIntegral());
-                break;
-            }
-
-        }
-
-        List<VipLevelRewardVO> list = platformServiceClient.getUserVIPLevelReward(parentId);
-        List<VIPReceiveInfoVO> week = platformServiceClient.getUserWeekReceive(userId, vipLevel.getVipLevel());
-        List<VIPReceiveInfoVO> month = platformServiceClient.getUserMonthReceive(userId, vipLevel.getVipLevel());
-        List<VIPReceiveInfoVO> day = platformServiceClient.getUserDayReceive(userId, vipLevel.getVipLevel());
-        List<VIPReceiveInfoVO> year = platformServiceClient.getUserYearReceive(userId, vipLevel.getVipLevel());
-        List<VipRankReceiveVO> levels = platformServiceClient.getUserLevelReceive(userId);
-        int levelsLen = levels.size();
-        int rewardListLen = list.size();
-        int loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO jf = new VipLevelRewardVO();
-            jf.setVipLevel(list.get(i).getVipLevel());
-            jf.setVipIntegral(list.get(i).getVipIntegral());
-            w6.add(jf);
-        }
-        levelsLen = levels.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //当前用户是否可以领取天奖励
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            int status = 1;
-            if (day == null || day.size() == 0) {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getDayReward().compareTo(BigDecimal.ZERO) > 0) {
-                    status = 0;
-                }
-            } else {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
-                    status = 2;
-                }
-            }
-            vo.setVipLevel(list.get(i).getVipLevel());
-            vo.setDayReward(list.get(i).getDayReward());
-            vo.setStatus(status);
-            w4.add(vo);
-            if (levelsLen != rewardListLen) {
-                if (i == (levelsLen - 1) || i == (rewardListLen - 1)) {
-                    break;
-                }
-            }
-        }
-        levelsLen = levels.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //当前用户是否可以领取周奖励
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            int status = 1;
-            if (week == null || week.size() == 0) {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getWeekReward().compareTo(BigDecimal.ZERO) > 0) {
-                    status = 0;
-                }
-            } else {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
-                    status = 2;
-                }
-            }
-            vo.setVipLevel(list.get(i).getVipLevel());
-            vo.setWeekReward(list.get(i).getWeekReward());
-            vo.setStatus(status);
-            w1.add(vo);
-            if (levelsLen != rewardListLen) {
-                if (i == (levelsLen - 1) || i == (rewardListLen - 1)) {
-                    break;
-                }
-            }
-        }
-        levelsLen = levels.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //当前用户是否可以领取月奖励
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            int status = 1;
-            if (month == null || month.size() == 0) {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getMonthReward().compareTo(BigDecimal.ZERO) > 0) {
-                    status = 0;
-                }
-            } else {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
-                    status = 2;
-                }
-            }
-            vo.setVipLevel(list.get(i).getVipLevel());
-            vo.setMonthReward(list.get(i).getMonthReward());
-            vo.setStatus(status);
-            w2.add(vo);
-            if (levelsLen != rewardListLen) {
-                if (i == (levelsLen - 1) || i == (rewardListLen - 1)) {
-                    break;
-                }
-            }
-        }
-        levelsLen = levels.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //当前用户是否可以领取年奖励
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            int status = 1;
-            if (year == null || year.size() == 0) {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel() && list.get(i).getYearReward().compareTo(BigDecimal.ZERO) > 0) {
-                    status = 0;
-                }
-            } else {
-                if (vipLevel.getVipLevel() == list.get(i).getVipLevel()) {
-                    status = 2;
-                }
-            }
-            vo.setVipLevel(list.get(i).getVipLevel());
-            vo.setYearReward(list.get(i).getYearReward());
-            vo.setStatus(status);
-            w5.add(vo);
-            if (levelsLen != rewardListLen) {
-                if (i == (levelsLen - 1) || i == (rewardListLen - 1)) {
-                    break;
-                }
-            }
-        }
-
-        levelsLen = levels.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //当前用户是否可以领取等级奖励
-        for (int i = 0; i < loopIndex; i++) {
-            VipRankReceiveVO levelItem = levels.get(i);
-            VipLevelRewardVO listItem = list.get(i);
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            int status = 1;
-            if (vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == false && listItem.getVipRankReward().compareTo(BigDecimal.ZERO) > 0) {
-                status = 0;
-            }
-            if (vipLevel.getVipLevel() >= levelItem.getVipRank() && levelItem.getNullity() == true) {
-                status = 2;
-            }
-            vo.setVipLevel(listItem.getVipLevel());
-            vo.setVipRankReward(listItem.getVipRankReward());
-            vo.setStatus(status);
-            w3.add(vo);
-            if (levelsLen != rewardListLen) {
-                if (i == (levelsLen - 1) || i == (rewardListLen - 1)) {
-                    break;
-                }
-            }
-        }
-        Integer agentId = parentId;
-        List<CleanChipsConfigVO> ls = platformServiceClient.getCleanChipsConfig(agentId);
-        List<VipLevelRewardVO> clearBetAmount = new ArrayList<VipLevelRewardVO>();
-        levelsLen = ls.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //洗码比例
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            if (vipLevel.getVipLevel() == 0) {
-                if (ls.get(i).getVipLevel() == 1) {
-                    vo.setVipLevel(0);
-                    vo.setVipVersion(ls.get(i).getVipVersion());
-                } else {
-                    vo.setVipLevel(ls.get(i).getVipLevel());
-                    vo.setVipVersion(ls.get(i).getVipVersion());
-                }
-            } else {
-                vo.setVipLevel(ls.get(i).getVipLevel());
-                vo.setVipVersion(ls.get(i).getVipVersion());
-            }
-            clearBetAmount.add(vo);
-            if (levelsLen != rewardListLen) {
-                if (i == (levelsLen - 1) || i == (rewardListLen - 1)) {
-                    break;
-                }
-            }
-        }
-
-        List<VipLevelRewardVO> yebRate = new ArrayList<VipLevelRewardVO>();
-        levelsLen = levels.size();
-        rewardListLen = list.size();
-        loopIndex = rewardListLen > levelsLen ? levelsLen : rewardListLen;
-        //余额宝利率
-        for (int i = 0; i < loopIndex; i++) {
-            VipLevelRewardVO vo = new VipLevelRewardVO();
-            if (vipLevel.getVipLevel() == 0) {
-                if (list.get(i).getVipLevel() == 1) {
-                    vo.setVipLevel(0);
-                    vo.setYebRate(list.get(i).getYebRate());
-                } else {
-                    vo.setVipLevel(list.get(i).getVipLevel());
-                    vo.setYebRate(list.get(i).getYebRate());
-                }
-            } else {
-                vo.setVipLevel(list.get(i).getVipLevel());
-                vo.setYebRate(list.get(i).getYebRate());
-            }
-            yebRate.add(vo);
-        }
-        //data.put("isOpen", "0");
-        data.put("VipLevels", vipLevel);
-        data.put("weekList", w1);
-        data.put("dayList", w4);
-        data.put("monthList", w2);
-        data.put("yearList", w5);
-        data.put("vipLevelList", w3);
-        data.put("clearBetAmount", clearBetAmount);
-        data.put("vipLevelCount", vipLevelCount);
-        data.put("yebRate", yebRate);
-        data.put("vipScore", w6);
-        globeResponse.setData(data);
-        return globeResponse;
-    }
-
-    /**
-     * 获取用户个人信息
-     *
-     * @param userId
-     * @return
-     */
-    @RequestMapping("/getVipUserInfo")
-    private GlobeResponse<Object> getVipUserInfo(Integer userId) {
-        if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        UserInformationVO userInfo = accountsServiceClient.getUsersInfo(userId);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(userInfo);
         return globeResponse;
     }
 
@@ -2100,7 +1785,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/updateUserBasicInfo")
-    private GlobeResponse<Object> updateUserBasicInfo(String nickName, Integer gender, Integer userId) {
+    public GlobeResponse<Object> updateUserBasicInfo(String nickName, Integer gender, Integer userId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2120,7 +1805,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/updateUserContactInfo")
-    private GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
+    public GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2142,7 +1827,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getVideoType")
-    private GlobeResponse<Object> getVideoType() {
+    public GlobeResponse<Object> getVideoType() {
         List<VideoTypeVO> list = treasureServiceClient.getVideoType();
         VideoTypeVO videoTypeVO = new VideoTypeVO();
         videoTypeVO.setKindId(10000);
@@ -2166,7 +1851,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getDate")
-    private GlobeResponse<Object> getDate() {
+    public GlobeResponse<Object> getDate() {
         List<Map<String, String>> data = new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
         map.put("code", "0");
@@ -2203,7 +1888,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getChannelGameUserBetAndScore")
-    private GlobeResponse<Object> getChannelGameUserBetAndScore(Integer kindType, Integer date, Integer kindId, Integer userId, Integer pageIndex, Integer pageSize) {
+    public GlobeResponse<Object> getChannelGameUserBetAndScore(Integer kindType, Integer date, Integer kindId, Integer userId, Integer pageIndex, Integer pageSize) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2222,7 +1907,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getTransactionType")
-    private GlobeResponse<Object> getTransactionType() {
+    public GlobeResponse<Object> getTransactionType() {
         List<TransactionTypeVO> list = treasureServiceClient.getTransactionType();
         Collections.sort(list, Comparator.comparing(TransactionTypeVO::getTypeId));
         Map<String, Object> data = new HashMap<>();
@@ -2233,62 +1918,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 获取账户明细
-     *
-     * @param userId
-     * @param typeId
-     * @param date
-     * @param pageSize
-     * @param pageIndex
-     * @return
-     */
-    @RequestMapping("/getAccountDetails")
-    private GlobeResponse<Object> getAccountDetails(Integer userId, Integer typeId, Integer date, Integer pageSize, Integer pageIndex) {
-    	 if (userId == null) {
-             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-         }
-         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-         Map<String, Object> data = new HashMap<>();
-         CommonPageVO<MemberRechargeVO> page = treasureServiceClient.getAccountDetails(userId, typeId, date, pageSize, pageIndex);
-         List<MemberRechargeVO> l = page.getLists();
-         List<MemberRechargeVO> temp = new ArrayList<MemberRechargeVO>();
-         if (typeId.equals(10)) {
-             for (int i = 0; i < l.size(); i++) {
-                 MemberRechargeVO vo = new MemberRechargeVO();
-                 if (!StringUtils.isBlank(l.get(i).getCollectNote())) {
-                     vo.setTypeName(l.get(i).getCollectNote());
-                 } else {
-                     vo.setTypeName(l.get(i).getTypeName());
-                 }
-                 vo.setBalance(l.get(i).getBalance());
-                 vo.setCollectDate(l.get(i).getCollectDate());
-                 if (l.get(i).getPresentScore().signum() == -1) {
-                     vo.setExpenditureScore(l.get(i).getPresentScore().abs());
-                 } else {
-                     vo.setPresentScore(l.get(i).getPresentScore());
-                 }
-                 temp.add(vo);
-                 page.setLists(temp);
-             }
-         } else if (typeId.equals(8)) {
-             if (page.getLists() != null && page.getLists().size() > 0) {
-                 page.getLists().forEach(object -> {
-                     if (!StringUtils.isBlank(object.getCollectNote())) {
-                         object.setTypeName(object.getCollectNote());
-                     }
-                 });
-             }
-         }
-         AccountChangeStatisticsVO list = treasureServiceClient.accountChangeStatistics(userId, date);
-         data.put("list", page.getLists());
-         data.put("total", page.getPageCount());
-         data.put("count", list);
-         globeResponse.setData(data);
-         return globeResponse;
-    }
-
-
-    /**
      * 获取个人报表
      *
      * @param userId
@@ -2297,7 +1926,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getPersonalReport")
-    private GlobeResponse<Object> getPersonalReport(Integer userId, Integer kindType, Integer date) {
+    public GlobeResponse<Object> getPersonalReport(Integer userId, Integer kindType, Integer date) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2346,7 +1975,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getRedEnvelopeReward")
-    private GlobeResponse<Object> getRedEnvelopeReward(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getRedEnvelopeReward(Integer userId, Integer parentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2371,7 +2000,7 @@ public class MobileInterfaceController {
      * @return
      */
 //    @RequestMapping("/getReceivingRedEnvelope")
-//    private GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
+//    public GlobeResponse<Object> getReceivingRedEnvelope(Integer userId,BigDecimal score,String machineId,Integer typeId,HttpServletRequest request) {
 //    	if (userId == null) {
 //            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
 //        }
@@ -2397,7 +2026,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getYebScore")
-    private GlobeResponse<Object> getYebScore(Integer userId, Integer parentId) {
+    public GlobeResponse<Object> getYebScore(Integer userId, Integer parentId) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2425,7 +2054,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserRewardDetail")
-    private GlobeResponse<Object> getUserRewardDetail(Integer userId, Integer parentId, Integer pageSize, Integer pageIndex) {
+    public GlobeResponse<Object> getUserRewardDetail(Integer userId, Integer parentId, Integer pageSize, Integer pageIndex) {
         if (userId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2450,7 +2079,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getUserYebInfo")
-    private GlobeResponse<Object> getUserYebInfo(Integer userId, Integer date, Integer pageSize, Integer pageIndex, Integer typeId) {
+    public GlobeResponse<Object> getUserYebInfo(Integer userId, Integer date, Integer pageSize, Integer pageIndex, Integer typeId) {
         if (userId == null || typeId == null || date == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2477,7 +2106,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/getActivityListByMobile")
+//    @RequestMapping("/getActivityListByMobile")
     public GlobeResponse<Object> getActivityListByMobile(Integer gameCategory, Integer agentId, Integer pageIndex) {
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         if (agentId == null) {
@@ -2523,33 +2152,6 @@ public class MobileInterfaceController {
         }
         globeResponse.setData("");
         return globeResponse;
-    }
-
-    /**
-     * 领取红包雨红包
-     *
-     * @param request
-     * @param id
-     * @param userId
-     * @param machineId
-     * @return
-     */
-    @RequestMapping("/receiveRedEnvelopeRain")
-    public GlobeResponse<Object> receiveRedEnvelopeRain(HttpServletRequest request, Integer id, Integer userId, String machineId) {
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        String ip = getIpAddress(request);
-        Map<String, Object> param = this.agentServiceClient.receiveRedEnvelopeRain(id, userId, machineId, ip);
-        if (param == null) {
-            throw new GlobeException(SystemConstants.EXCEPTION_CODE, "领取失败-!");
-        }
-        Integer ret = (Integer) param.get("ret");
-        String msg = param.get("msg").toString();
-        if (ret.intValue() == 0) {
-            globeResponse.setMsg("领取成功");
-            globeResponse.setData(param.get("money"));
-            return globeResponse;
-        }
-        throw new GlobeException(SystemConstants.FAIL_CODE, msg);
     }
 
     /**
@@ -2681,39 +2283,9 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-
-    /**
-     * 新版领取红包奖励
-     *
-     * @param userId
-     * @param score
-     * @param machineId
-     * @param typeId
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getReceivingRedEnvelopes")
-    private GlobeResponse<Object> getReceivingRedEnvelopes(Integer userId, BigDecimal score, String machineId, Integer typeId, Integer activityId, HttpServletRequest request) {
-        if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        Map<String, Object> data = new HashMap<>();
-        String ip = getIpAddress(request);
-        Integer ret = accountsServiceClient.getReceivingRedEnvelope(userId, score, ip, machineId, typeId, activityId);  //activityId
-        switch (ret) {
-            case -1:
-                throw new GlobeException(SystemConstants.FAIL_CODE, "抱歉，未知服务器错误!");
-        }
-        data.put("code", ret);
-        globeResponse.setData(data);
-        return globeResponse;
-    }
-
     /**
      * 获取红包手气榜
      *
-     * @param userId
      * @param parentId
      * @return
      */
@@ -2758,7 +2330,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getDateTime")
-    private GlobeResponse<Object> getDateTime() {
+    public GlobeResponse<Object> getDateTime() {
         List<Map<String, String>> data = new ArrayList<>();
         Map<String, String> map = new HashMap<String, String>();
 //        map.put("code", "0");
@@ -2825,26 +2397,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/getNoticeTitile")
-    private GlobeResponse<List<NewsVO>> getNoticeTitile(Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<List<NewsVO>> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(nativeWebServiceClient.getNoticeTitile(1, agentId));
-        return globeResponse;
-    }
-
-    @RequestMapping("/getNoticeDetail")
-    private GlobeResponse<String> getNoticeDetail(Integer newsId) {
-        if (newsId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
-        globeResponse.setData(nativeWebServiceClient.getNoticeDetail(newsId));
-        return globeResponse;
-    }
-
     /**
      * 绑定银行卡
      * @param userId
@@ -2857,7 +2409,7 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/saveBankCardRawData")
-    private GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
+    public GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
         if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2870,7 +2422,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getBankCardRawData")
-    private GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId, Integer agentId) {
+    public GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId, Integer agentId) {
         if (gameId == null || agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2894,7 +2446,7 @@ public class MobileInterfaceController {
     }
 
     @RequestMapping("/getShareUrl")
-    private GlobeResponse<String> getShareUrl(Integer g, Integer p) {
+    public GlobeResponse<String> getShareUrl(Integer g, Integer p) {
         if (g == null || p == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
@@ -2914,24 +2466,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    /**
-     * 游戏公告
-     *
-     * @param agentId
-     * @param pageIndex
-     * @param pageSize
-     * @return
-     */
-    @RequestMapping("/getGameNews")
-    private GlobeResponse<List<SystemNewsVO>> getGameNews(Integer agentId, Integer pageIndex, Integer pageSize) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<List<SystemNewsVO>> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(accountsServiceClient.getGameNews(agentId, pageIndex, pageSize));
-        return globeResponse;
-    }
-
     // ----------------签到奖励 start--------------------
 
     @RequestMapping("/getSignAwardConfigList")
@@ -2939,9 +2473,20 @@ public class MobileInterfaceController {
         GlobeResponse<Map> globeResponse = new GlobeResponse<>();
         Map responseData = new HashMap(50);
         responseData.put("configList", platformServiceClient.getUserSignAwardConfigList(agentId, userId));
-        responseData.put("serverTime", System.currentTimeMillis());
+        responseData.put("serverTime", DateTransUtil.dateToStr(new Date()));
         globeResponse.setData(responseData);
         return globeResponse;
+    }
+
+    /**
+     * 未领取福利统计
+     * @param agentId
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/getTaskinfoCount")
+    public Integer getTaskinfoCount(Integer agentId, Integer userId){
+        return  platformServiceClient.getTaskinfoCount(agentId,userId);
     }
 
     /**
@@ -2986,7 +2531,269 @@ public class MobileInterfaceController {
         }
         return globeResponse;
     }
+
     // ----------------签到奖励 end---------------------
 
+    //------------------ 负盈利接口 -----------------
+    @RequestMapping("/getMoney")
+    public GlobeResponse<SelfMoneyVO> getMoney(Integer agentId, Integer userId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<SelfMoneyVO> globeResponse = new GlobeResponse<>();
+        SelfMoneyVO selfMoneyVO = treasureServiceClient.getMoney(agentId, userId);
+        globeResponse.setData(selfMoneyVO);
+        return globeResponse;
+    }
 
+    @RequestMapping("/getMyRebate")
+    public GlobeResponse<ProgramVO> getMyRebate(Integer agentId, Integer userId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<ProgramVO> globeResponse = new GlobeResponse<>();
+        ProgramVO programVO = treasureServiceClient.getMyRebate(agentId, userId);
+        globeResponse.setData(programVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/applicationRebate")
+    public GlobeResponse<ApplicationVO> applicationRebate(Integer agentId, Integer userId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<ApplicationVO> globeResponse = new GlobeResponse<>();
+        ApplicationVO applicationVO = treasureServiceClient.applicationRebate(agentId, userId);
+        globeResponse.setData(applicationVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/submitApplication")
+    public GlobeResponse<String> submitApplication(Integer agentId, Integer userId, Integer gameId) {
+        if (userId == null || agentId == null || gameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        Boolean flag = treasureServiceClient.submitApplication(agentId, userId, gameId);
+        if (!flag) {
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("申请操作失败,请重试!");
+        }
+        return globeResponse;
+    }
+
+    @RequestMapping("/getRebateTutorial")
+    public GlobeResponse<String> getRebateTutorial(Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        String rebateTutorial = treasureServiceClient.getRebateTutorial(agentId);
+        globeResponse.setData(rebateTutorial);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyTeam")
+    public GlobeResponse<Object> getMyTeam(Integer agentId, Integer userId, Integer pageIndex,
+                                           Integer pageSize, Integer gameId, String startTime,String endTime,Integer nullity
+    ) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeam(agentId, userId, pageIndex, pageSize, gameId, startTime,endTime,nullity);
+        Integer memberCount = treasureServiceClient.getMyTeamCount(agentId, userId, gameId, startTime,endTime);
+        Integer todayTeamBet = treasureServiceClient.getMyTeamTodayBet(userId);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("list", pageVO);
+        map.put("memberCount", memberCount);
+        map.put("todayTeamBet", todayTeamBet);
+
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(map);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyTeamOrder")
+    public GlobeResponse<Object> getMyTeamOrder(Integer agentId, Integer userId, Integer pageIndex,
+                                                Integer pageSize, Integer gameId, String startTime, String endTime, Integer kindType) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        CommonPageVO<MyTeamVO> pageVO = treasureServiceClient.getMyTeamOrder(agentId, userId, pageIndex, pageSize, gameId,startTime, endTime,kindType);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(pageVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getMyTeamBeat")
+    public GlobeResponse<Object> getMyTeamBeat(Integer agentId, Integer userId, Integer pageIndex, Integer pageSize, String startTime, String endTime) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        CommonPageVO<MyTeamVO> pageVO =  treasureServiceClient.getMyTeamBeat(agentId,userId,pageIndex,pageSize,startTime,endTime);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(pageVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getSelfReport")
+    public GlobeResponse<SelfReportVO> getSelfReport(Integer agentId,Integer userId,String startTime,String endTime){
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        SelfReportVO selfReportVO = treasureServiceClient.getSelfReport(agentId,userId,startTime,endTime);
+        GlobeResponse<SelfReportVO> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(selfReportVO);
+        return globeResponse;
+    }
+
+    @RequestMapping("/submitDomain")
+    public GlobeResponse<String> submitDomain(Integer agentId, Integer userId, String domain, Integer duration, String cost, Integer gameId) {
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        if (domain.equals("")) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请填写域名再申请!");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        globeResponse.setMsg(treasureServiceClient.submitDomain(agentId, userId, domain, duration, cost, gameId));
+        return globeResponse;
+    }
+
+    @RequestMapping("/getDomainFee")
+    public GlobeResponse<List<DomainVO>> getDomainFee(Integer agentId){
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<DomainVO>> globeResponse = new GlobeResponse<>();
+        List<DomainVO> list = treasureServiceClient.getDomainFee(agentId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getDomain")
+    public GlobeResponse<List<LinkVO>> getDomain(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<LinkVO>> globeResponse = new GlobeResponse<>();
+        List<LinkVO> list = treasureServiceClient.getDomain(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getRebate")
+    public GlobeResponse<List<RebateInfoVO>> getRebate(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<RebateInfoVO>> globeResponse = new GlobeResponse<>();
+        List<RebateInfoVO> list = treasureServiceClient.getRebate(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    @RequestMapping("/getFYLRebate")
+    public GlobeResponse<List<RebateInfoVO>> getFYLRebate(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<List<RebateInfoVO>> globeResponse = new GlobeResponse<>();
+        List<RebateInfoVO> list = treasureServiceClient.getFYLRebate(agentId,userId);
+        globeResponse.setData(list);
+        return globeResponse;
+    }
+
+    //获取天天返佣分佣详情
+    @RequestMapping("/getRebateByTime")
+    public GlobeResponse<Object> getRebateByTime(Integer agentId,Integer userId,String startTime,String endTime){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        Map<String,Object> map = treasureServiceClient.getRebateByTime(agentId,userId,startTime,endTime);
+        globeResponse.setData(map);
+        return globeResponse;
+    }
+
+    //获取负盈利分佣详情
+    @RequestMapping("/getFYLRebateByTime")
+    public GlobeResponse<Object> getFYLRebateByTime(Integer agentId,Integer userId,Integer num){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        Map<String,Object> map = treasureServiceClient.getFYLRebateByTime(agentId,userId,num);
+        globeResponse.setData(map);
+        return globeResponse;
+    }
+
+    //获取用户当前层级设置的转账比例
+    @RequestMapping("/getMemberInfo")
+    public GlobeResponse<String> getMemberInfo(Integer agentId,Integer userId){
+        if (agentId == null || userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        String num = treasureServiceClient.getMemberInfo(agentId,userId);
+        globeResponse.setData(num);
+        return globeResponse;
+    }
+
+    //转账
+    @RequestMapping("/transfer")
+    public GlobeResponse<String> transfer(String Num,String fee,Integer agentId,Integer spGameId,Integer userId){
+        if (userId == null || agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        if (spGameId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "请填写收款人游戏ID!");
+        }
+        GlobeResponse<String> globeResponse = new GlobeResponse<>();
+        Boolean flag = treasureServiceClient.transfer(Num,fee,agentId,spGameId,userId);
+        if (flag == null || !flag) {
+            globeResponse.setCode(SystemConstants.FAIL_CODE);
+            globeResponse.setMsg("网络波动,请重试!");
+        }
+        return globeResponse;
+    }
+
+    //获取当前玩家状态
+    @RequestMapping("/getPlayerStatus")
+    public GlobeResponse<Integer> getPlayerStatus(Integer userId,Integer agentId){
+        if (userId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
+        }
+        GlobeResponse<Integer> globeResponse = new GlobeResponse<>();
+        Integer fylStatus = treasureServiceClient.getPlayerStatus(userId,agentId);
+        globeResponse.setData(fylStatus);
+        return globeResponse;
+    }
+
+
+
+    /**
+     * 插入ES库
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/insertUserInfoEs")
+     public AccountsInfoEs insertUserInfoEs(@RequestParam("userId") Integer userId) {
+        AccountsInfoEs accountsInfoEs = accountsServiceClient.insertUserInfoEs(userId);
+         return accountsInfoEs;
+    }
+
+
+    /**
+     * 插入ES库
+     *
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/insertApplyOrderEs")
+     public ApplyOrderEs insertApplyOrderEs(@RequestParam("orderId") String orderId) {
+        ApplyOrderEs applyOrderEs = accountsServiceClient.insertApplyOrderEs(orderId);
+         return applyOrderEs;
+    }
 }

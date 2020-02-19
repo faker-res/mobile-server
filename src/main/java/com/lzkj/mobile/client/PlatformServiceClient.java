@@ -110,17 +110,36 @@ public interface PlatformServiceClient {
 
 	/***************************************洗码相关***********************************************************/
 
+	/**
+	 * 自动洗码
+	 *
+	 * @param userId
+	 * @param agentId
+	 * @return
+	 */
 	@RequestMapping("/mobile/clean/getCleanChips")
-	CleanChipsTotalVO getCleanChips(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId);
+	CleanChipsTotalVO getCleanChips(@RequestParam("userId") Integer userId,
+									@RequestParam("agentId") Integer agentId);
 
-
+	/**
+	 * 手动洗码
+	 *
+	 * @param userId
+	 * @param agentId
+	 * @param vipLevel
+	 * @return
+	 */
 	@RequestMapping("/mobile/clean/washBet")
-	Map <String ,Object> washBet(@RequestParam("userId") Integer userId, @RequestParam("agentId") Integer agentId,@RequestParam("vipLevel") Integer vipLevel);
+	Map <String ,Object> washBet(@RequestParam("userId") Integer userId,
+								 @RequestParam("agentId") Integer agentId,
+								 @RequestParam("vipLevel") Integer vipLevel);
 
 	@RequestMapping("/mobile/clean/getWashRecord")
 	List<CleanChipsRecordVO> getWashRecord(@RequestParam("userId") Integer userId);
+
 	@RequestMapping("/mobile/clean/getCleanChipsRecord")
-	List<CleanChipsRecordVO> getCleanChipsRecord(@RequestParam("userId") Integer userId,@RequestParam("recordTime") String recordTime);
+	List<CleanChipsRecordVO> getCleanChipsRecord(@RequestParam("userId") Integer userId,
+												 @RequestParam("recordTime") String recordTime);
 
 	@RequestMapping("/mobile/clean/getCleanChipsConfig")
     List<CleanChipsConfigVO> getCleanChipsConfig(@RequestParam("agentId") Integer agentId);
@@ -164,8 +183,18 @@ public interface PlatformServiceClient {
 	 * @return
 	 */
 	@RequestMapping("/agentSystem/setUp/acceptUserSignAward")
-	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,@RequestParam("userId") Integer userId);
-	
+	BigDecimal acceptUserSignAward(@RequestParam("agentId") Integer agentId,
+								   @RequestParam("userId") Integer userId);
+
+	/**
+	 * 未领取福利统计
+	 * @param agentId
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/platform/mobile/getTaskinfoCount")
+	Integer getTaskinfoCount(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId);
+
 	@RequestMapping("/platform/mobile/getisOrNotEnter")
 	Boolean getisOrNotEnter(@RequestParam("agentId") Integer agentId,@RequestParam("kindId") Integer kindId);
 }

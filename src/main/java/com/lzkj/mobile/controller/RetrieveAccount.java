@@ -43,7 +43,7 @@ public class RetrieveAccount {
     private MongoTemplate mongoTemplate;
 
     @RequestMapping("/updatepwd")
-    private GlobeResponse<Object> updatePwd(String phone, String telCode, String logonPass, Integer agentId) {
+    public GlobeResponse<Object> updatePwd(String phone, String telCode, String logonPass, Integer agentId) {
         if (agentId == null || agentId == 0) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
         }

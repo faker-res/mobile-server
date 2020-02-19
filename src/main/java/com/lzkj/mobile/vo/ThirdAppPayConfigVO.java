@@ -10,6 +10,7 @@ import java.util.List;
  */
 @Data
 public class ThirdAppPayConfigVO {
+
     private Integer id;
     /**
      * 支付类型:1易信
@@ -39,8 +40,11 @@ public class ThirdAppPayConfigVO {
     private Integer agentId;
 
     private Integer sort;
+
     private String remark;
+
     private List<Integer> channelLevelId;
+
     private String imageUrl;
     private List<Integer> idList; // web前端用于批量操作
 

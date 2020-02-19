@@ -4,6 +4,8 @@ public class RedisKeyPrefix {
 
 	public static final String MOBILE_SERVER= "MOBILE_SERVER:";
 
+	public static final String ACTIVITY = "ACTIVITY:";
+
 	public static String getKey(String key) {
 		return MOBILE_SERVER + key;
 	}
@@ -104,8 +106,13 @@ public class RedisKeyPrefix {
 	public static String getShareParamKey(String param) {
 		return "ShareParam:" + param;
 	}
-	
+
+	public static String getActivityApplication(Integer userId,Integer ruleId) {
+		return ACTIVITY + userId + ":" + ruleId;
+	}
+
 	public static String getNullity(Integer agentId,Integer kindId) {
 		return MOBILE_SERVER + agentId + ":" + kindId;
 	}
+
 }
