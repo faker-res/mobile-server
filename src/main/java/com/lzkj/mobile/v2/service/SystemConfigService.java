@@ -89,8 +89,8 @@ public class SystemConfigService {
             redisService.set(controllerKey, systemStatusInfo);
             redisService.expire(controllerKey, 2, TimeUnit.HOURS);
         }
-        Boolean flag = false;
-        if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) != 0) {
+        boolean flag = false;
+        if (systemStatusInfo.getStatusValue().compareTo(BigDecimal.ZERO) == 0) {//statusValue为0时开启系统维护
             flag = true;
         }
         Map<String, Object> data = new HashMap<>();
@@ -374,4 +374,5 @@ public class SystemConfigService {
         log.info("newLoginStatus：agentId:" + agentId + "\t registerMachine:" + registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
+
 }
