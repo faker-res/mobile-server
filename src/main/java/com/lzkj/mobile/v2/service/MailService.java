@@ -112,7 +112,7 @@ public class MailService {
             InternalMessageDto dto = new InternalMessageDto();
             dto.setCode(SendTemplateCodeEnum.THIRD_CHARGE_N.getCode());
             dto.setUserId(Integer.parseInt(userId.toString()));
-            dto.setAward(amount);
+            dto.setRecharge(amount);
             dto.setType(SendMailSourceEnum.FOUR.getCode());
             accountsServiceClient.sendMail(dto);
         } catch (Exception e) {
