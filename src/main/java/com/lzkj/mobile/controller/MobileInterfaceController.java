@@ -1103,7 +1103,6 @@ public class MobileInterfaceController {
         Integer serverId = record.getInteger("serverId");
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
         log.info("kindId:"+kindId);
-        log.info("detailList:"+detailList);
         List<String> codeList = new ArrayList<String>();
         for (Object d : detailList) {
             JSONObject dJson = JSONObject.parseObject(d.toString());
@@ -1122,7 +1121,6 @@ public class MobileInterfaceController {
                 continue;
             }
 //            log.info("d:"+d);
-            codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
             GameRecord gr = new GameRecord();
             if (Integer.parseInt(gameRoomInfo.get("ServerType").toString()) == 16) {
                 gr.setGamePersonal(record.getJSONObject("game_personal").toJSONString());
@@ -1180,10 +1178,12 @@ public class MobileInterfaceController {
                     mongoTemplate.save(luckyVO, "Lucky");
                 }
             }
-        }
-        if(codeList.size() > 0) {
-	        activeAsyncUtil.saveEsGameRecordOther(codeList);
-	        activeAsyncUtil.saveEsGameRecord(codeList);
+            codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
+            if(null != codeList && codeList.size() == 10) {
+    	        activeAsyncUtil.saveEsGameRecordOther(codeList);
+    	        activeAsyncUtil.saveEsGameRecord(codeList);
+    	        codeList.clear();
+            }
         }
         log.info("detail执行完毕");
         return globeResponse;
