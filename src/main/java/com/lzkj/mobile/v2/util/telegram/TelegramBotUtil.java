@@ -87,22 +87,22 @@ public class TelegramBotUtil {
      * @param msg
      */
     static void sendAlertMessage(String chatId, String token, String msg)  {
-        try {
-            // String url = "https://api.telegram.org/bot1092780048:AAFJws0tQGUttAt6msjdCPPQNBwcra4HW8s/sendMessage";
-            String url = url_prefix + token + "/sendMessage";
-            JSONObject obj = new JSONObject();
-            obj.put("chat_id", chatId);
-            obj.put("text", URLEncoder.encode(String.format(LocalDateTime.now() + " " + msg), "UTF-8"));
-            StringBuilder param = new StringBuilder();
-            Set<String> set = obj.keySet();
-            for (String str : set) {
-                param.append(str).append("=");
-                param.append(obj.get(str)).append("&");
-            }
-            doGet(url + "?" + param.substring(0, param.length() - 1), 15000);
-        } catch (Exception e) {
-            log.info("预警-发送失败{}", e);
-        }
+//        try {
+//            // String url = "https://api.telegram.org/bot1092780048:AAFJws0tQGUttAt6msjdCPPQNBwcra4HW8s/sendMessage";
+//            String url = url_prefix + token + "/sendMessage";
+//            JSONObject obj = new JSONObject();
+//            obj.put("chat_id", chatId);
+//            obj.put("text", URLEncoder.encode(String.format(LocalDateTime.now() + " " + msg), "UTF-8"));
+//            StringBuilder param = new StringBuilder();
+//            Set<String> set = obj.keySet();
+//            for (String str : set) {
+//                param.append(str).append("=");
+//                param.append(obj.get(str)).append("&");
+//            }
+//            doGet(url + "?" + param.substring(0, param.length() - 1), 15000);
+//        } catch (Exception e) {
+//            log.info("预警-发送失败{}", e);
+//        }
     }
 
     private static void doGet(String url, Integer timeout) throws Exception {
