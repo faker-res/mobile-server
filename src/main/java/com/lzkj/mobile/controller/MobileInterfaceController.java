@@ -1181,7 +1181,7 @@ public class MobileInterfaceController {
                 }
             }
             codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
-            if(null != codeList && (codeList.size() == 10 && i == detailList.size())) {
+            if(null != codeList && (codeList.size() == 10 ||  i == detailList.size())) {
     	        activeAsyncUtil.saveEsGameRecordOther(codeList);
     	        activeAsyncUtil.saveEsGameRecord(codeList);
     	        codeList.clear();
