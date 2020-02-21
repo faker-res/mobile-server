@@ -1104,7 +1104,9 @@ public class MobileInterfaceController {
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
         log.info("kindId:"+kindId);
         List<String> codeList = new ArrayList<String>();
+        int i = 0;
         for (Object d : detailList) {
+        	i ++;
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
             if (isRobot) {
@@ -1179,7 +1181,7 @@ public class MobileInterfaceController {
                 }
             }
             codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
-            if(null != codeList && codeList.size() == 10) {
+            if(null != codeList && (codeList.size() == 10 && i == detailList.size())) {
     	        activeAsyncUtil.saveEsGameRecordOther(codeList);
     	        activeAsyncUtil.saveEsGameRecord(codeList);
     	        codeList.clear();
