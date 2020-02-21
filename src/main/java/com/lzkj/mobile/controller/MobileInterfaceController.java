@@ -1184,7 +1184,7 @@ public class MobileInterfaceController {
             if(null != codeList && (codeList.size() == 10 ||  i == detailList.size())) {
     	        activeAsyncUtil.saveEsGameRecordOther(codeList);
     	        activeAsyncUtil.saveEsGameRecord(codeList);
-    	        codeList.clear();
+    	        codeList = new ArrayList<String>();
             }
         }
         log.info("detail执行完毕");
