@@ -1,5 +1,6 @@
 package com.lzkj.mobile.client;
 
+import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.AccountsDetailPageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -306,7 +307,7 @@ public interface TreasureServiceClient {
      * @return
      */
     @RequestMapping("/agentControl/applyLuckyOrderInfo")
-    Boolean applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
+    Response applyLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
     // -------------------幸运注单 end-----------------------
     @RequestMapping("/treasure/mobile/winAndLose")
