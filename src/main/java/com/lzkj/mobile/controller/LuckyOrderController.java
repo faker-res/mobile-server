@@ -11,10 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -191,7 +188,7 @@ public class LuckyOrderController {
         return globeResponse;
     }
 
-    @PostMapping("/applyLuckyOrderInfo")
+    @GetMapping("/applyLuckyOrderInfo")
     @ApiOperation(value = "用户手动申请幸运注单", notes = "用户手动申请幸运注单")
     public Response applyLuckyOrderInfo(@RequestParam Integer userId, @RequestParam Integer id){
         log.info("用户手动申请幸运注单开始，id = {}, userId = {}", id, userId);
