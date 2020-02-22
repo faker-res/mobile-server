@@ -298,7 +298,7 @@ public interface TreasureServiceClient {
 														  @RequestParam("pageSize") Integer pageSize);
 
 	@RequestMapping("/agentControl/receiveLuckyOrderInfo")
-	Boolean receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
+    Response receiveLuckyOrderInfo(@RequestBody LuckyOrderInfoVO vo);
 
     /**
      * 手动申请幸运注单奖励
