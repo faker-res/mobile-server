@@ -53,10 +53,6 @@ public interface PlatformServiceClient {
 	@RequestMapping("/platform/mobile/getUserReceiveInfo")
 	List<VIPReceiveInfoVO> getUserReceiveInfo(@RequestParam("userId") Integer userId);
 
-
-	@RequestMapping("/platform/mobile/getBankList")
-    List<BankInfoVO> getBankList(@RequestParam("agentId") Integer agentId);
-
 	@RequestMapping("/platform/mobile/getVipRankWelfare")
 	VipWelfareVO getVipRankWelfare(@RequestParam("agentId")Integer agentId, @RequestParam("gameId") Integer gameId);
 

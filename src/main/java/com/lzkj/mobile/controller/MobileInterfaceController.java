@@ -23,6 +23,8 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.*;
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
 import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -1756,6 +1758,9 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
+
+    @Resource
+    private FundServiceClient fundServiceClient;
     /**
      * 查询银行卡类型
      *
@@ -1763,22 +1768,23 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getBankCardTypeInfo")
-    public GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
+    public Response getBankCardTypeInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        List<BankInfoVO> bankInfos = platformServiceClient.getBankList(agentId);
-        List<BankCardTypeVO> customers = new ArrayList<>();
-        for (BankInfoVO b : bankInfos) {
-            BankCardTypeVO bankCardTypeVO = new BankCardTypeVO();
-            bankCardTypeVO.setBankCardType(b.getBankName());
-            customers.add(bankCardTypeVO);
+        Response<List<BankAgentVO>> response = fundServiceClient.getBankList(agentId);
+        if(Response.SUCCESS.equals(response.getCode())){
+            List<BankCardTypeVO> customers = new ArrayList<>();
+            for (BankAgentVO b : response.getData()) {
+                BankCardTypeVO bankCardTypeVO = new BankCardTypeVO();
+                bankCardTypeVO.setBankCardType(b.getBankName());
+                customers.add(bankCardTypeVO);
+            }
+            Map<String, Object> data = new HashMap<>();
+            data.put("bankCards", customers);
+            return Response.successData(data);
         }
-        Map<String, Object> data = new HashMap<>();
-        data.put("bankCards", customers);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        return globeResponse;
+        return response;
     }
 
 

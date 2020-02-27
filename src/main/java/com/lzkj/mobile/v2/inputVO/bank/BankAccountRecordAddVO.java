@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -23,28 +24,32 @@ import javax.validation.constraints.NotNull;
 @ApiModel(value = "BankAccountRecordAddVO", description = "用户银行卡新增封装类")
 public class BankAccountRecordAddVO  extends BaseVO {
 
-    @ApiModelProperty(name = "gameId", value = "所属用户游戏ID", required = true)
+    @ApiModelProperty(value = "所属用户游戏ID", required = true)
     @NotNull(message = "gameId不能为空")
     private Integer gameId;
 
-    @ApiModelProperty(name = "number", value = "银行卡卡位  1：1号卡位 2：2号卡位 3：3号卡位", allowableValues = "1,2,3", required = true)
+    @ApiModelProperty(value = "银行卡卡位  1：1号卡位 2：2号卡位 3：3号卡位", allowableValues = "1,2,3", required = true)
     @NotNull(message = "number不能为空")
     private Integer number;
 
-    @ApiModelProperty(name = "cardNo", value = "新银行卡号", required = true)
-    @NotNull(message = "cardNo不能为空")
+    @ApiModelProperty(value = "银行卡所属银行编码", required = true)
+    @NotBlank(message = "cardCode不能为空")
+    private String cardCode;
+
+    @ApiModelProperty(value = "新银行卡号", required = true)
+    @NotBlank(message = "cardNo不能为空")
     private String cardNo;
 
-    @ApiModelProperty(name = "cardName", value = "新银行卡归属银行名称", required = true)
-    @NotNull(message = "cardName不能为空")
+    @ApiModelProperty(value = "新银行卡归属银行名称", required = true)
+    @NotBlank(message = "cardName不能为空")
     private String cardName;
 
-    @ApiModelProperty(name = "cardAddress", value = "新银行卡开户行", required = true)
-    @NotNull(message = "cardAddress不能为空")
+    @ApiModelProperty(value = "新银行卡开户行", required = true)
+    @NotBlank(message = "cardAddress不能为空")
     private String cardAddress;
 
-    @ApiModelProperty(name = "cardOwner", value = "新银行卡户主", required = true)
-    @NotNull(message = "cardOwner不能为空")
+    @ApiModelProperty(value = "新银行卡户主", required = true)
+    @NotBlank(message = "cardOwner不能为空")
     private String cardOwner;
 
 
