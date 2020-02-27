@@ -2426,40 +2426,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 绑定银行卡
-     * @param userId
-     * @param gameId
-     * @param agentId
-     * @param bankNo
-     * @param bankName
-     * @param compellation
-     * @param bankAddress
-     * @return
-     */
-    @RequestMapping("/saveBankCardRawData")
-    public GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
-        if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
-        Boolean flag = accountsServiceClient.saveBankCardRawData(userId, gameId, agentId, bankNo, bankName, compellation, bankAddress);
-        if (!flag) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "保存成功,如果问题,请联系客服");
-        }
-        return globeResponse;
-    }
-
-    @RequestMapping("/getBankCardRawData")
-    public GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId, Integer agentId) {
-        if (gameId == null || agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<IndividualDatumVO> globeResponse = new GlobeResponse<IndividualDatumVO>();
-        globeResponse.setData(accountsServiceClient.getBankCardRawData(gameId, agentId));
-        return globeResponse;
-    }
-
-    /**
      * 余额宝说明查询
      */
     @RequestMapping("/getYuebaoDescription")
