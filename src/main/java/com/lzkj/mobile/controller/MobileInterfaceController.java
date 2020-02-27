@@ -1569,19 +1569,42 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/updateMerchantOrderId")
+    @PostMapping("/updateMerchantOrderId")
     public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId, Integer orderStatus) {
-        if (orderStatus == null) {
-            orderStatus = 0;
+        try{
+            //增加参数判断,避免报错
+            if(StringUtils.isBlank(ownerOrderId)){
+                log.info("/updateMerchantOrderId接口参数ownerOrderId为空:{}",ownerOrderId);
+                return "false";
+            }else {
+                if (orderStatus == null) {
+                    orderStatus = 0;
+                }
+                this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId, orderStatus);
+                return "ok";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "false";
         }
-        this.treasureServiceClient.updateMerchantOrderId(ownerOrderId, merchantOrderId, orderStatus);
-        return "ok";
     }
 
-    @RequestMapping("/updatePassagewayResponse")
+    @PostMapping("/updatePassagewayResponse")
     public String updatePassagewayResponse(String ownerOrderId, String passagewayResponse) {
-        this.treasureServiceClient.updatePassagewayResponse(ownerOrderId, passagewayResponse);
-        return "ok";
+        try{
+            //增加参数判断,避免报错
+            if(StringUtils.isBlank(ownerOrderId)){
+                log.info("/updatePassagewayResponse接口参数ownerOrderId为空:{}",ownerOrderId);
+                return "false";
+            }else {
+                this.treasureServiceClient.updatePassagewayResponse(ownerOrderId, passagewayResponse);
+                return "ok";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "false";
+        }
+
     }
 
     /**
