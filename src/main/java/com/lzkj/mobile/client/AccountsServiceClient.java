@@ -203,19 +203,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getUserRedEnvelopeRain")
     Integer getUserRedEnvelopeRain(@RequestParam("parentId") Integer parentId);
 
-    @RequestMapping("/accounts/mobile/saveBankCardRawData")
-    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,
-                                @RequestParam("gameId")Integer gameId,
-                                @RequestParam("agentId")Integer agentId,
-                                @RequestParam("bankNo")String bankNo,
-                                @RequestParam("bankName")String bankName,
-                                @RequestParam("compellation")String compellation,
-                                @RequestParam("bankAddress")String bankAddress);
-
-    @RequestMapping("/accounts/mobile/getBankCardRawData")
-    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId,
-                                         @RequestParam("agentId")Integer agentId);
-
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId,
                                              @RequestParam("beginTime")String beginTime,
