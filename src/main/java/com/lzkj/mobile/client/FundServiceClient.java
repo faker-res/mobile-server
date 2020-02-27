@@ -5,6 +5,7 @@ import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.bank.*;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
+import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,4 +48,6 @@ public interface FundServiceClient {
     @PostMapping("/bankAccountRecord/update")
     Response<Void> updateBankAccountRecord(@RequestBody BankAccountRecordUpdVO vo);
 
+    @GetMapping("/bankAgent/mobile/getBankList")
+    Response<List<BankAgentVO>> getBankList(@RequestParam Integer agentId);
 }

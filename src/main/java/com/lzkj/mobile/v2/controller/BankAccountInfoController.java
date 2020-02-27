@@ -1,16 +1,26 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.FundServiceClient;
+import com.lzkj.mobile.client.PlatformServiceClient;
+import com.lzkj.mobile.config.SystemConstants;
+import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.bank.*;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
+import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
+import com.lzkj.mobile.vo.BankInfoVO;
+import com.lzkj.mobile.vo.GlobeResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *    
@@ -24,6 +34,7 @@ import javax.validation.Valid;
  *  *    
  *  
  */
+@Slf4j
 @RestController
 @RequestMapping("/bank")
 @Api(value = "BankAccountInfoController", tags = "用户银行卡数据接口")
@@ -31,6 +42,16 @@ public class BankAccountInfoController {
 
     @Resource
     private FundServiceClient fundServiceClient;
+
+    @GetMapping("/getBankInfo")
+    @ApiOperation(value = "获取银行卡列表", notes = "获取银行卡列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "agentId", value = "业主ID", paramType = "query", dataType = "int")
+    })
+    public Response<List<BankAgentVO>> getMaintainKey(@RequestParam Integer agentId) {
+        return fundServiceClient.getBankList(agentId);
+    }
 
     @GetMapping("/account/list")
     @ApiOperation(value = "银行卡管理", notes = "银行卡管理分页数据")
