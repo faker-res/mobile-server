@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
  *  
  */
 @Data
-@ApiModel(value = "BankAccountRecordAddVO", description = "用户银行卡新增封装类")
+@ApiModel(description = "用户银行卡新增封装类")
 public class BankAccountRecordAddVO  extends BaseVO {
 
     @ApiModelProperty(value = "所属用户游戏ID", required = true)

@@ -44,12 +44,12 @@ public class BankAccountInfoController {
     private FundServiceClient fundServiceClient;
 
     @GetMapping("/getBankInfo")
-    @ApiOperation(value = "获取银行卡列表", notes = "获取银行卡列表")
+    @ApiOperation(value = "获取银行列表", notes = "获取银行列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "agentId", value = "业主ID", paramType = "query", dataType = "int")
     })
-    public Response<List<BankAgentVO>> getMaintainKey(@RequestParam Integer agentId) {
+    public Response<List<BankAgentVO>> getBankInfo(@RequestParam Integer agentId) {
         return fundServiceClient.getBankList(agentId);
     }
 
