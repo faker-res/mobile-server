@@ -153,7 +153,7 @@ public class SystemConfigService {
         String value = redisService.get(redisKey);
         if (null == value) {
             list = agentClient.getCloudShieldConfigurationInfos(agentId);
-            if(!list.isEmpty()){
+            if(list != null && !list.isEmpty()){
                 redisService.set(redisKey, list, 2, TimeUnit.HOURS);
             }
         } else {
@@ -174,7 +174,7 @@ public class SystemConfigService {
         if (null == mobileKind) {
             Integer typeId = 1;
             list = platformServiceClient.getMobileKindList(typeId, Integer.valueOf(agentId));
-            if(!list.isEmpty()){
+            if(list != null && !list.isEmpty()){
                 redisService.set(redisKey, list, 2, TimeUnit.HOURS);
             }
         } else {
@@ -194,7 +194,7 @@ public class SystemConfigService {
         String agentSystem = redisService.get(redisKey);
         if (null == agentSystem) {
             list = agentClient.getBindMobileSendInfo(agentId);
-            if(!list.isEmpty()){
+            if(list != null && !list.isEmpty()){
                 redisService.set(redisKey, list, 2, TimeUnit.HOURS);
             }
         } else {
