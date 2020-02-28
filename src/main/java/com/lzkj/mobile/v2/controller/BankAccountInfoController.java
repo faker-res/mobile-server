@@ -1,16 +1,11 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.FundServiceClient;
-import com.lzkj.mobile.client.PlatformServiceClient;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.bank.*;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
-import com.lzkj.mobile.vo.BankInfoVO;
-import com.lzkj.mobile.vo.GlobeResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

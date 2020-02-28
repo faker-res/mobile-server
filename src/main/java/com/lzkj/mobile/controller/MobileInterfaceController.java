@@ -1106,9 +1106,7 @@ public class MobileInterfaceController {
         Map<String, Object> gameRoomInfo = platformServiceClient.getServerName(serverId);
         log.info("kindId:"+kindId);
         List<String> codeList = new ArrayList<String>();
-        int i = 0;
         for (Object d : detailList) {
-        	i ++;
             JSONObject dJson = JSONObject.parseObject(d.toString());
             boolean isRobot = dJson.getBooleanValue("isRobot");
             if (isRobot) {
@@ -1124,7 +1122,7 @@ public class MobileInterfaceController {
                 }
                 continue;
             }
-//            log.info("d:"+d);
+            codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
             GameRecord gr = new GameRecord();
             if (Integer.parseInt(gameRoomInfo.get("ServerType").toString()) == 16) {
                 gr.setGamePersonal(record.getJSONObject("game_personal").toJSONString());
@@ -1182,12 +1180,17 @@ public class MobileInterfaceController {
                     mongoTemplate.save(luckyVO, "Lucky");
                 }
             }
-            codeList.add(shortGameCode + "-" + dJson.getString("chairId"));
-            if(null != codeList && (codeList.size() == 10 ||  i == detailList.size())) {
-    	        activeAsyncUtil.saveEsGameRecordOther(codeList);
-    	        activeAsyncUtil.saveEsGameRecord(codeList);
-    	        codeList.clear();
-            }
+        }
+        if(null != codeList && codeList.size() > 0) {
+        	List<String> gameCode = new ArrayList<String>();
+        	for (int i = 0; i < codeList.size(); i++) {
+        		gameCode.add(codeList.get(i));
+        		if(gameCode.size() == 10 || i == codeList.size() - 1) {
+        			activeAsyncUtil.saveEsGameRecordOther(gameCode);
+        			activeAsyncUtil.saveEsGameRecord(gameCode);
+        			gameCode = new ArrayList<String>();
+        		}
+			}
         }
         log.info("detail执行完毕");
         return globeResponse;
@@ -1568,7 +1571,7 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    @RequestMapping("/updateMerchantOrderId")
+    @PostMapping("/updateMerchantOrderId")
     public String updateMerchantOrderId(String ownerOrderId, String merchantOrderId, Integer orderStatus) {
         try{
             //增加参数判断,避免报错
@@ -1588,7 +1591,7 @@ public class MobileInterfaceController {
         }
     }
 
-    @RequestMapping("/updatePassagewayResponse")
+    @PostMapping("/updatePassagewayResponse")
     public String updatePassagewayResponse(String ownerOrderId, String passagewayResponse) {
         try{
             //增加参数判断,避免报错
