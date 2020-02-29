@@ -26,7 +26,10 @@ import com.lzkj.mobile.util.*;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
 import com.lzkj.mobile.v2.service.MailService;
+import com.lzkj.mobile.v2.util.ValidateParamUtil;
 import com.lzkj.mobile.vo.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +93,9 @@ public class MobileInterfaceController {
 
     @Autowired
     private RedisDao redisDao;
+
+    @Autowired
+    private ValidateParamUtil validateParamUtil;
 
     @Resource(name = "gameMongoTemplate")
     private MongoTemplate mongoTemplate;
@@ -882,61 +888,26 @@ public class MobileInterfaceController {
     }
 
 
-    /**
-     * 手机绑定
-     *
-     * @return
-     */
-    @RequestMapping("/bindPhone")
-    public GlobeResponse<Object> verificationCode(Integer userId, String password, String phone, String verifyCode,
-                                                  String realName, String bankNo, String bankName) {
-        BindPhoneVO bindPhoneVO = new BindPhoneVO();
-        bindPhoneVO.setUserId(userId);
-        bindPhoneVO.setPassword(password);
-        bindPhoneVO.setPhone(phone);
-        bindPhoneVO.setVerifyCode(verifyCode);
-        bindPhoneVO.setRealName(realName);
-        bindPhoneVO.setBankNo(bankNo);
-        bindPhoneVO.setBankName(bankName);
-        if (bindPhoneVO.getPassword() == null || bindPhoneVO.getPassword().length() < 6) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "密码长度不能低于6位");
-        }
-        if (bindPhoneVO.getPhone() == null || bindPhoneVO.getPhone().length() < 11) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
-        }
-        String key = RedisKeyPrefix.getKey(bindPhoneVO.getPhone() + ":BindPhone");
+    @GetMapping("/bindPhone")
+    @ApiOperation(value = "手机绑定", notes = "手机绑定")
+    public Response<Integer> verificationCode(BindPhoneVO vo) {
+        validateParamUtil.valid(vo);
+        String key = RedisKeyPrefix.getKey(vo.getPhone() + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
         if (verificationCode == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
         }
-        if (!verificationCode.getCode().equals(bindPhoneVO.getVerifyCode())) {
+        if (!verificationCode.getCode().equals(vo.getVerifyCode())) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码错误");
         }
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
         }
-        if (!StringUtils.isBlank(bindPhoneVO.getBankNo())) {
-            if (bindPhoneVO.getBankNo().length() < 16 || bindPhoneVO.getBankNo().length() > 19) {
-                throw new GlobeException(SystemConstants.FAIL_CODE, "银行卡位数不对!,请重新输入!");
-            }
-
-            Integer count = accountsServiceClient.getUserBankInformation(bindPhoneVO.getBankNo());
-            if (count >= 1) {
-                throw new GlobeException(SystemConstants.FAIL_CODE, "此银行卡已被绑定!,请重新输入!");
-            }
-        }
-        String pwd = MD5Encode(bindPhoneVO.getPassword(), "utf-8");
-        bindPhoneVO.setPassword(pwd);
-        VisitorBindResultVO visitorBindResult = this.accountsServiceClient.visitorBind(bindPhoneVO);
-        if (visitorBindResult.getRet().intValue() != 0) {
-            redisDao.delete(key);
-            throw new GlobeException(SystemConstants.FAIL_CODE, visitorBindResult.getMsg());
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(visitorBindResult.getScore());
-        globeResponse.setMsg(visitorBindResult.getMsg());
+        String pwd = MD5Encode(vo.getPassword(), "utf-8");
+        vo.setPassword(pwd);
+        Response<Integer> response = this.accountsServiceClient.visitorBind(vo);
         redisDao.delete(key);
-        return globeResponse;
+        return response;
     }
 
     /**
@@ -2158,42 +2129,6 @@ public class MobileInterfaceController {
         }
         globeResponse.setData("");
         return globeResponse;
-    }
-
-    /**
-     * 提现信息审核开关
-     */
-    @RequestMapping("/getIndividualDatumStatus")
-    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId, Integer gameId) throws ParseException {
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        if (agentId == null || agentId == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        if (gameId == null || gameId == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId, gameId);
-        if (pageVO == null) {
-            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
-            return globeResponse;
-        } else {
-            if (StringUtils.isBlank(pageVO.getBankNO())) {
-                globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
-                return globeResponse;
-            }
-            if (!StringUtils.isBlank(pageVO.getCollectDate()) && (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(pageVO.getCollectDate()).getTime()) < (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2020-01-04 08:00:00").getTime())) {
-                pageVO.setStatus(4);//兼容历史数据（绑定成功）
-            }
-            globeResponse.setData(pageVO);
-            return globeResponse;
-        }
-        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-        if (flag) {
-            globeResponse.setData(pageVO);
-            return globeResponse;
-        }
-        globeResponse.setData(flag);
-        return globeResponse;*/
     }
 
     /* 新版获取红包

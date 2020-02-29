@@ -17,16 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
- *    
- *  *  
- *  * @Project: agent 
- *  * @Package: com.lzkj.agent.client 
  *  * @Description: TODO   资金服务
- *  * @Author:   horus   
- *  * @CreateDate:  2020/2/5 12:06  
  *  * @Version:   v1.0
- *  *    
- *  
  */
 @FeignClient(name = "fund-service")
 public interface FundServiceClient {

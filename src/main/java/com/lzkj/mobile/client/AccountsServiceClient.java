@@ -35,7 +35,7 @@ public interface AccountsServiceClient {
     ApplyRecordPageVo getApplyOrder(@RequestParam("userId") Integer userNo, @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageNumber);
 
     @RequestMapping("accounts/mobile/visitorBind")
-    VisitorBindResultVO visitorBind(@RequestBody BindPhoneVO bindPhoneVO);
+    Response<Integer> visitorBind(@RequestBody BindPhoneVO bindPhoneVO);
 
     //更换手机号码
     @RequestMapping("accounts/mobile/replacePhoneCode")
@@ -137,9 +137,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/mobile/set/resetInsurePwd")
     Response<Map<String, Object>> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
                                        @RequestParam("newPwd") String newPwd);
-
-    @RequestMapping("/accounts/mobile/userBankInformation")
-    int getUserBankInformation(@RequestParam("bankNo") String bankNo);
 
     @RequestMapping("/accounts/mobile/getUserVipLevel")
     VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
