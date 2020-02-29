@@ -81,7 +81,7 @@ public class BankAccountInfoController {
 
     @GetMapping("/record/list")
     @ApiOperation(value = "绑定记录", notes = "绑定记录")
-    public Response recordList(BaseGameIdVO vo){
+    public Response recordList(BankAccountRecordPageVO vo){
         validateParamUtil.valid(vo);
         return fundServiceClient.getBankAccountRecordPage(vo);
     }

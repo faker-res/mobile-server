@@ -21,13 +21,13 @@ import javax.validation.constraints.NotNull;
  *  
  */
 @Data
-@ApiModel(description = "用户银行卡分页数据封装类")
-public class BankAccountPageVO extends BaseVO {
+@ApiModel(description = "用户银行卡绑定记录分页数据封装类")
+public class BankAccountRecordPageVO extends BaseVO {
 
-    @ApiModelProperty(value = "页码", hidden = true)
+    @ApiModelProperty(value = "页码")
     private Integer pageNo;
 
-    @ApiModelProperty(value = "页面大小", hidden = true)
+    @ApiModelProperty(value = "页面大小")
     private Integer pageSize;
 
     @ApiModelProperty(value = "用户游戏ID")
@@ -35,8 +35,6 @@ public class BankAccountPageVO extends BaseVO {
     @Length(min = 1)
     private String gameId;
 
-    @ApiModelProperty(value = "是否是WEB端", hidden = true)
-    private boolean isWeb;
 
 
 }

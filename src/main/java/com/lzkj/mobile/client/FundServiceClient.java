@@ -31,7 +31,7 @@ public interface FundServiceClient {
     Response<Void> updateBankAccount(@RequestBody BankAccountUpdVO vo);
 
     @PostMapping("/bankAccountRecord/getPage")
-    Response<PageBean<BankAccountRecordVO>> getBankAccountRecordPage(@RequestBody BaseGameIdVO vo);
+    Response<PageBean<BankAccountRecordVO>> getBankAccountRecordPage(@RequestBody BankAccountRecordPageVO vo);
 
     @GetMapping("/bankAccountRecord/canChange")
     Response<Boolean> canChangeBankCard(@RequestParam("gameId") Integer gameId);
