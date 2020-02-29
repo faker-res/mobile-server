@@ -7,7 +7,6 @@ import com.lzkj.mobile.v2.enums.SendMailSourceEnum;
 import com.lzkj.mobile.v2.enums.SendTemplateCodeEnum;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeRainVO;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
-import com.lzkj.mobile.v2.util.telegram.TelegramUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import java.util.Map;
  *  * @Project: mobile-server 
  *  * @Package: com.lzkj.mobile.v2.service 
  *  * @Description: TODO   职业邮件异步接口
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/13 12:39  
  *  * @Version:   v1.0
  *  *    
@@ -52,7 +51,6 @@ public class MailService {
             accountsServiceClient.sendMail(dto);
         } catch (Exception e) {
             e.printStackTrace();
-            TelegramUtil.sendGroupDefault("余额宝密码修改发送邮件失败：" + e.getMessage());
         }
     }
 
@@ -77,7 +75,6 @@ public class MailService {
             accountsServiceClient.sendMail(dto);
         } catch (Exception e) {
             e.printStackTrace();
-            TelegramUtil.sendGroupDefault("新版领取红包奖励发送邮件失败：" + e.getMessage());
         }
     }
 
@@ -98,7 +95,6 @@ public class MailService {
             accountsServiceClient.sendMail(dto);
         } catch (Exception e) {
             e.printStackTrace();
-            TelegramUtil.sendGroupDefault("领取红包雨红包发送邮件失败：" + e.getMessage());
         }
     }
 
@@ -117,7 +113,6 @@ public class MailService {
             accountsServiceClient.sendMail(dto);
         } catch (Exception e) {
             e.printStackTrace();
-            TelegramUtil.sendGroupDefault("第三方入款-支付回调发送邮件失败：" + e.getMessage());
         }
     }
 }

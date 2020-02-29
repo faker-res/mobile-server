@@ -49,7 +49,7 @@ public class SwaggerConfig {
                 //描述
                 .description("量子棋牌-Mobile后台API接口服务（API）V1.0版本")
                 //创建人
-                .contact(new Contact("Horus", "", ""))
+                .contact(new Contact("", "", ""))
                 //版本号
                 .version("1.0")
                 .build();

@@ -32,7 +32,7 @@ public class RedisDao {
      *
      * @param key
      * @Title: get
-     * @author Horus
+     * @author
      * @date 2018年8月19日
      */
     public String get(String key) {

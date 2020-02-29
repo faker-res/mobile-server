@@ -6,7 +6,7 @@ package com.lzkj.mobile.exception;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.fund.exception 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 12:10  
  *  * @Version:   v1.0
  *  *    

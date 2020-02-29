@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  *  * @Project: mobile-server 
  *  * @Package: com.lzkj.mobile.v2.service 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/14 11:33  
  *  * @Version:   v1.0
  *  *    

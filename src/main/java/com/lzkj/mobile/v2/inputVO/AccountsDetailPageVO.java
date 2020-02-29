@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  *  * @Project: mobile-server 
  *  * @Package: com.lzkj.mobile.v2.inputVO 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/17 10:53  
  *  * @Version:   v1.0
  *  *    

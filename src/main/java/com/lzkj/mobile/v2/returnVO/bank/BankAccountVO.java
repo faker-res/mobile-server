@@ -12,7 +12,7 @@ import java.util.Date;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.fund.model.vo 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 10:50  
  *  * @Version:   v1.0
  *  *    

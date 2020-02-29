@@ -11,7 +11,7 @@ import java.util.Date;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.accounts.db.entity 
  *  * @Description: TODO   AccountsInfo表实体
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/1/23 12:16  
  *  * @Version:   v1.0
  *  *    

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.fund.model.inputVO 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 13:54  
  *  * @Version:   v1.0
  *  *    

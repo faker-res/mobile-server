@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  *  * @Project: shiyi 
  *  * @Package: com.rg.shiyi.db.config 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2019年12月06日16:18   
  *  * @Version:   v1.0
  *  *    

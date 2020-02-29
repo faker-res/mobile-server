@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
  *  * @Project: agent 
  *  * @Package: com.lzkj.agent.v2.model.inputVO.bank 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 18:19  
  *  * @Version:   v1.0
  *  *    

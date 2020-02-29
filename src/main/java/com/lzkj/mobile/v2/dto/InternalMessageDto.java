@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.accounts.v2.model.dto 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/12 21:27  
  *  * @Version:   v1.0
  *  *    
