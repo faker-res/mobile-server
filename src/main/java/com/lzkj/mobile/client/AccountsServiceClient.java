@@ -81,10 +81,6 @@ public interface AccountsServiceClient {
     @RequestMapping("accounts/mobile/getMyDirectlyPlayer")
     Integer getMyDirectlyPlayer(@RequestParam("userId") Integer userId);
 
-    //查询业主最低出售金额
-    @RequestMapping("accounts/mobile/getMinBalanceInfo")
-    BigDecimal getMinBalanceInfo(@RequestParam("agentId") Integer agentId,@RequestParam("userId")Integer userId);
-
     //查询用户动态密码
     @RequestMapping("accounts/mobile/getInsurePassInfo")
     String getInsurePassInfo(@RequestParam("userId") Integer userId);

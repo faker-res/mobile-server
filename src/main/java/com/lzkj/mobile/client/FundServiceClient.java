@@ -2,8 +2,10 @@ package com.lzkj.mobile.client;
 
 import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
 import com.lzkj.mobile.v2.inputVO.bank.*;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
+import com.lzkj.mobile.v2.returnVO.bank.BankAccountUnionVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -37,7 +39,7 @@ public interface FundServiceClient {
     Response<Void> updateBankAccount(@RequestBody BankAccountUpdVO vo);
 
     @PostMapping("/bankAccountRecord/getPage")
-    Response<PageBean<BankAccountRecordVO>> getBankAccountRRecordPage(@RequestBody BankAccountRecordPageVO vo);
+    Response<PageBean<BankAccountRecordVO>> getBankAccountRecordPage(@RequestBody BaseGameIdVO vo);
 
     @GetMapping("/bankAccountRecord/canChange")
     Response<Boolean> canChangeBankCard(@RequestParam("gameId") Integer gameId);
@@ -50,4 +52,7 @@ public interface FundServiceClient {
 
     @GetMapping("/bankAgent/mobile/getBankList")
     Response<List<BankAgentVO>> getBankList(@RequestParam Integer agentId);
+
+    @GetMapping("/bankAccount/getUseList")
+    Response<BankAccountUnionVO> getUseBankList(@RequestParam Integer gameId);
 }

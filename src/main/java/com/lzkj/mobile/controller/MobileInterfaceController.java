@@ -1695,34 +1695,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 查询业主兑换记录
-     *
-     * @param agentId
-     * @return
-     */
-    @RequestMapping("/getMinBalanceInfo")
-    public GlobeResponse<Object> getMinBalanceInfo(Integer agentId, Integer userId) {
-        long startMillis = System.currentTimeMillis();
-        log.info("/getMinBalanceInfo,参数agentId={}", agentId);
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        BigDecimal minBalance = accountsServiceClient.getMinBalanceInfo(agentId, userId);
-        Map<String, Object> data = new HashMap<>();
-        data.put("minBalance", minBalance);  //最低出售金币
-//        data.put("counterFee", goldExchangeVO.getCounterFee() * 100);   //支付宝提现手续费
-//        data.put("minCounterFee", goldExchangeVO.getMinCounterFee());   //支付宝提现最低手续费
-//        data.put("bankCounterFee", goldExchangeVO.getBankCounterFee().multiply(new BigDecimal(100)));   //银行卡提现最低手续费
-//        data.put("minBankCounterFee", goldExchangeVO.getMinBankCounterFee());   //银行卡提现最低手续费
-//        data.put("isOpenAli", goldExchangeVO.getIsOpenAli());    //是否开启支付宝 0 开启  1是禁用
-//        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        log.info("/getMinBalanceInfo,耗时:{}", System.currentTimeMillis() - startMillis);
-        return globeResponse;
-    }
-
-    /**
      * 查询业主联系方式
      *
      * @param agentId

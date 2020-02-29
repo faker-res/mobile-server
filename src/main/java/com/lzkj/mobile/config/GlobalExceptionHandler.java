@@ -1,6 +1,7 @@
 package com.lzkj.mobile.config;
 
 import com.lzkj.mobile.exception.GlobeException;
+import com.lzkj.mobile.exception.ServiceException;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.vo.GlobeResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -75,5 +76,10 @@ public class GlobalExceptionHandler {
         return Response.fail(e.getMessage());
     }
 
+    @ExceptionHandler(ServiceException.class)
+    public Response serviceExceptionHandler(ServiceException e){
+        log.info("serviceExceptionHandler:{}", e.getMessage());
+        return Response.fail(e.getMessage());
+    }
 
 }

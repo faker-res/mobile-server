@@ -4,6 +4,9 @@ import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
 
 /**
  *    
@@ -19,18 +22,20 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "BankAccountPageVO", description = "用户银行卡分页数据封装类")
-public class BankAccountPageVO  extends BaseVO {
+public class BankAccountPageVO extends BaseVO {
 
-    @ApiModelProperty(name = "pageNo", value = "页码", hidden = true)
+    @ApiModelProperty(value = "页码", hidden = true)
     private Integer pageNo;
 
-    @ApiModelProperty(name = "pageSize", value = "页面大小", hidden = true)
+    @ApiModelProperty(value = "页面大小", hidden = true)
     private Integer pageSize;
 
-    @ApiModelProperty(name = "gameId", value = "用户游戏ID")
+    @ApiModelProperty(value = "用户游戏ID")
+    @NotNull
+    @Length(min = 1)
     private String gameId;
 
-    @ApiModelProperty(name = "isWeb", value = "是否是WEB端", hidden = true)
+    @ApiModelProperty(value = "是否是WEB端", hidden = true)
     private boolean isWeb;
 
 

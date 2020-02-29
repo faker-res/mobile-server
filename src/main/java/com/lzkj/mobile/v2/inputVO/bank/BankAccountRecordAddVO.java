@@ -25,31 +25,31 @@ import javax.validation.constraints.NotNull;
 public class BankAccountRecordAddVO  extends BaseVO {
 
     @ApiModelProperty(value = "所属用户游戏ID", required = true)
-    @NotNull(message = "gameId不能为空")
+    @NotNull
     private Integer gameId;
 
-    @ApiModelProperty(value = "银行卡卡位  1：1号卡位 2：2号卡位 3：3号卡位", allowableValues = "1,2,3", required = true)
-    @NotNull(message = "number不能为空")
+    @ApiModelProperty(value = "银行卡卡位(1：1号卡位 2：2号卡位 3：3号卡位)", allowableValues = "1,2,3", required = true)
+    @NotNull
     private Integer number;
 
     @ApiModelProperty(value = "银行卡所属银行编码", required = true)
-    @NotBlank(message = "cardCode不能为空")
+    @NotBlank
     private String cardCode;
 
     @ApiModelProperty(value = "新银行卡号", required = true)
-    @NotBlank(message = "cardNo不能为空")
+    @NotBlank
     private String cardNo;
 
     @ApiModelProperty(value = "新银行卡归属银行名称", required = true)
-    @NotBlank(message = "cardName不能为空")
+    @NotBlank
     private String cardName;
 
     @ApiModelProperty(value = "新银行卡开户行", required = true)
-    @NotBlank(message = "cardAddress不能为空")
+    @NotBlank
     private String cardAddress;
 
     @ApiModelProperty(value = "新银行卡户主", required = true)
-    @NotBlank(message = "cardOwner不能为空")
+    @NotBlank
     private String cardOwner;
 
 
