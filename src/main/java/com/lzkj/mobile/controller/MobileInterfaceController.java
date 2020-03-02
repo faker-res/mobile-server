@@ -2654,7 +2654,7 @@ public class MobileInterfaceController {
 
 
     /**
-     * 插入ES库
+     * Account插入ES库
      *
      * @param userId
      * @return
@@ -2667,7 +2667,7 @@ public class MobileInterfaceController {
 
 
     /**
-     * 插入ES库
+     * ApplyOrderEs插入ES库
      *
      * @param orderId
      * @return
@@ -2676,5 +2676,18 @@ public class MobileInterfaceController {
      public ApplyOrderEs insertApplyOrderEs(@RequestParam("orderId") String orderId) {
         ApplyOrderEs applyOrderEs = accountsServiceClient.insertApplyOrderEs(orderId);
          return applyOrderEs;
+    }
+
+
+    /**
+     * OnlineOrder插入ES库
+     *
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/insertOnlineOrderEs")
+    public OnLineOrderEs insertOnlineOrderEs(@RequestParam("orderId") String orderId) {
+        OnLineOrderEs onLineOrderEs = treasureServiceClient.insertOnLineOrderEs(orderId);
+        return onLineOrderEs;
     }
 }

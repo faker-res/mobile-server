@@ -409,5 +409,15 @@ public interface TreasureServiceClient {
     Map<String, Object> getFYLRebateByTime(@RequestParam("agentId")Integer agentId, @RequestParam("userId")Integer userId,
                                            @RequestParam("num")Integer num);
 
+
+    /**
+     * 游戏公告
+     *
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/treasure/mobile/insertOnlineOrderEs")
+    OnLineOrderEs insertOnLineOrderEs(@RequestParam("orderId")String orderId);
+
 }
 

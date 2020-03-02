@@ -199,13 +199,13 @@ public class AccountsInfoEs {
 	private String advertPlat;
 
 	@Field(type=FieldType.Integer)
-	private int qm_SpreaderID;
+	private int qmSpreaderID;
 
 	@Field(type=FieldType.Double)
-	private BigDecimal zz_Qm_Ratio;
+	private BigDecimal zzQmRatio;
 
 	@Field(type=FieldType.Integer)
-	private int zz_IsAgent;
+	private int zzIsAgent;
 
 	@Field(type=FieldType.Integer)
 	private Integer h5AgentId;
