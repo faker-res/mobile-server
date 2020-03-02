@@ -5,12 +5,11 @@ import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.dto.InternalMessageDto;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
+import com.lzkj.mobile.v2.inputVO.personCenter.UpdateUserContactInfoVO;
 import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -150,8 +149,8 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/updateUserBasicInfo")
     int updateUserBasicInfo(@RequestParam("nickName") String nickName,@RequestParam("gender") Integer gender,@RequestParam("userId") Integer userId);
 
-    @RequestMapping("/db/accountsInfo/updateByUserId")
-    int updateUserContactInfo(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("qq") String qq,@RequestParam("eMail") String eMail,@RequestParam("userId") Integer userId);
+    @PostMapping("/accounts/personCenter/updateUserContactInfo")
+    Response updateUserContactInfo(@RequestBody UpdateUserContactInfoVO vo);
 
     @RequestMapping("/accounts/mobile/getChannelGameUserBetAndScore")
     CommonPageVO<ChannelGameUserBetAndScoreVO> getChannelGameUserBetAndScore(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("kindId") Integer kindId,@RequestParam("userId") Integer userId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);

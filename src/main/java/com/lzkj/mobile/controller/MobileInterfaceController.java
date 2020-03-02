@@ -1773,32 +1773,6 @@ public class MobileInterfaceController {
     }
 
     /**
-     * 修改用户个人信息
-     *
-     * @param mobilePhone
-     * @param qq
-     * @param eMail
-     * @param userId
-     * @return
-     */
-    @RequestMapping("/updateUserContactInfo")
-    public GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
-        if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        //
-//        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
-//        if(num>0){
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
-//        }
-        int count = accountsServiceClient.updateUserContactInfo(mobilePhone, qq, eMail, userId);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(count);
-        return globeResponse;
-    }
-
-
-    /**
      * 获取所有平台
      *
      * @return
