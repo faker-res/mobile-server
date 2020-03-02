@@ -5,6 +5,7 @@ import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
 import com.lzkj.mobile.v2.inputVO.bank.*;
+import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountUnionVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
@@ -81,7 +82,7 @@ public class BankAccountInfoController {
 
     @GetMapping("/record/list")
     @ApiOperation(value = "绑定记录", notes = "绑定记录")
-    public Response recordList(BankAccountRecordPageVO vo){
+    public Response<PageBean<BankAccountRecordVO>> recordList(BankAccountRecordPageVO vo){
         validateParamUtil.valid(vo);
         return fundServiceClient.getBankAccountRecordPage(vo);
     }

@@ -150,7 +150,7 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/updateUserBasicInfo")
     int updateUserBasicInfo(@RequestParam("nickName") String nickName,@RequestParam("gender") Integer gender,@RequestParam("userId") Integer userId);
 
-    @RequestMapping("/accounts/mobile/updateUserContactInfo")
+    @RequestMapping("/db/accountsInfo/updateByUserId")
     int updateUserContactInfo(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("qq") String qq,@RequestParam("eMail") String eMail,@RequestParam("userId") Integer userId);
 
     @RequestMapping("/accounts/mobile/getChannelGameUserBetAndScore")
