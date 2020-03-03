@@ -20,27 +20,23 @@ import javax.validation.constraints.Pattern;
 public class UpdateUserContactInfoVO extends BaseVO {
 
     @ApiModelProperty(value = "手机号")
-    @NotNull
     @Pattern(regexp = ValidateParamUtil.Regexp.PHONE)
     private String mobilePhone;
 
     @ApiModelProperty(value = "QQ")
-    @NotNull
     private String qq;
 
     @ApiModelProperty(name = "eMail", value = "Email")
-    @NotNull
     @Email
     private String eMail;
 
-    @ApiModelProperty(value = "用户ID", required = true)
+    @ApiModelProperty(value = "游戏ID", required = true)
     @NotNull
     @Length(min = 1)
-    private Integer userId;
+    private Integer gameId;
 
-    @ApiModelProperty(value = "业主ID", required = true)
-    @NotNull
+    /*@ApiModelProperty(value = "业主ID")
     @Length(min = 1)
-    private Integer agentId;
+    private Integer agentId;*/
 
 }

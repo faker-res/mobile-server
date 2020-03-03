@@ -32,4 +32,7 @@ public class BankAccountUnionVO {
     @ApiModelProperty(value = "可用银行卡信息")
     private List<BankAccountVO> list;
 
+    @ApiModelProperty(value = "无可用银行卡和待审核的银行卡")
+    private boolean noCard;
+
 }
