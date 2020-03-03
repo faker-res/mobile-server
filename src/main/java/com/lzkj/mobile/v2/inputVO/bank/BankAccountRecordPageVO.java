@@ -35,6 +35,9 @@ public class BankAccountRecordPageVO extends BaseVO {
     @Length(min = 1)
     private String gameId;
 
+    @ApiModelProperty(value = "是否是WEB端", hidden = true)
+    private boolean isWeb;
+
 
 
 }

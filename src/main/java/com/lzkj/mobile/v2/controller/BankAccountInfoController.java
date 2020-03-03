@@ -84,6 +84,7 @@ public class BankAccountInfoController {
     @ApiOperation(value = "绑定记录", notes = "绑定记录")
     public Response<PageBean<BankAccountRecordVO>> recordList(BankAccountRecordPageVO vo){
         validateParamUtil.valid(vo);
+        vo.setWeb(true);
         return fundServiceClient.getBankAccountRecordPage(vo);
     }
 

@@ -96,7 +96,7 @@ public class ValidateParamUtil {
     }
 
     private static void hanldleLength(Annotation annotation, Object value, Class<? extends Default> group, ModelProperty property) {
-        if(value == null){
+        if(value == null || "".equals(value.toString().trim())){
             return;
         }
         Length t = (Length) annotation;
@@ -135,7 +135,7 @@ public class ValidateParamUtil {
     }
 
     private static void hanldleEmail(Annotation annotation, Object value, Class<? extends Default> group, ModelProperty property) {
-        if(value == null){
+        if(value == null || "".equals(value.toString().trim())){
             return;
         }
         Email t = (Email) annotation;
@@ -153,7 +153,7 @@ public class ValidateParamUtil {
     }
 
     private static void hanldlePattern(Annotation annotation, Object value, Class<? extends Default> group, ModelProperty property) {
-        if(value == null){
+        if(value == null || "".equals(value.toString().trim())){
             return;
         }
         Pattern t = (Pattern) annotation;
@@ -266,6 +266,51 @@ public class ValidateParamUtil {
 
         private List<String> allowableValues;
 
+    }
+
+    /**
+     * 关联效验List对象，如银行卡4要素只要有一个数据不为空则需要所有的必填
+     * @param list
+     * @param <T>
+     */
+    public <T> void validRelationList(List<T> list, String... excludeField){
+        for (T t : list) {
+            validRelation(t, excludeField);
+        }
+    }
+
+    /**
+     * 关联效验对象，如银行卡4要素只要有一个数据不为空则需要所有的必填
+     * @param t
+     * @param <T>
+     */
+    public <T> boolean validRelation(T t, String... excludeField){
+        boolean hasNotNull = false;
+        try {
+            Class<?> clz = t.getClass();
+            Field[] fields = clz.getDeclaredFields();
+            for (Field field : fields) {
+                //排除自定义常量对象和序列号
+                if(AssertUtils.testAllUpperCase(field.getName()) || "serialVersionUID".equals(field.getName())){
+                    continue;
+                }
+                if(excludeField != null && Arrays.asList(excludeField).contains(field.getName())){
+                    continue;
+                }
+                field.setAccessible(true);
+                Object value = field.get(t);
+                if(value != null && !"".equals(value.toString().trim())){
+                    hasNotNull = true;
+                    break;
+                }
+            }
+            if(hasNotNull){
+                valid(t);
+            }
+        } catch (IllegalAccessException e) {
+            log.info("关联效验入参参数出现错误:{}", e.getMessage());
+        }
+        return hasNotNull;
     }
 
 }
