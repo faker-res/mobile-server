@@ -1,6 +1,6 @@
 package com.lzkj.mobile.v2.util;
 
-import com.lzkj.agent.v2.exception.ServiceException;
+import com.lzkj.mobile.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
