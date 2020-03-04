@@ -249,7 +249,7 @@ public class ValidateParamUtil {
 
         public final static String PHONE = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
         public final static String EMAIL = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
-
+        public final static String NUMBER = "^[1-9][0-9]*$";//大于0的正整数，效验主键ID
     }
 
     public static class Message{

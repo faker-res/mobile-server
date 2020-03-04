@@ -4,6 +4,7 @@ import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -38,6 +39,7 @@ public class BankAccountRecordAddVO  extends BaseVO {
 
     @ApiModelProperty(value = "新银行卡号", required = true)
     @NotBlank
+    @Length(min = 15, max = 20)
     private String cardNo;
 
     @ApiModelProperty(value = "新银行卡归属银行名称", required = true)
@@ -46,10 +48,12 @@ public class BankAccountRecordAddVO  extends BaseVO {
 
     @ApiModelProperty(value = "新银行卡开户行", required = true)
     @NotBlank
+    @Length(min = 1, max = 70)
     private String cardAddress;
 
     @ApiModelProperty(value = "新银行卡户主", required = true)
     @NotBlank
+    @Length(min = 1, max = 30)
     private String cardOwner;
 
 

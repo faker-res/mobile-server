@@ -1,6 +1,7 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.FundServiceClient;
+import com.lzkj.mobile.exception.ServiceException;
 import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
@@ -92,6 +93,8 @@ public class BankAccountInfoController {
     @ApiOperation(value = "添加银行卡", notes = "添加银行卡")
     public Response addRecord(BankAccountRecordAddVO vo){
         validateParamUtil.valid(vo);
+        //因为银行卡号之前做的字符串类型
+        validateCardNo(vo.getCardNo());
         return fundServiceClient.addBankAccountRecord(vo);
     }
 
@@ -106,6 +109,7 @@ public class BankAccountInfoController {
     @ApiOperation(value = "更换银行卡", notes = "更换银行卡")
     public Response changeCard(BankAccountRecordAddVO vo){
         validateParamUtil.valid(vo);
+        validateCardNo(vo.getCardNo());
         return fundServiceClient.addBankAccountRecord(vo);
     }
 
@@ -118,6 +122,10 @@ public class BankAccountInfoController {
         return fundServiceClient.updateBankAccountRecord(vo);
     }
 
-
+    private void validateCardNo(String cardNo){
+        if(!cardNo.matches(ValidateParamUtil.Regexp.NUMBER)){
+            throw new ServiceException("银行卡号必须是数字");
+        }
+    }
 
 }

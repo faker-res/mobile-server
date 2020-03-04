@@ -23,7 +23,7 @@ public class BindPhoneVO {
     private String verifyCode;
     private String realName;
 
-    @Length(min = 16, max = 19)
+    @Length(min = 15, max = 20)
     private String bankNo;
     private String bankName;
 }
