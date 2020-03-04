@@ -120,7 +120,7 @@ public class SystemConfigService {
         Integer rewardStatus = treasureServiceClient.getRewardStatus(agentId);
         data.put("rewardStatus",rewardStatus);
 
-        redisService.set(dataKey, data, 2, TimeUnit.HOURS);
+        redisService.set(dataKey, data, 5, TimeUnit.SECONDS);
         log.info("newLoginStatus：agentId:" + agentId + "\t registerMachine:" + registerMachine + "，耗时：" + (System.currentTimeMillis() - timeMillis));
         return data;
     }
