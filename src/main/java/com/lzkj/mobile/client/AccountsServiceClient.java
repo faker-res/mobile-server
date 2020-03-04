@@ -5,6 +5,7 @@ import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.dto.InternalMessageDto;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
+import com.lzkj.mobile.v2.inputVO.bank.WithdrawInputVO;
 import com.lzkj.mobile.v2.inputVO.personCenter.UpdateUserContactInfoVO;
 import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
 import com.lzkj.mobile.vo.*;
@@ -233,5 +234,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/insertApplyOrderEs")
     ApplyOrderEs insertApplyOrderEs(@RequestParam("orderId")String orderId);
 
-
+    @RequestMapping("/mobile/withdraw/deal")
+    Response withdrawDeal(@RequestBody WithdrawInputVO vo);
 }

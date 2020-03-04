@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import sun.misc.Regexp;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -104,9 +106,16 @@ public class ValidateParamUtil {
         if(!isValidate(group, t.groups())){
             return;
         }
-        if(value instanceof Integer){
-            if((Integer)value >= t.min() && (Integer)value  <= t.max()){
-                return;
+        if(value instanceof Integer || value instanceof BigDecimal){
+            if(value instanceof Integer){
+                if((Integer)value >= t.min() && (Integer)value  <= t.max()){
+                    return;
+                }
+            }
+            if(value instanceof BigDecimal){
+                if(((BigDecimal) value).compareTo(new BigDecimal(t.min())) >= 0 && ((BigDecimal) value).compareTo(new BigDecimal(t.max())) <= 0){
+                    return;
+                }
             }
             if("{org.hibernate.validator.constraints.Length.message}".equals(t.message())){
                 if(t.min() == t.max()){
