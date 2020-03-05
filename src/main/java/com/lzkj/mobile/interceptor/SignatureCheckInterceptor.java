@@ -43,6 +43,7 @@ public class SignatureCheckInterceptor implements HandlerInterceptor {
 				|| path.indexOf("/agentSystem/updateResversion") > -1
 				|| path.indexOf("/mobileInterface/insertUserInfoEs") > -1
 				|| path.indexOf("/mobileInterface/insertApplyOrderEs") > -1
+				|| path.indexOf("/mobileInterface/insertOnlineOrderEs") > -1
 		) {
 			return true;
 		}
