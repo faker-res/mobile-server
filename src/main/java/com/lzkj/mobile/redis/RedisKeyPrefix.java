@@ -115,4 +115,8 @@ public class RedisKeyPrefix {
 		return MOBILE_SERVER + agentId + ":" + kindId;
 	}
 
+	public static String getAddBankCardLock(String gameId) {
+		return MOBILE_SERVER + "addBankCard:" + gameId;
+	}
+
 }

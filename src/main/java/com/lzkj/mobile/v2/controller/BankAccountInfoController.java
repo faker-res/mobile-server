@@ -2,6 +2,8 @@ package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.FundServiceClient;
 import com.lzkj.mobile.exception.ServiceException;
+import com.lzkj.mobile.redis.RedisDao;
+import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  *    
@@ -41,8 +44,12 @@ public class BankAccountInfoController {
 
     @Resource
     private FundServiceClient fundServiceClient;
+
     @Resource
     private ValidateParamUtil validateParamUtil;
+
+    @Resource
+    private RedisDao redisDao;
 
     @GetMapping("/getBankInfo")
     @ApiOperation(value = "获取银行列表", notes = "获取银行列表")
@@ -91,6 +98,7 @@ public class BankAccountInfoController {
     @GetMapping("/record/add")
     @ApiOperation(value = "添加银行卡", notes = "添加银行卡")
     public Response addRecord(BankAccountRecordAddVO vo){
+        addLock(vo.getGameId());
         validateParamUtil.valid(vo);
         //因为银行卡号之前做的字符串类型
         validateCardNo(vo.getCardNo());
@@ -107,9 +115,24 @@ public class BankAccountInfoController {
     @GetMapping("/record/changeCard")
     @ApiOperation(value = "更换银行卡", notes = "更换银行卡")
     public Response changeCard(BankAccountRecordAddVO vo){
+        addLock(vo.getGameId());
         validateParamUtil.valid(vo);
         validateCardNo(vo.getCardNo());
         return fundServiceClient.addBankAccountRecord(vo);
+    }
+
+    /**
+     * 加锁限制点击
+     * @param gameId
+     */
+    private void addLock(Integer gameId) {
+        if(gameId == null){
+            return;
+        }
+        String key = RedisKeyPrefix.getAddBankCardLock(String.valueOf(gameId));
+        if(!redisDao.setIfAbsent(key, String.valueOf(gameId), 3, TimeUnit.SECONDS)){
+            throw new ServiceException("请勿频繁点击");
+        }
     }
 
     @GetMapping("/record/cancel")
