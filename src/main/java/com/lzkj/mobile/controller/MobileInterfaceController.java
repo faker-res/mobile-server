@@ -1644,26 +1644,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    /**
-     * 查询客服信息
-     *
-     * @param agentId
-     * @return
-     */
-    @RequestMapping("/getCustomerInfo")
-    public GlobeResponse<Object> getCustomerInfo(Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        List<CustomerServiceConfigVO> customers = platformServiceClient.getCustomerInfo(agentId);
-        List<ProblemConfigVO> problems = platformServiceClient.getProblemConfigInfo(agentId);
-        Map<String, Object> data = new HashMap<>();
-        data.put("customers", customers);
-        data.put("problems", problems);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        return globeResponse;
-    }
 
     /**
      * 查询业主联系方式
@@ -1686,6 +1666,27 @@ public class MobileInterfaceController {
     }
 
     /**
+     * 查询客服信息
+     *
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/getCustomerInfo")
+    public GlobeResponse<Object> getCustomerInfo(Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        List<CustomerServiceConfigVO> customers = platformServiceClient.getCustomerInfo(agentId);
+        List<ProblemConfigVO> problems = platformServiceClient.getProblemConfigInfo(agentId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("customers", customers);
+        data.put("problems", problems);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
+
+    /**
      * 查询代理客服
      *
      * @param agentId
@@ -1697,8 +1698,10 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         List<CustomerServiceConfigVO> customers = platformServiceClient.getAgentCustomerServiceInfo(agentId);
+        List<ProblemConfigVO> problems = platformServiceClient.getProblemConfigInfo(agentId);
         Map<String, Object> data = new HashMap<>();
         data.put("customers", customers);
+        data.put("problems", problems);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
