@@ -5,12 +5,12 @@ import com.lzkj.mobile.entity.InternalMessageEntity;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.dto.InternalMessageDto;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
+import com.lzkj.mobile.v2.inputVO.bank.WithdrawInputVO;
+import com.lzkj.mobile.v2.inputVO.personCenter.UpdateUserContactInfoVO;
 import com.lzkj.mobile.v2.returnVO.mail.InternalMessageVO;
 import com.lzkj.mobile.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +35,7 @@ public interface AccountsServiceClient {
     ApplyRecordPageVo getApplyOrder(@RequestParam("userId") Integer userNo, @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageNumber);
 
     @RequestMapping("accounts/mobile/visitorBind")
-    VisitorBindResultVO visitorBind(@RequestBody BindPhoneVO bindPhoneVO);
+    Response<Integer> visitorBind(@RequestBody BindPhoneVO bindPhoneVO);
 
     //更换手机号码
     @RequestMapping("accounts/mobile/replacePhoneCode")
@@ -80,10 +80,6 @@ public interface AccountsServiceClient {
 
     @RequestMapping("accounts/mobile/getMyDirectlyPlayer")
     Integer getMyDirectlyPlayer(@RequestParam("userId") Integer userId);
-
-    //查询业主最低出售金额
-    @RequestMapping("accounts/mobile/getMinBalanceInfo")
-    BigDecimal getMinBalanceInfo(@RequestParam("agentId") Integer agentId,@RequestParam("userId")Integer userId);
 
     //查询用户动态密码
     @RequestMapping("accounts/mobile/getInsurePassInfo")
@@ -142,9 +138,6 @@ public interface AccountsServiceClient {
     Response<Map<String, Object>> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
                                        @RequestParam("newPwd") String newPwd);
 
-    @RequestMapping("/accounts/mobile/userBankInformation")
-    int getUserBankInformation(@RequestParam("bankNo") String bankNo);
-
     @RequestMapping("/accounts/mobile/getUserVipLevel")
     VipLevelRewardVO getUserVipLevel(@RequestParam("userId")Integer userId);
 
@@ -157,8 +150,8 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/updateUserBasicInfo")
     int updateUserBasicInfo(@RequestParam("nickName") String nickName,@RequestParam("gender") Integer gender,@RequestParam("userId") Integer userId);
 
-    @RequestMapping("/accounts/mobile/updateUserContactInfo")
-    int updateUserContactInfo(@RequestParam("mobilePhone") String mobilePhone,@RequestParam("qq") String qq,@RequestParam("eMail") String eMail,@RequestParam("userId") Integer userId);
+    @PostMapping("/accounts/personCenter/updateUserContactInfo")
+    Response updateUserContactInfo(@RequestBody UpdateUserContactInfoVO vo);
 
     @RequestMapping("/accounts/mobile/getChannelGameUserBetAndScore")
     CommonPageVO<ChannelGameUserBetAndScoreVO> getChannelGameUserBetAndScore(@RequestParam("kindType") Integer kindType,@RequestParam("date") Integer date,@RequestParam("kindId") Integer kindId,@RequestParam("userId") Integer userId,@RequestParam("pageIndex") Integer pageIndex,@RequestParam("pageSize") Integer pageSize);
@@ -203,19 +196,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/getUserRedEnvelopeRain")
     Integer getUserRedEnvelopeRain(@RequestParam("parentId") Integer parentId);
 
-    @RequestMapping("/accounts/mobile/saveBankCardRawData")
-    Boolean saveBankCardRawData(@RequestParam("userId")Integer userId,
-                                @RequestParam("gameId")Integer gameId,
-                                @RequestParam("agentId")Integer agentId,
-                                @RequestParam("bankNo")String bankNo,
-                                @RequestParam("bankName")String bankName,
-                                @RequestParam("compellation")String compellation,
-                                @RequestParam("bankAddress")String bankAddress);
-
-    @RequestMapping("/accounts/mobile/getBankCardRawData")
-    IndividualDatumVO getBankCardRawData(@RequestParam("gameId")Integer gameId,
-                                         @RequestParam("agentId")Integer agentId);
-
     @RequestMapping("/accounts/mobile/winAndLoseDetail")
     List<WinOrLoseDetailVO> winAndLoseDetail(@RequestParam("userId")Integer userId,
                                              @RequestParam("beginTime")String beginTime,
@@ -254,5 +234,6 @@ public interface AccountsServiceClient {
     @RequestMapping("/accounts/mobile/insertApplyOrderEs")
     ApplyOrderEs insertApplyOrderEs(@RequestParam("orderId")String orderId);
 
-
+    @RequestMapping("/mobile/withdraw/deal")
+    Response withdrawDeal(@RequestBody WithdrawInputVO vo);
 }

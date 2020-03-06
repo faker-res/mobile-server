@@ -55,7 +55,7 @@ public class RedisKeyPrefix {
 	}
 
 	public static String getloginStatusCacheKey(Integer agentId, String registerMachine) {
-		return MOBILE_SERVER + "getloginStatusCache:" + agentId + "_" + registerMachine;
+		return MOBILE_SERVER + "getloginStatusCache:" + agentId;
 	}
 
 	public static String getControllerKey() {
@@ -113,6 +113,10 @@ public class RedisKeyPrefix {
 
 	public static String getNullity(Integer agentId,Integer kindId) {
 		return MOBILE_SERVER + agentId + ":" + kindId;
+	}
+
+	public static String getAddBankCardLock(String gameId) {
+		return MOBILE_SERVER + "addBankCard:" + gameId;
 	}
 
 }

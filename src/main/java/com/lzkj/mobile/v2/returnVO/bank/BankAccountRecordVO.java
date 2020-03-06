@@ -12,14 +12,14 @@ import java.util.Date;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.fund.model.vo 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 10:50  
  *  * @Version:   v1.0
  *  *    
  *  
  */
 @Data
-@ApiModel(value = "BankAccountRecordVO", description = "用户银行卡申请记录数据封装类")
+@ApiModel(description = "用户银行卡申请记录数据封装类")
 public class BankAccountRecordVO {
 
     @ApiModelProperty(name = "id", value = "主键ID")
@@ -76,4 +76,6 @@ public class BankAccountRecordVO {
     @ApiModelProperty(name = "remark", value = "备注")
     private String remark;
 
+    @ApiModelProperty(name = "operate", value = "操作类型 绑定/更换")
+    private String operate;
 }

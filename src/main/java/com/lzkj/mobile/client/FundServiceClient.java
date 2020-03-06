@@ -2,9 +2,12 @@ package com.lzkj.mobile.client;
 
 import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
 import com.lzkj.mobile.v2.inputVO.bank.*;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
+import com.lzkj.mobile.v2.returnVO.bank.BankAccountUnionVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
+import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,16 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
- *    
- *  *  
- *  * @Project: agent 
- *  * @Package: com.lzkj.agent.client 
  *  * @Description: TODO   资金服务
- *  * @Author:   horus   
- *  * @CreateDate:  2020/2/5 12:06  
  *  * @Version:   v1.0
- *  *    
- *  
  */
 @FeignClient(name = "fund-service")
 public interface FundServiceClient {
@@ -36,7 +31,7 @@ public interface FundServiceClient {
     Response<Void> updateBankAccount(@RequestBody BankAccountUpdVO vo);
 
     @PostMapping("/bankAccountRecord/getPage")
-    Response<PageBean<BankAccountRecordVO>> getBankAccountRRecordPage(@RequestBody BankAccountRecordPageVO vo);
+    Response<PageBean<BankAccountRecordVO>> getBankAccountRecordPage(@RequestBody BankAccountRecordPageVO vo);
 
     @GetMapping("/bankAccountRecord/canChange")
     Response<Boolean> canChangeBankCard(@RequestParam("gameId") Integer gameId);
@@ -47,4 +42,9 @@ public interface FundServiceClient {
     @PostMapping("/bankAccountRecord/update")
     Response<Void> updateBankAccountRecord(@RequestBody BankAccountRecordUpdVO vo);
 
+    @GetMapping("/bankAgent/mobile/getBankList")
+    Response<List<BankAgentVO>> getBankList(@RequestParam Integer agentId);
+
+    @GetMapping("/bankAccount/getUseList")
+    Response<BankAccountUnionVO> getUseBankList(@RequestParam Integer gameId);
 }

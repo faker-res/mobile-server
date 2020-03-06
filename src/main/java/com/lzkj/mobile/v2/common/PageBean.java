@@ -14,7 +14,7 @@ import java.util.List;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.fund.model.common 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 11:41  
  *  * @Version:   v1.0
  *  *    

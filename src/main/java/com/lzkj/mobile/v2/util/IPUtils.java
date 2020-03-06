@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
  *  * @Project: agent 
  *  * @Package: com.lzkj.agent.v2.config 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/7 15:05  
  *  * @Version:   v1.0
  *  *    

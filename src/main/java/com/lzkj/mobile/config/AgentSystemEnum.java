@@ -40,17 +40,10 @@ public enum AgentSystemEnum {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescribe() {
         return describe;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
-    }
     public static  String getDescribe(String name){
         String describe =new String();
         for(AgentSystemEnum s: AgentSystemEnum.values()){
