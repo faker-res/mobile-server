@@ -27,6 +27,6 @@ public class UserCodeDetailsVO {
     private String typeName;
     /**是否可提现：0表示不可提现；1表示可提现*/
     private Integer flag;
-    /**金额*/
+    /**金额*/  
     private BigDecimal amounts;
 }
