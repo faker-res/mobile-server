@@ -39,7 +39,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @Api(tags = "提现")
-@RequestMapping("/withdraw")
 public class WithdrawController {
 
     @Resource
@@ -51,7 +50,7 @@ public class WithdrawController {
     @Resource
     private ValidateParamUtil validateParamUtil;
 
-    @GetMapping("/deal")
+    @GetMapping("/withdraw/deal")
     @ApiOperation(value = "提款", notes = "提款")
     public Response withdrawDeal(WithdrawInputVO vo, HttpServletRequest request) {
         validateParamUtil.valid(vo);
