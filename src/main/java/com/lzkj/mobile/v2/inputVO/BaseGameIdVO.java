@@ -2,6 +2,8 @@ package com.lzkj.mobile.v2.inputVO;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.bouncycastle.util.Integers;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,10 +20,12 @@ import javax.validation.constraints.NotNull;
  *  
  */
 @Data
-public class BaseVO {
+public class BaseGameIdVO extends BaseVO{
 
-    @ApiModelProperty(value = "签名")
-    private String s;
+    @ApiModelProperty(value = "游戏ID")
+    @NotNull
+    @Length(min = 1)
+    private Integer gameId;
 
 
 }

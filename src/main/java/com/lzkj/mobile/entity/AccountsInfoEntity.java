@@ -8,11 +8,11 @@ import java.util.Date;
 /**
  *    
  *  *  
- *  * @Project: mobile-server 
- *  * @Package: com.lzkj.mobile.entity 
- *  * @Description: TODO   
- *  * @Author:   horus   
- *  * @CreateDate:  2020/2/11 20:52  
+ *  * @Project: data-server 
+ *  * @Package: com.lzkj.accounts.db.entity 
+ *  * @Description: TODO   AccountsInfo表实体
+ *  * @Author:      
+ *  * @CreateDate:  2020/1/23 12:16  
  *  * @Version:   v1.0
  *  *    
  *  
@@ -260,27 +260,27 @@ public class AccountsInfoEntity {
     /**
      *
      */
-    private Integer QmSpreaderId;
+    private Integer qmSpreaderId;
     /**
      *
      */
-    private BigDecimal ZzQmRatio;
+    private BigDecimal zzQmRatio;
     /**
      *
      */
-    private Integer ZzIsAgent;
+    private Integer zzIsAgent;
     /**
      *
      */
-    private Integer H5AgentId;
+    private Integer h5AgentId;
     /**
      *
      */
-    private String H5SiteCode;
+    private String h5SiteCode;
     /**
      *
      */
-    private String H5Account;
+    private String h5Account;
     /**
      *
      */
@@ -296,7 +296,7 @@ public class AccountsInfoEntity {
     /**
      *
      */
-    private String PhoneType;
+    private String phoneType;
     /**
      *
      */
@@ -314,7 +314,11 @@ public class AccountsInfoEntity {
      */
     private Integer isDefaultAgent;
     /**
-     * 返佣方案
+     * 负盈利方案ID
+     */
+    private String programId;
+    /**
+     * 返佣方案名称
      */
     private String programName;
     /**

@@ -234,16 +234,6 @@ public interface TreasureServiceClient {
     @RequestMapping("/treasure/mobile/getUserYebIncome")
     CommonPageVO<UserRecordInsureVO> getUserYebIncome(@RequestParam("userId") Integer userId, @RequestParam("date") Integer date, @RequestParam("pageSize") Integer pageSize, @RequestParam("pageIndex") Integer pageIndex);
 
-	/*@RequestMapping("/agentControl/getIndividualDatumStatus")
-	Boolean getIndividualDatumStatus(@RequestParam("agentId")Integer agentId,@RequestParam("gameId") Integer gameId);*/
-
-    @RequestMapping("/agentControl/IndividualDatum")
-    CommonPageVO<IndividualDatumVO> IndividualDatum(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("status") Integer status, @RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize);
-
-    @RequestMapping("/agentControl/getIndividualDatum")
-    IndividualDatumVO getIndividualDatum(@RequestParam("agentId") Integer agentId, @RequestParam("gameId") Integer gameId);
-
-
     @RequestMapping("/treasure/mobile/getRebateInfo")
     AgentRebateConfigVO getRebateInfo(@RequestParam("agentId") Integer agentId, @RequestParam("userId") Integer userId);
 

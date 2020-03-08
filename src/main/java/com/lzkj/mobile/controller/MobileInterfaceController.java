@@ -23,8 +23,13 @@ import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.redis.RedisLock;
 import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.*;
+import com.lzkj.mobile.v2.common.Response;
+import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
 import com.lzkj.mobile.v2.service.MailService;
+import com.lzkj.mobile.v2.util.ValidateParamUtil;
 import com.lzkj.mobile.vo.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +93,9 @@ public class MobileInterfaceController {
 
     @Autowired
     private RedisDao redisDao;
+
+    @Autowired
+    private ValidateParamUtil validateParamUtil;
 
     @Resource(name = "gameMongoTemplate")
     private MongoTemplate mongoTemplate;
@@ -880,61 +888,26 @@ public class MobileInterfaceController {
     }
 
 
-    /**
-     * 手机绑定
-     *
-     * @return
-     */
-    @RequestMapping("/bindPhone")
-    public GlobeResponse<Object> verificationCode(Integer userId, String password, String phone, String verifyCode,
-                                                  String realName, String bankNo, String bankName) {
-        BindPhoneVO bindPhoneVO = new BindPhoneVO();
-        bindPhoneVO.setUserId(userId);
-        bindPhoneVO.setPassword(password);
-        bindPhoneVO.setPhone(phone);
-        bindPhoneVO.setVerifyCode(verifyCode);
-        bindPhoneVO.setRealName(realName);
-        bindPhoneVO.setBankNo(bankNo);
-        bindPhoneVO.setBankName(bankName);
-        if (bindPhoneVO.getPassword() == null || bindPhoneVO.getPassword().length() < 6) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "密码长度不能低于6位");
-        }
-        if (bindPhoneVO.getPhone() == null || bindPhoneVO.getPhone().length() < 11) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "手机号格式错误");
-        }
-        String key = RedisKeyPrefix.getKey(bindPhoneVO.getPhone() + ":BindPhone");
+    @GetMapping("/bindPhone")
+    @ApiOperation(value = "手机绑定", notes = "手机绑定")
+    public Response<Integer> verificationCode(BindPhoneVO vo) {
+        validateParamUtil.valid(vo);
+        String key = RedisKeyPrefix.getKey(vo.getPhone() + ":BindPhone");
         VerificationCodeVO verificationCode = redisDao.get(key, VerificationCodeVO.class);
         if (verificationCode == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码无效，请重新获取验证码");
         }
-        if (!verificationCode.getCode().equals(bindPhoneVO.getVerifyCode())) {
+        if (!verificationCode.getCode().equals(vo.getVerifyCode())) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码错误");
         }
         if (System.currentTimeMillis() - verificationCode.getTimestamp() > 600000) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "验证码已过期，请重新获取验证码");
         }
-        if (!StringUtils.isBlank(bindPhoneVO.getBankNo())) {
-            if (bindPhoneVO.getBankNo().length() < 16 || bindPhoneVO.getBankNo().length() > 19) {
-                throw new GlobeException(SystemConstants.FAIL_CODE, "银行卡位数不对!,请重新输入!");
-            }
-
-            Integer count = accountsServiceClient.getUserBankInformation(bindPhoneVO.getBankNo());
-            if (count >= 1) {
-                throw new GlobeException(SystemConstants.FAIL_CODE, "此银行卡已被绑定!,请重新输入!");
-            }
-        }
-        String pwd = MD5Encode(bindPhoneVO.getPassword(), "utf-8");
-        bindPhoneVO.setPassword(pwd);
-        VisitorBindResultVO visitorBindResult = this.accountsServiceClient.visitorBind(bindPhoneVO);
-        if (visitorBindResult.getRet().intValue() != 0) {
-            redisDao.delete(key);
-            throw new GlobeException(SystemConstants.FAIL_CODE, visitorBindResult.getMsg());
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(visitorBindResult.getScore());
-        globeResponse.setMsg(visitorBindResult.getMsg());
+        String pwd = MD5Encode(vo.getPassword(), "utf-8");
+        vo.setPassword(pwd);
+        Response<Integer> response = this.accountsServiceClient.visitorBind(vo);
         redisDao.delete(key);
-        return globeResponse;
+        return response;
     }
 
     /**
@@ -1671,54 +1644,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    /**
-     * 查询客服信息
-     *
-     * @param agentId
-     * @return
-     */
-    @RequestMapping("/getCustomerInfo")
-    public GlobeResponse<Object> getCustomerInfo(Integer agentId) {
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        List<CustomerServiceConfigVO> customers = platformServiceClient.getCustomerInfo(agentId);
-        List<ProblemConfigVO> problems = platformServiceClient.getProblemConfigInfo(agentId);
-        Map<String, Object> data = new HashMap<>();
-        data.put("customers", customers);
-        data.put("problems", problems);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        return globeResponse;
-    }
-
-    /**
-     * 查询业主兑换记录
-     *
-     * @param agentId
-     * @return
-     */
-    @RequestMapping("/getMinBalanceInfo")
-    public GlobeResponse<Object> getMinBalanceInfo(Integer agentId, Integer userId) {
-        long startMillis = System.currentTimeMillis();
-        log.info("/getMinBalanceInfo,参数agentId={}", agentId);
-        if (agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        BigDecimal minBalance = accountsServiceClient.getMinBalanceInfo(agentId, userId);
-        Map<String, Object> data = new HashMap<>();
-        data.put("minBalance", minBalance);  //最低出售金币
-//        data.put("counterFee", goldExchangeVO.getCounterFee() * 100);   //支付宝提现手续费
-//        data.put("minCounterFee", goldExchangeVO.getMinCounterFee());   //支付宝提现最低手续费
-//        data.put("bankCounterFee", goldExchangeVO.getBankCounterFee().multiply(new BigDecimal(100)));   //银行卡提现最低手续费
-//        data.put("minBankCounterFee", goldExchangeVO.getMinBankCounterFee());   //银行卡提现最低手续费
-//        data.put("isOpenAli", goldExchangeVO.getIsOpenAli());    //是否开启支付宝 0 开启  1是禁用
-//        data.put("IsOpenBank", goldExchangeVO.getIsOpenBank()); //是否开启银行卡  0 开启  1是禁用
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        log.info("/getMinBalanceInfo,耗时:{}", System.currentTimeMillis() - startMillis);
-        return globeResponse;
-    }
 
     /**
      * 查询业主联系方式
@@ -1741,6 +1666,27 @@ public class MobileInterfaceController {
     }
 
     /**
+     * 查询客服信息
+     *
+     * @param agentId
+     * @return
+     */
+    @RequestMapping("/getCustomerInfo")
+    public GlobeResponse<Object> getCustomerInfo(Integer agentId) {
+        if (agentId == null) {
+            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
+        }
+        List<CustomerServiceConfigVO> customers = platformServiceClient.getCustomerInfo(agentId);
+        List<ProblemConfigVO> problems = platformServiceClient.getProblemConfigInfo(agentId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("customers", customers);
+        data.put("problems", problems);
+        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
+        globeResponse.setData(data);
+        return globeResponse;
+    }
+
+    /**
      * 查询代理客服
      *
      * @param agentId
@@ -1752,13 +1698,18 @@ public class MobileInterfaceController {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
         List<CustomerServiceConfigVO> customers = platformServiceClient.getAgentCustomerServiceInfo(agentId);
+        List<ProblemConfigVO> problems = platformServiceClient.getProblemConfigInfo(agentId);
         Map<String, Object> data = new HashMap<>();
         data.put("customers", customers);
+        data.put("problems", problems);
         GlobeResponse<Object> globeResponse = new GlobeResponse<>();
         globeResponse.setData(data);
         return globeResponse;
     }
 
+
+    @Resource
+    private FundServiceClient fundServiceClient;
     /**
      * 查询银行卡类型
      *
@@ -1766,22 +1717,23 @@ public class MobileInterfaceController {
      * @return
      */
     @RequestMapping("/getBankCardTypeInfo")
-    public GlobeResponse<Object> getBankCardTypeInfo(Integer agentId) {
+    public Response getBankCardTypeInfo(Integer agentId) {
         if (agentId == null) {
             throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
         }
-        List<BankInfoVO> bankInfos = platformServiceClient.getBankList(agentId);
-        List<BankCardTypeVO> customers = new ArrayList<>();
-        for (BankInfoVO b : bankInfos) {
-            BankCardTypeVO bankCardTypeVO = new BankCardTypeVO();
-            bankCardTypeVO.setBankCardType(b.getBankName());
-            customers.add(bankCardTypeVO);
+        Response<List<BankAgentVO>> response = fundServiceClient.getBankList(agentId);
+        if(Response.SUCCESS.equals(response.getCode())){
+            List<BankCardTypeVO> customers = new ArrayList<>();
+            for (BankAgentVO b : response.getData()) {
+                BankCardTypeVO bankCardTypeVO = new BankCardTypeVO();
+                bankCardTypeVO.setBankCardType(b.getBankName());
+                customers.add(bankCardTypeVO);
+            }
+            Map<String, Object> data = new HashMap<>();
+            data.put("bankCards", customers);
+            return Response.successData(data);
         }
-        Map<String, Object> data = new HashMap<>();
-        data.put("bankCards", customers);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(data);
-        return globeResponse;
+        return response;
     }
 
 
@@ -1822,32 +1774,6 @@ public class MobileInterfaceController {
         globeResponse.setData(count);
         return globeResponse;
     }
-
-    /**
-     * 修改用户个人信息
-     *
-     * @param mobilePhone
-     * @param qq
-     * @param eMail
-     * @param userId
-     * @return
-     */
-    @RequestMapping("/updateUserContactInfo")
-    public GlobeResponse<Object> updateUserContactInfo(String mobilePhone, String qq, String eMail, Integer userId,String agentId) {
-        if (userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        //
-//        Integer num= accountsServiceClient.queryRegisterMobile(mobilePhone,agentId);
-//        if(num>0){
-//            throw new GlobeException(SystemConstants.FAIL_CODE, "电话号码已被注册，请重新设置");
-//        }
-        int count = accountsServiceClient.updateUserContactInfo(mobilePhone, qq, eMail, userId);
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        globeResponse.setData(count);
-        return globeResponse;
-    }
-
 
     /**
      * 获取所有平台
@@ -2182,42 +2108,6 @@ public class MobileInterfaceController {
         return globeResponse;
     }
 
-    /**
-     * 提现信息审核开关
-     */
-    @RequestMapping("/getIndividualDatumStatus")
-    public GlobeResponse<Object> getIndividualDatumStatus(Integer agentId, Integer gameId) throws ParseException {
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        if (agentId == null || agentId == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        if (gameId == null || gameId == 0) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误!");
-        }
-        IndividualDatumVO pageVO = treasureServiceClient.getIndividualDatum(agentId, gameId);
-        if (pageVO == null) {
-            globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
-            return globeResponse;
-        } else {
-            if (StringUtils.isBlank(pageVO.getBankNO())) {
-                globeResponse.setData(new IndividualDatumVO());//此用户未曾绑定银行卡
-                return globeResponse;
-            }
-            if (!StringUtils.isBlank(pageVO.getCollectDate()) && (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(pageVO.getCollectDate()).getTime()) < (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2020-01-04 08:00:00").getTime())) {
-                pageVO.setStatus(4);//兼容历史数据（绑定成功）
-            }
-            globeResponse.setData(pageVO);
-            return globeResponse;
-        }
-        /*Boolean flag = this.treasureServiceClient.getIndividualDatumStatus(agentId,gameId);
-        if (flag) {
-            globeResponse.setData(pageVO);
-            return globeResponse;
-        }
-        globeResponse.setData(flag);
-        return globeResponse;*/
-    }
-
     /* 新版获取红包
      * @param userId
      * @param parentId
@@ -2422,40 +2312,6 @@ public class MobileInterfaceController {
         Map<String, Object> data = new HashMap<>();
         data.put("rules", vo);
         globeResponse.setData(data);
-        return globeResponse;
-    }
-
-    /**
-     * 绑定银行卡
-     * @param userId
-     * @param gameId
-     * @param agentId
-     * @param bankNo
-     * @param bankName
-     * @param compellation
-     * @param bankAddress
-     * @return
-     */
-    @RequestMapping("/saveBankCardRawData")
-    public GlobeResponse<String> saveBankCardRawData(Integer userId, Integer gameId, Integer agentId, String bankNo, String bankName, String compellation, String bankAddress) {
-        if (userId == null || agentId == null || StringUtils.isBlank(bankNo) || StringUtils.isBlank(bankName)) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<String> globeResponse = new GlobeResponse<String>();
-        Boolean flag = accountsServiceClient.saveBankCardRawData(userId, gameId, agentId, bankNo, bankName, compellation, bankAddress);
-        if (!flag) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "保存成功,如果问题,请联系客服");
-        }
-        return globeResponse;
-    }
-
-    @RequestMapping("/getBankCardRawData")
-    public GlobeResponse<IndividualDatumVO> getBankCardRawData(Integer gameId, Integer agentId) {
-        if (gameId == null || agentId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<IndividualDatumVO> globeResponse = new GlobeResponse<IndividualDatumVO>();
-        globeResponse.setData(accountsServiceClient.getBankCardRawData(gameId, agentId));
         return globeResponse;
     }
 

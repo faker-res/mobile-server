@@ -26,7 +26,7 @@ import java.util.List;
  *  * @Project: mobile-server 
  *  * @Package: com.lzkj.mobile.v2.controller 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/11 19:01  
  *  * @Version:   v1.0
  *  *    

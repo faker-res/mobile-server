@@ -5,8 +5,10 @@ import com.lzkj.mobile.entity.AccountsInfoEntity;
 import com.lzkj.mobile.util.bean.BeanUtils;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.AccountsDetailPageVO;
+import com.lzkj.mobile.v2.inputVO.personCenter.UpdateUserContactInfoVO;
 import com.lzkj.mobile.v2.returnVO.user.UserInformationVO;
 import com.lzkj.mobile.v2.service.PersonCenterService;
+import com.lzkj.mobile.v2.util.ValidateParamUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ import java.util.Map;
  *  * @Project: mobile-server 
  *  * @Package: com.lzkj.mobile.v2.controller 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/11 19:33  
  *  * @Version:   v1.0
  *  *    
@@ -41,6 +42,8 @@ public class PersonCenterController {
     private AccountsServiceClient accountsServiceClient;
     @Resource
     private PersonCenterService personCenterService;
+    @Resource
+    private ValidateParamUtil validateParamUtil;
 
     @GetMapping("/mobileInterface/getUserVipLevel")
     @ApiOperation(value = "查询玩家VIP等级", notes = "查询玩家VIP等级")
@@ -69,9 +72,17 @@ public class PersonCenterController {
 
     @GetMapping("/mobileInterface/getAccountDetails")
     @ApiOperation(value = "获取账户明细", notes = "获取账户明细")
-    public Response<Object> getAccountDetails(@Valid AccountsDetailPageVO vo) {
+    public Response<Object> getAccountDetails(AccountsDetailPageVO vo) {
+        validateParamUtil.valid(vo);
         Map<String, Object> map = personCenterService.getAccountDetails(vo);
         return Response.successData(map);
+    }
+
+    @GetMapping("/mobileInterface/updateUserContactInfo")
+    @ApiOperation(value = "修改用户个人信息", notes = "修改用户个人信息")
+    public Response updateUserContactInfo(UpdateUserContactInfoVO vo) {
+        validateParamUtil.valid(vo);
+        return accountsServiceClient.updateUserContactInfo(vo);
     }
 
 }

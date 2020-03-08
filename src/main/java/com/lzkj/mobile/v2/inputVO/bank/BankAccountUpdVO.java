@@ -4,6 +4,9 @@ import com.lzkj.mobile.v2.inputVO.BaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
 
 /**
  *    
@@ -11,7 +14,7 @@ import lombok.Data;
  *  * @Project: data-server 
  *  * @Package: com.lzkj.fund.model.vo.input 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/5 10:56  
  *  * @Version:   v1.0
  *  *    
@@ -23,13 +26,15 @@ public class BankAccountUpdVO extends BaseVO {
 
     public final static int TYPE_ONE = 1;
 
-    @ApiModelProperty(name = "id", value = "ID主键")
+    @ApiModelProperty(value = "ID主键")
+    @NotNull
+    @Length(min = 1)
     private Integer id;
 
-    @ApiModelProperty(name = "isUse", value = "是否为提款卡 0：否 1：是", hidden = true)
+    @ApiModelProperty(value = "是否为提款卡 0：否 1：是", hidden = true)
     private Integer isUse;
 
-    @ApiModelProperty(name = "type", value = "类型 1：修改提款卡", hidden = true)
+    @ApiModelProperty( value = "类型 1：修改提款卡", hidden = true)
     private Integer type;
 
 }

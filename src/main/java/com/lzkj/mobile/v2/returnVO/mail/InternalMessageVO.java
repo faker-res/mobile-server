@@ -12,7 +12,7 @@ import java.util.Date;
  *  * @Project: mobile-server 
  *  * @Package: com.lzkj.mobile.vo 
  *  * @Description: TODO   
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/1/23 10:55  
  *  * @Version:   v1.0
  *  *    

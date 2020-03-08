@@ -105,7 +105,7 @@ public class MailController {
 
     //二期需要增加的功能
     @GetMapping("/isOrNotOpenMail")
-    @ApiOperation(value = "是否开启邮箱系统功能", notes = "是否开启邮箱系统功能")
+    @ApiOperation(value = "是否开启邮箱系统功能", notes = "是否开启邮箱系统功能，登陆状态开关那里已经添加")
     @ApiImplicitParams ({
             @ApiImplicitParam(name = "s", value = "签名", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "agentId", value = "业主ID", paramType = "query", dataType = "int")

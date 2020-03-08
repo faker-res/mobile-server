@@ -16,6 +16,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Arrays;
+
 @Slf4j
 @Configuration
 @EnableSwagger2
@@ -29,7 +31,7 @@ public class SwaggerConfig {
         Predicate<RequestHandler> selector1 = RequestHandlerSelectors.basePackage("com.lzkj.mobile.v2.controller");
         boolean enable = true;
         log.info("SwaggerConfig获取spring.cloud.config.profile={}", profile);
-        if("prod".equals(profile)){
+        if(Arrays.asList("prod", "prod_app").contains(profile)){
             enable = false;
         }
         return new Docket(DocumentationType.SWAGGER_2)
@@ -49,7 +51,7 @@ public class SwaggerConfig {
                 //描述
                 .description("量子棋牌-Mobile后台API接口服务（API）V1.0版本")
                 //创建人
-                .contact(new Contact("Horus", "", ""))
+                .contact(new Contact("", "", ""))
                 //版本号
                 .version("1.0")
                 .build();

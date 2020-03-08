@@ -12,7 +12,7 @@ import java.util.Map;
  *                          Select top 10 * from RYTreasureDB.dbo.RecordPresentInfo
  *                          WHERE userId = 164711 ORDER BY CollectDate desc
  *
- *  * @Author:   horus   
+ *  * @Author:      
  *  * @CreateDate:  2020/2/13 10:39  
  *  * @Version:   v1.0
  *  *    
