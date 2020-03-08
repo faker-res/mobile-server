@@ -1,11 +1,11 @@
 package com.lzkj.mobile.v2.returnVO.bet;
 
+import com.lzkj.mobile.v2.common.PageBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @ApiModel(description = "用户打码量数据统计封装类")
@@ -21,6 +21,6 @@ public class UserBetInfoUnionVO {
     private BigDecimal totalNoFinishBet;
 
     @ApiModelProperty(value = "用户打码量详情")
-    private List<UserBetInfoVO> UserBetInfoList;
+    private PageBean<UserBetInfoVO> UserBetInfoList;
 
 }

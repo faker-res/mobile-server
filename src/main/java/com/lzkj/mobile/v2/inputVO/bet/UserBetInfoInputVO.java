@@ -12,6 +12,8 @@ public class UserBetInfoInputVO extends BaseVO {
     @ApiModelProperty(value = "用户游戏ID")
     private Integer gameId;
 
-    @ApiModelProperty(value = "用户ID")
-    private Integer userId;
+    @ApiModelProperty(value = "状态(0:未完成 1:已完成)", hidden = true)
+    private Integer betStatus;
+
+
 }

@@ -59,24 +59,10 @@ public class WithdrawController {
     }
 
     @GetMapping("/agentSystem/cashFlowDetails")
-    @ApiOperation(value = "资金流水", notes = "资金流水")
-    public Response cashFlowDetails(UserBetInfoInputVO vo) {
-        List<UserCodeDetailsVO> list = new ArrayList<>();
-        Response<UserBetInfoUnionVO> response = this.fundServiceClient.cashFlowDetails(vo);
-        if(!Response.SUCCESS.equals(response.getCode())){
-            return response;
-        }
-        for (UserBetInfoVO userBetInfoVO : response.getData().getUserBetInfoList()) {
-            UserCodeDetailsVO reVo = new UserCodeDetailsVO();
-            reVo.setApplyDate(DateTransUtil.dateToStr(userBetInfoVO.getCreateTime()));
-            reVo.setInAmounts(userBetInfoVO.getBetNeeds());
-            reVo.setCodeAmountCount(userBetInfoVO.getBetFact());
-            reVo.setFlag(userBetInfoVO.getBetStatus());
-            reVo.setTypeName(userBetInfoVO.getBetTypeName());
-            reVo.setAmounts(userBetInfoVO.getAmount());
-            list.add(reVo);
-        }
-        return Response.successData(list);
+    @ApiOperation(value = "资金流水", notes = "资金流水(只查未完成的)")
+    public Response<UserBetInfoUnionVO> cashFlowDetails(UserBetInfoInputVO vo) {
+        vo.setBetStatus(0);
+        return this.fundServiceClient.cashFlowDetails(vo);
     }
 
 
