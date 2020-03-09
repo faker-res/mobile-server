@@ -48,9 +48,7 @@ public class MobileActivityController {
     @ApiOperation(value = "新版领取红包奖励", notes = "登录红包/每日充值红包/累计充值红包/每日打码量红包/累计打码量红包")
     public Response getReceivingRedEnvelopes(ReceivingRedEnvelopeVO vo, HttpServletRequest request) {
         vo.setIp(IPUtils.getIp(request));
-        Response<Map<String, Object>> response = accountsServiceClient.getReceivingRedEnvelope(vo);
-        mailService.send(vo, response);
-        return response;
+        return accountsServiceClient.getReceivingRedEnvelope(vo);
     }
 
     @GetMapping("/mobileInterface/receiveRedEnvelopeRain")

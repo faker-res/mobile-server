@@ -69,8 +69,7 @@ public class SetController {
         }*/
         String n = MD5Utils.MD5Encode(newPwd, "UTF-8").toUpperCase();
         String o = MD5Utils.MD5Encode(oldPwd, "UTF-8").toUpperCase();
-        Response<Map<String, Object>> response = this.accountsServiceClient.resetInsurePwd(userId, o, n);
-        mailService.send(userId, response);
+        Response response = this.accountsServiceClient.resetInsurePwd(userId, o, n);
         //redisDao.delete(key);
         return response;
     }

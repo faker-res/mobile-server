@@ -3,7 +3,6 @@ package com.lzkj.mobile.v2.service;
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.dto.InternalMessageDto;
-import com.lzkj.mobile.v2.enums.SendMailSourceEnum;
 import com.lzkj.mobile.v2.enums.SendTemplateCodeEnum;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeRainVO;
 import com.lzkj.mobile.v2.inputVO.activity.ReceivingRedEnvelopeVO;
@@ -36,66 +35,20 @@ public class MailService {
     private AccountsServiceClient accountsServiceClient;
 
     /**
-     * 余额宝密码修改
-     * @param userId
-     */
-    public void send(Integer userId, Response<Map<String, Object>> response) {
-        try {
-            if (!Response.SUCCESS.equals(response.getCode())) {
-                return;
-            }
-            InternalMessageDto dto = new InternalMessageDto();
-            dto.setCode(SendTemplateCodeEnum.INSURE_PASS_CHANGE.getCode());
-            dto.setUserId(userId);
-            dto.setType(SendMailSourceEnum.ONE.getCode());
-            accountsServiceClient.sendMail(dto);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 新版领取红包奖励
+     * 红包雨
      * @param vo
      * @param response
      */
-    public void send(ReceivingRedEnvelopeVO vo, Response<Map<String, Object>> response) {
-        try {
-            if (!Response.SUCCESS.equals(response.getCode())) {
-                return;
-            }
-            Map<String, String> map = SendTemplateCodeEnum.getMapByKey(SendTemplateCodeEnum.RED);
-            String code = map.get(String.valueOf(vo.getTypeId()));
-
-            InternalMessageDto dto = new InternalMessageDto();
-            dto.setCode(code);
-            dto.setUserId(vo.getUserId());
-            dto.setAward(vo.getScore());
-            dto.setType(SendMailSourceEnum.TWO.getCode());
-            accountsServiceClient.sendMail(dto);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void send(ReceivingRedEnvelopeRainVO vo, Response<Map<String, Object>> response) {
-        try {
-            if (!Response.SUCCESS.equals(response.getCode())) {
-                return;
-            }
-            Map<String, Object> data = response.getData();
-            String money = String.valueOf(data.get("money"));
-            BigDecimal score = money == null ? new BigDecimal(0) : new BigDecimal(money);
+        Map<String, Object> data = response.getData();
+        String money = String.valueOf(data.get("money"));
+        BigDecimal score = money == null ? new BigDecimal(0) : new BigDecimal(money);
 
-            InternalMessageDto dto = new InternalMessageDto();
-            dto.setCode(SendTemplateCodeEnum.RED_RAIN_REWARD.getCode());
-            dto.setUserId(vo.getUserId());
-            dto.setAward(score);
-            dto.setType(SendMailSourceEnum.THREE.getCode());
-            accountsServiceClient.sendMail(dto);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        InternalMessageDto dto = new InternalMessageDto();
+        dto.setCode(SendTemplateCodeEnum.RED_RAIN_REWARD.getCode());
+        dto.setUserId(vo.getUserId());
+        dto.setAward(score);
+        accountsServiceClient.sendMail(dto);
     }
 
     /**
@@ -109,7 +62,6 @@ public class MailService {
             dto.setCode(SendTemplateCodeEnum.THIRD_CHARGE_N.getCode());
             dto.setUserId(Integer.parseInt(userId.toString()));
             dto.setRecharge(amount);
-            dto.setType(SendMailSourceEnum.FOUR.getCode());
             accountsServiceClient.sendMail(dto);
         } catch (Exception e) {
             e.printStackTrace();

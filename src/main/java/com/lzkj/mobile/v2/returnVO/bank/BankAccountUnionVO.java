@@ -27,7 +27,7 @@ public class BankAccountUnionVO {
     private BigDecimal attributes;
 
     @ApiModelProperty(value = "未完成打码量")
-    private Integer betAmount;
+    private BigDecimal betAmount;
 
     @ApiModelProperty(value = "可用银行卡信息")
     private List<BankAccountVO> list;
