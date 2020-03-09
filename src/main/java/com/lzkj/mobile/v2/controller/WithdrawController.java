@@ -2,18 +2,12 @@ package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
 import com.lzkj.mobile.client.FundServiceClient;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
-import com.lzkj.mobile.util.DateTransUtil;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.bank.WithdrawInputVO;
 import com.lzkj.mobile.v2.inputVO.bet.UserBetInfoInputVO;
 import com.lzkj.mobile.v2.returnVO.bet.UserBetInfoUnionVO;
-import com.lzkj.mobile.v2.returnVO.bet.UserBetInfoVO;
 import com.lzkj.mobile.v2.util.IPUtils;
 import com.lzkj.mobile.v2.util.ValidateParamUtil;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.UserCodeDetailsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *    
@@ -59,9 +51,10 @@ public class WithdrawController {
     }
 
     @GetMapping("/agentSystem/cashFlowDetails")
-    @ApiOperation(value = "资金流水", notes = "资金流水(只查未完成的)")
+    @ApiOperation(value = "资金流水", notes = "资金流水")
     public Response<UserBetInfoUnionVO> cashFlowDetails(UserBetInfoInputVO vo) {
-        vo.setBetStatus(0);
+        validateParamUtil.valid(vo);
+        vo.setWeb(true);
         return this.fundServiceClient.cashFlowDetails(vo);
     }
 

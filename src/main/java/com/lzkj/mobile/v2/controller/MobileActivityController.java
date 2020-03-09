@@ -53,14 +53,9 @@ public class MobileActivityController {
 
     @GetMapping("/mobileInterface/receiveRedEnvelopeRain")
     @ApiOperation(value = "领取红包雨红包", notes = "领取红包雨红包")
-    public Response receiveRedEnvelopeRain(ReceivingRedEnvelopeRainVO vo, HttpServletRequest request) {
+    public Response<Object> receiveRedEnvelopeRain(ReceivingRedEnvelopeRainVO vo, HttpServletRequest request) {
         vo.setIp(IPUtils.getIp(request));
-        Response<Map<String, Object>> response = this.agentServiceClient.receiveRedEnvelopeRain(vo);
-        if(Response.SUCCESS.equals(response.getCode())){
-            mailService.send(vo, response);
-            return Response.successData(response.getData().get("money"), response.getData());
-        }
-        return response;
+        return this.agentServiceClient.receiveRedEnvelopeRain(vo);
     }
 
 }
