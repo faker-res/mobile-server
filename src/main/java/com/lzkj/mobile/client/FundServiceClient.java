@@ -4,6 +4,7 @@ import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
 import com.lzkj.mobile.v2.inputVO.bank.*;
+import com.lzkj.mobile.v2.inputVO.bet.UserBetInfoFillVO;
 import com.lzkj.mobile.v2.inputVO.bet.UserBetInfoInputVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountUnionVO;
@@ -53,4 +54,7 @@ public interface FundServiceClient {
 
     @PostMapping("/userBetInfo/list")
     Response<UserBetInfoUnionVO> cashFlowDetails(@RequestBody UserBetInfoInputVO vo);
+
+    @PostMapping("/userBetInfo/fill")
+    Response fillUserBetInfo(@RequestBody UserBetInfoFillVO vo);
 }

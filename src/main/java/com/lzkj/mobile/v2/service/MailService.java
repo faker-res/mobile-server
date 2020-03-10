@@ -35,23 +35,6 @@ public class MailService {
     private AccountsServiceClient accountsServiceClient;
 
     /**
-     * 红包雨
-     * @param vo
-     * @param response
-     */
-    public void send(ReceivingRedEnvelopeRainVO vo, Response<Map<String, Object>> response) {
-        Map<String, Object> data = response.getData();
-        String money = String.valueOf(data.get("money"));
-        BigDecimal score = money == null ? new BigDecimal(0) : new BigDecimal(money);
-
-        InternalMessageDto dto = new InternalMessageDto();
-        dto.setCode(SendTemplateCodeEnum.RED_RAIN_REWARD.getCode());
-        dto.setUserId(vo.getUserId());
-        dto.setAward(score);
-        accountsServiceClient.sendMail(dto);
-    }
-
-    /**
      * 支付回调
      * @param userId
      * @param amount

@@ -10,6 +10,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.lzkj.mobile.async.ActiveAsyncUtil;
+import com.lzkj.mobile.async.UserBetAsyncUtil;
 import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
@@ -47,6 +48,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
@@ -108,6 +110,9 @@ public class MobileInterfaceController {
 
     @Resource
     private MailService mailService;
+
+    @Resource
+    private UserBetAsyncUtil userBetAsyncUtil;
     
     @RequestMapping("/getScoreRank")
     public GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
@@ -1133,6 +1138,7 @@ public class MobileInterfaceController {
 					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
 				activeAsyncUtil.activityBetAmountAdvance(accountsInfo.getUserId(), accountsInfo.getParentId(), accountsInfo.getLevel(),
 						kindId, dJson.getBigDecimal("betTotal"), betDate, 10000);
+                userBetAsyncUtil.pushUserBet(accountsInfo.getUserId(), dJson.getBigDecimal("betTotal"));
 			}
             gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
