@@ -26,10 +26,8 @@ import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.*;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
-import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.v2.util.ValidateParamUtil;
 import com.lzkj.mobile.vo.*;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -45,10 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.lzkj.mobile.config.AwardOrderStatus.getDescribe;
@@ -109,11 +104,8 @@ public class MobileInterfaceController {
     private ActiveAsyncUtil activeAsyncUtil;
 
     @Resource
-    private MailService mailService;
-
-    @Resource
     private UserBetAsyncUtil userBetAsyncUtil;
-    
+
     @RequestMapping("/getScoreRank")
     public GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
         String pageIndexParam = request.getParameter("pageIndex");
@@ -1404,8 +1396,6 @@ public class MobileInterfaceController {
         String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                 ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
-        //发送邮件
-        mailService.send(userId, new BigDecimal(amount));
         return "success";
     }
 
