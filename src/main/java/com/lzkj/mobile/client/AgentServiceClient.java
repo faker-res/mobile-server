@@ -173,7 +173,7 @@ public interface AgentServiceClient {
     Long getCurrentDate();
 
     @RequestMapping("/mobile/activity/receiveRedEnvelopeRain")
-    Response<Map<String, Object>> receiveRedEnvelopeRain(@RequestBody ReceivingRedEnvelopeRainVO vo);
+    Response<Object> receiveRedEnvelopeRain(@RequestBody ReceivingRedEnvelopeRainVO vo);
     
     @RequestMapping("/agent/mobile/getUserRankings")
     List<UserRankinsVO> getUserRankings(@RequestParam("parentId") Integer parentId);

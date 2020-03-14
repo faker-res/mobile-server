@@ -1,27 +1,18 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
-import com.lzkj.mobile.config.SystemConstants;
-import com.lzkj.mobile.exception.GlobeException;
 import com.lzkj.mobile.redis.RedisDao;
-import com.lzkj.mobile.redis.RedisKeyPrefix;
 import com.lzkj.mobile.util.MD5Utils;
 import com.lzkj.mobile.v2.common.Response;
-import com.lzkj.mobile.v2.service.MailService;
-import com.lzkj.mobile.vo.GlobeResponse;
-import com.lzkj.mobile.vo.VerificationCodeVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  *    
@@ -42,8 +33,6 @@ public class SetController {
 
     @Resource
     private RedisDao redisDao;
-    @Resource
-    private MailService mailService;
     @Resource
     private AccountsServiceClient accountsServiceClient;
 
@@ -69,8 +58,7 @@ public class SetController {
         }*/
         String n = MD5Utils.MD5Encode(newPwd, "UTF-8").toUpperCase();
         String o = MD5Utils.MD5Encode(oldPwd, "UTF-8").toUpperCase();
-        Response<Map<String, Object>> response = this.accountsServiceClient.resetInsurePwd(userId, o, n);
-        mailService.send(userId, response);
+        Response response = this.accountsServiceClient.resetInsurePwd(userId, o, n);
         //redisDao.delete(key);
         return response;
     }

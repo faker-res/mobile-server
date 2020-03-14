@@ -1,8 +1,11 @@
 package com.lzkj.mobile.v2.controller;
 
 import com.lzkj.mobile.client.AccountsServiceClient;
+import com.lzkj.mobile.client.FundServiceClient;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.bank.WithdrawInputVO;
+import com.lzkj.mobile.v2.inputVO.bet.UserBetInfoInputVO;
+import com.lzkj.mobile.v2.returnVO.bet.UserBetInfoUnionVO;
 import com.lzkj.mobile.v2.util.IPUtils;
 import com.lzkj.mobile.v2.util.ValidateParamUtil;
 import io.swagger.annotations.Api;
@@ -28,20 +31,31 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @Api(tags = "提现")
-@RequestMapping("/withdraw")
 public class WithdrawController {
 
     @Resource
     private AccountsServiceClient accountsServiceClient;
+
+    @Resource
+    private FundServiceClient fundServiceClient;
+
     @Resource
     private ValidateParamUtil validateParamUtil;
 
-    @GetMapping("/deal")
+    @GetMapping("/withdraw/deal")
     @ApiOperation(value = "提款", notes = "提款")
     public Response withdrawDeal(WithdrawInputVO vo, HttpServletRequest request) {
         validateParamUtil.valid(vo);
         vo.setIp(IPUtils.getIp(request));
         return accountsServiceClient.withdrawDeal(vo);
+    }
+
+    @GetMapping("/agentSystem/cashFlowDetails")
+    @ApiOperation(value = "资金流水", notes = "资金流水")
+    public Response<UserBetInfoUnionVO> cashFlowDetails(UserBetInfoInputVO vo) {
+        validateParamUtil.valid(vo);
+        vo.setWeb(true);
+        return this.fundServiceClient.cashFlowDetails(vo);
     }
 
 

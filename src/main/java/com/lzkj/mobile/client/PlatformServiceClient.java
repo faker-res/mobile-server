@@ -162,7 +162,7 @@ public interface PlatformServiceClient {
     List<AccountsTask> getTaskinfoByUserId(@RequestParam("userId")Integer userId,@RequestParam("agentId")Integer agentId);
     
     @RequestMapping("/platform/mobile/getTaskReward")
-    String getTaskReward(@RequestParam("userId")Integer userId,@RequestParam("taskId")Integer taskId,@RequestParam("password")String password,
+    String getTaskReward(@RequestParam("userId")Integer userId, @RequestParam("taskId")Integer taskId,@RequestParam("password")String password,
     		@RequestParam("machinIe")String machinIe,@RequestParam("ip")String ip);
     
     @RequestMapping("/platform/mobile/updateResversion")
