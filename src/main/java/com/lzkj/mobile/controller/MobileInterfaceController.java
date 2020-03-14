@@ -1126,11 +1126,15 @@ public class MobileInterfaceController {
                 accountsInfos(gr, accountsInfo);
             }
 //            log.info("accountsInfo:" + accountsInfo);
+            BigDecimal betToal = dJson.getBigDecimal("betTotal");
+            if(kindId.equals(28) || kindId.equals(36)){
+                betToal = gr.getScore().compareTo(BigDecimal.ZERO) < 0 ? gr.getScore().negate().setScale(2, BigDecimal.ROUND_HALF_UP) : gr.getScore();
+            }
             if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
-					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
+                    betToal.compareTo(BigDecimal.ZERO) > 0) {
 				activeAsyncUtil.activityBetAmountAdvance(accountsInfo.getUserId(), accountsInfo.getParentId(), accountsInfo.getLevel(),
-						kindId, dJson.getBigDecimal("betTotal"), betDate, 10000);
-                userBetAsyncUtil.pushUserBet(accountsInfo.getUserId(), dJson.getBigDecimal("betTotal"));
+						kindId, betToal, betDate, 10000);
+                userBetAsyncUtil.pushUserBet(accountsInfo.getUserId(), betToal);
 			}
             gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
