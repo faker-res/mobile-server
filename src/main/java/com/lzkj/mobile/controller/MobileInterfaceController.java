@@ -820,6 +820,10 @@ public class MobileInterfaceController {
         	accessKeyId = "LTAI4Fxr5Py9og1m89HigKAQ";
             accessKeySecret = "sChKu5H5Hje5nDKuWu1yDOTF7UkJax";
         }
+		if (sendMode == 15) {//开元
+        	accessKeyId = "LTAI4Fd2z6p96UJ9AhzvLVbM";
+            accessKeySecret = "cBJMTLt3doAFReIsf9MNx5O1FGqea7";
+        }
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -878,6 +882,14 @@ public class MobileInterfaceController {
             request.setSignName("开元");
             //必填:短信模板-可在短信控制台中找到
             request.setTemplateCode("SMS_182671827");
+            //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+            request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
+        }
+        if(sendMode == 15) {//百家
+        	//必填:短信签名-可在短信控制台中找到
+            request.setSignName("百I家");
+            //必填:短信模板-可在短信控制台中找到
+            request.setTemplateCode("SMS_180046998");
             //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
             request.setTemplateParam("{\"code\":\"" + vCode + "\"}");
         }
