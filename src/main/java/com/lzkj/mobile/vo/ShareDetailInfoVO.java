@@ -30,4 +30,6 @@ public class ShareDetailInfoVO {
     private String merchantOrderId;//商户订单号
     private BigDecimal insureScore;
     private Integer vipLevel;
+
+    private BigDecimal score;
 }
