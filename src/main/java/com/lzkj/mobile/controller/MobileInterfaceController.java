@@ -1404,13 +1404,14 @@ public class MobileInterfaceController {
         shareDetailInfoVO.setIpAddress(getIpAddress(request));
         shareDetailInfoVO.setPayAmount(new BigDecimal(amount));
         shareDetailInfoVO.setMerchantOrderId(orderId);
-        Map<String, Object> data = treasureServiceClient.filliedOnline(shareDetailInfoVO);
-        Object userId = data.get("userId");
-        Object score = data.get("score");
-        Object insureScore = data.get("insureScore");
-        Object level = data.get("vipLevel");
-        String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
-                ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
+        Response<ShareDetailInfoVO> response = treasureServiceClient.filliedOnline(shareDetailInfoVO);
+        if(!Response.SUCCESS.equals(response.getCode())){
+            log.info("支付回调调用失败：{}", response);
+            return response;
+        }
+        ShareDetailInfoVO data = response.getData();
+        String msg = "{\"msgid\":7,\"userId\":" + data.getUserId() + ", \"score\":" + data.getScore() + ",\"insuranceScore\":" + data.getInsureScore() +
+                ", \"VipLevel\":" + data.getVipLevel() + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
         return "success";
     }

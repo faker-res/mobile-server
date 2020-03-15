@@ -84,7 +84,7 @@ public interface TreasureServiceClient {
      * @return
      */
     @RequestMapping("treasure/mobile/filliedOnline")
-    Map<String, Object> filliedOnline(@RequestBody ShareDetailInfoVO shareDetailInfoVO);
+    Response<ShareDetailInfoVO> filliedOnline(@RequestBody ShareDetailInfoVO shareDetailInfoVO);
 
     /**
      * 查询公司支付通道
