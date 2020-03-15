@@ -4,10 +4,14 @@ import com.lzkj.mobile.v2.common.PageBean;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.inputVO.BaseGameIdVO;
 import com.lzkj.mobile.v2.inputVO.bank.*;
+import com.lzkj.mobile.v2.inputVO.bet.UserBetInfoFillVO;
+import com.lzkj.mobile.v2.inputVO.bet.UserBetInfoInputVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountRecordVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountUnionVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAccountVO;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
+import com.lzkj.mobile.v2.returnVO.bet.UserBetInfoUnionVO;
+import com.lzkj.mobile.vo.UserCodeDetailsVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,4 +51,10 @@ public interface FundServiceClient {
 
     @GetMapping("/bankAccount/getUseList")
     Response<BankAccountUnionVO> getUseBankList(@RequestParam Integer gameId);
+
+    @PostMapping("/userBetInfo/list")
+    Response<UserBetInfoUnionVO> cashFlowDetails(@RequestBody UserBetInfoInputVO vo);
+
+    @PostMapping("/userBetInfo/fill")
+    Response fillUserBetInfo(@RequestBody UserBetInfoFillVO vo);
 }

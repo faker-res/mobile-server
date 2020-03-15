@@ -135,7 +135,7 @@ public interface AccountsServiceClient {
     String getGameItem(@RequestParam("kindId") Integer kindId);
 
     @RequestMapping("/mobile/set/resetInsurePwd")
-    Response<Map<String, Object>> resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
+    Response resetInsurePwd(@RequestParam("userId") Integer userId,@RequestParam("oldPwd") String oldPwd,
                                        @RequestParam("newPwd") String newPwd);
 
     @RequestMapping("/accounts/mobile/getUserVipLevel")

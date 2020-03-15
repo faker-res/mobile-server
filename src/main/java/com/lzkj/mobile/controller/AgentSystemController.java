@@ -709,35 +709,6 @@ public class AgentSystemController {
     }
 
     /**
-     * 提现流水详情
-     */
-    @RequestMapping("/cashFlowDetails")
-    public GlobeResponse<Object> cashFlowDetails(Integer userId, Integer agentId) {
-        if (agentId == null || userId == null) {
-            throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
-        }
-        GlobeResponse<Object> globeResponse = new GlobeResponse<>();
-        //List<UserBetInfoVO>  vo =  accountsClient.getUserBetInfo(userId,agentId);
-        List<UserCodeDetailsVO> param = this.accountsClient.cashFlowDetails(userId, agentId);
-//        if (param == null) {
-//            UserCodeDetailsVO userCodeDetailsVO = new UserCodeDetailsVO();
-//            //是否可提现状态
-//            userCodeDetailsVO.setStatus(1);
-//            //需求打码量
-//            userCodeDetailsVO.setInAmounts(BigDecimal.valueOf(0));
-//            //实际打码量
-//            userCodeDetailsVO.setCodeAmountCount(BigDecimal.valueOf(0));
-//            userCodeDetailsVO.setApplyDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
-//            globeResponse.setData(userCodeDetailsVO);
-//
-//
-//            return globeResponse;
-//        }
-        globeResponse.setData(param);
-        return globeResponse;
-    }
-
-    /**
      * 资金明细
      */
     @RequestMapping("/fundDetails")

@@ -158,7 +158,7 @@ public class LuckyOrderController {
         RedisLock redisLock = null;
         try{
             redisLock = new RedisLock(RedisKeyPrefix.payLock("userBalance_"+userId), redisTemplate, 10);
-            Boolean hasLock = redisLock.tryLock();
+            boolean hasLock = redisLock.tryLock();
             if (!hasLock) {
                 return Response.fail("请求太频繁，请稍后重试");
             }

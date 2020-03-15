@@ -78,7 +78,7 @@ public class ActiveCenterController {
      */
     @RequestMapping("/getActivityByTrigger")
     public GlobeResponse<Object> getActivityByTrigger(Integer userId,Integer agentId,Integer method,Integer device){
-    	if(userId == 0 || agentId == null || userId == null || agentId == 0 || method == null || method == 0 || device == 0 || device == null) {
+    	if(userId == null || userId == 0 || agentId == null || agentId == 0 || method == null || method == 0 || device == null || device == 0) {
     		throw new GlobeException(SystemConstants.FAIL_CODE, "参数错误");
     	}
     	GlobeResponse<Object> globeResponse = new GlobeResponse<Object>();

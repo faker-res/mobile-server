@@ -10,6 +10,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.lzkj.mobile.async.ActiveAsyncUtil;
+import com.lzkj.mobile.async.UserBetAsyncUtil;
 import com.lzkj.mobile.client.*;
 import com.lzkj.mobile.config.AgentSystemEnum;
 import com.lzkj.mobile.config.SiteConfigKey;
@@ -25,10 +26,8 @@ import com.lzkj.mobile.schedule.PayLineCheckJob;
 import com.lzkj.mobile.util.*;
 import com.lzkj.mobile.v2.common.Response;
 import com.lzkj.mobile.v2.returnVO.bank.BankAgentVO;
-import com.lzkj.mobile.v2.service.MailService;
 import com.lzkj.mobile.v2.util.ValidateParamUtil;
 import com.lzkj.mobile.vo.*;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -44,8 +43,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -107,8 +104,8 @@ public class MobileInterfaceController {
     private ActiveAsyncUtil activeAsyncUtil;
 
     @Resource
-    private MailService mailService;
-    
+    private UserBetAsyncUtil userBetAsyncUtil;
+
     @RequestMapping("/getScoreRank")
     public GlobeResponse<List<UserScoreRankVO>> getScoreRank(HttpServletRequest request) {
         String pageIndexParam = request.getParameter("pageIndex");
@@ -1141,10 +1138,15 @@ public class MobileInterfaceController {
                 accountsInfos(gr, accountsInfo);
             }
 //            log.info("accountsInfo:" + accountsInfo);
+            BigDecimal betToal = dJson.getBigDecimal("betTotal");
+            if(kindId.equals(28) || kindId.equals(36)){
+                betToal = gr.getScore().compareTo(BigDecimal.ZERO) < 0 ? gr.getScore().negate().setScale(2, BigDecimal.ROUND_HALF_UP) : gr.getScore();
+            }
             if((accountsInfo.getH5AgentId() == null || accountsInfo.getH5AgentId() == 0) &&
-					dJson.getBigDecimal("betTotal").compareTo(BigDecimal.ZERO) == 1) {
+                    betToal.compareTo(BigDecimal.ZERO) > 0) {
 				activeAsyncUtil.activityBetAmountAdvance(accountsInfo.getUserId(), accountsInfo.getParentId(), accountsInfo.getLevel(),
-						kindId, dJson.getBigDecimal("betTotal"), betDate, 10000);
+						kindId, betToal, betDate, 10000);
+                userBetAsyncUtil.pushUserBet(accountsInfo.getUserId(), betToal);
 			}
             gr.setPersonalDetails(String.valueOf(dJson));
             gr.setDetail(detailString);
@@ -1410,8 +1412,6 @@ public class MobileInterfaceController {
         String msg = "{\"msgid\":7,\"userId\":" + userId + ", \"score\":" + score + ",\"insuranceScore\":" + insureScore +
                 ", \"VipLevel\":" + level + ", \"type\":" + 1 + ", \"Charge\":" + amount + "}";
         log.info("调用金额变更指令:{}, 返回：" + HttpRequest.sendPost(this.serverUrl, msg), msg);
-        //发送邮件
-        mailService.send(userId, new BigDecimal(amount));
         return "success";
     }
 
